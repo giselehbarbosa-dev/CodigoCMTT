@@ -13,8 +13,8 @@ sys.path.append(DIR_BASE)
 from extratores.gerenciador_io import ler_texto_pdf, carregar_index_atas
 
 CAMINHO_CACHE = os.path.join(DIR_BASE, 'dados', 'configs', '.cache_corpus_atas.json')
-CAMINHO_BASE_MANDATOS = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Base_dados\base_mandatos.xlsx"
-CAMINHO_INDEX_EXCEL = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Base_dados\index_atas.xlsx"
+CAMINHO_BASE_MANDATOS = os.path.join(DIR_BASE, 'dados', 'base_dados', 'base_mandatos.xlsx')
+CAMINHO_INDEX_EXCEL = os.path.join(DIR_BASE, 'dados', 'base_dados', 'index_atas.xlsx')
 
 # --- Configuração da Página ---
 st.set_page_config(page_title="BuscaCMTT", layout="wide", initial_sidebar_state="collapsed")
