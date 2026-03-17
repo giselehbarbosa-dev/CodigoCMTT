@@ -5,7 +5,6 @@ import pdfplumber
 from datetime import datetime
 from extratores.config_filtros import converter_periodo_em_datas
 
-
 # 1. O GPS MÁGICO (Descobre automaticamente a pasta raiz do projeto)
 # Como este arquivo está dentro da pasta 'extratores', mandamos ele voltar uma pasta para achar a raiz (Codigo)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
