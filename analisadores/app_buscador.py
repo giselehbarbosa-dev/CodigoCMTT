@@ -37,6 +37,12 @@ esconder_estilo = """
     input[type="text"] {
         background-color: transparent !important;
     }
+
+    /* CSS para deixar a tabela de resultados com cara de sistema profissional */
+    .tabela-resultados { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 14px; }
+    .tabela-resultados th { background-color: #f0f2f6; padding: 12px; text-align: left; border-bottom: 2px solid #ccc; color: #31333F; }
+    .tabela-resultados td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; color: #31333F; }
+    .tabela-resultados tr:hover { background-color: #f8f9fa; }
     </style>
 """
 st.markdown(esconder_estilo, unsafe_allow_html=True)
@@ -147,9 +153,7 @@ senha_admin = st.sidebar.text_input("Senha de Admin para Manutenção:", type="p
 if senha_admin == "cmtt2013":
     st.sidebar.warning("Modo Administrador Ativo")
     if st.sidebar.button("🔄 Reconstruir Cache (Geral)"):
-        # 👇 AQUI ESTÁ A MÁGICA: Limpa a memória teimosa do Streamlit antes de fazer qualquer coisa!
-        st.cache_data.clear()
-
+        st.cache_data.clear()  # Limpa a memória do Streamlit
         with st.spinner("Lendo PDFs e extraindo metadados..."):
             if construir_cache_novo():
                 st.sidebar.success("Cache atualizado!")
@@ -161,9 +165,9 @@ else:
         st.sidebar.error("⚠️ Cache não encontrado. Contate o administrador.")
 st.sidebar.markdown("---")
 
-# --- Área Principal (Layout Centralizado e Ajustado) ---
+# --- Área Principal ---
 
-# 1. O Retângulo Branco com os Logos
+# 1. O Retângulo Branco com os Logos (Comportamento Flexível e Responsivo para Mobile)
 caminho_logo_pref = os.path.join(DIR_BASE, 'dados', 'configs', 'logo_prefeitura.png')
 caminho_logo_cmtt = os.path.join(DIR_BASE, 'dados', 'configs', 'logo_cmtt.jpg')
 
@@ -174,9 +178,9 @@ try:
 
         html_cabecalho = f"""
         <div style="display: flex; justify-content: center; margin-bottom: 2rem; margin-top: 1rem;">
-            <div style="background-color: white; padding: 20px 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 50px;">
-                <img src="data:image/png;base64,{b64_pref}" style="height: 130px; object-fit: contain;">
-                <img src="data:image/jpeg;base64,{b64_cmtt}" style="height: 80px; object-fit: contain;">
+            <div style="background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; max-width: 95%;">
+                <img src="data:image/png;base64,{b64_pref}" style="height: 100px; width: auto; max-width: 100%; object-fit: contain;">
+                <img src="data:image/jpeg;base64,{b64_cmtt}" style="height: 70px; width: auto; max-width: 100%; object-fit: contain;">
             </div>
         </div>
         """
@@ -190,7 +194,6 @@ st.write("---")
 _, col_miolo, _ = st.columns([1, 6, 1])
 
 with col_miolo:
-    # Título novo, focado na ação
     st.markdown(
         "<h3 style='text-align: center; color: #2C3E50; margin-bottom: 25px;'>🔍 Digite para buscar nas bases do CMTT</h3>",
         unsafe_allow_html=True)
@@ -198,20 +201,14 @@ with col_miolo:
     corpus_completo = carregar_corpus_memoria() + carregar_fontes_extras()
 
     if corpus_completo:
-        # A barra de busca
         termo = st.text_input("Busca Oculta", label_visibility="collapsed")
-
-        # A dica, agora sutil e sem a caixa
         st.markdown(
             "<p style='text-align: center; color: #6c757d; font-size: 16px; margin-top: 12px;'>💡 Dica: Use termos entre aspas para buscas mais específicas ou apenas palavras-chave para busca flexível.</p>",
             unsafe_allow_html=True)
 
-        # O Botão de Busca (centralizado usando colunas menores)
         _, col_btn, _ = st.columns([2, 1, 2])
         with col_btn:
-            # Esse botão é opcional visualmente, pois o Enter já funciona, mas é ótimo para Mobile!
             st.button("PESQUISAR", use_container_width=True)
-
     else:
         termo = ""
         st.warning("⚠️ Base de dados vazia. Reconstrua o cache na barra lateral.")
@@ -230,29 +227,63 @@ if termo and corpus_completo:
         for linha in doc["Linhas"]:
             if regex.search(linha):
                 resultados.append({
+                    "Fonte": doc.get("Fonte", "N/A"),
                     "Data": doc.get("Data", "N/A"),
                     "Reunião/Origem": doc.get("Reunião", "N/A"),
-                    "Contexto": linha.strip(),
-                    "Fonte": doc.get("Fonte", "N/A")
+                    "Contexto": linha.strip()
                 })
 
     if resultados:
         df_res = pd.DataFrame(resultados)
         st.success(f"Encontradas {len(df_res)} ocorrências!")
-        st.table(df_res)
 
+
+        # Função inteligente que gera link de download embutido para PDF ou Excel
+        def linkar_fonte(fonte_str):
+            # Limpa o nome caso tenha a marcação "(Aba: Plan1)" do Excel
+            nome_arquivo = fonte_str.split(" (Aba:")[0].strip()
+
+            caminho_arquivo = ""
+            mime_type = ""
+            icone = ""
+
+            if nome_arquivo.endswith('.pdf'):
+                caminho_arquivo = os.path.join(DIR_BASE, "dados", "base_dados", "pdf_atas_pleno", nome_arquivo)
+                mime_type = "application/pdf"
+                icone = "📕"
+            elif nome_arquivo.endswith('.xlsx'):
+                caminho_arquivo = os.path.join(DIR_BASE, "dados", "base_dados", nome_arquivo)
+                mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                icone = "📗"
+            else:
+                return fonte_str  # Retorna normal se não reconhecer
+
+            if os.path.exists(caminho_arquivo):
+                with open(caminho_arquivo, "rb") as f:
+                    b64 = base64.b64encode(f.read()).decode()
+                    return f'<a href="data:{mime_type};base64,{b64}" download="{nome_arquivo}" style="color: #1f77b4; text-decoration: none; font-weight: bold;">{icone} {fonte_str}</a>'
+
+            return f"⚠️ {fonte_str} (Arquivo não encontrado)"
+
+
+        # Aplica a função de link na coluna Fonte
+        df_res['Fonte'] = df_res['Fonte'].apply(linkar_fonte)
+
+        # Exibe a tabela renderizando o HTML do link e aplicando nosso CSS customizado
+        tabela_html = df_res.to_html(escape=False, index=False, classes="tabela-resultados")
+        st.write(tabela_html, unsafe_allow_html=True)
+
+        st.write("---")
         csv = df_res.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
         data_hoje = pd.Timestamp.now().strftime("%Y-%m-%d")
-        nome_arquivo = f"busca_CMTT_{termo.replace(' ', '_')}_{data_hoje}.csv"
+        nome_arquivo_csv = f"busca_CMTT_{termo.replace(' ', '_')}_{data_hoje}.csv"
 
         st.download_button(
-            label="📥 Baixar Resultados (CSV)",
+            label="📊 Baixar Tabela de Resultados (CSV)",
             data=csv,
-            file_name=nome_arquivo,
+            file_name=nome_arquivo_csv,
             mime="text/csv",
             use_container_width=True
         )
     else:
         st.warning(f"∅ Nada encontrado para o termo '{termo}'.")
-
-        # forçando reinicio
