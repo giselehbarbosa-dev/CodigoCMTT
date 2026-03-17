@@ -1,0 +1,20 @@
+# --- Arquivos de Sistema e IDE ---
+.venv/
+__pycache__/
+.pytest_cache/
+.idea/
+
+# --- Escudo LGPD e Risco Político (Outputs) ---
+dados/processados/
+relatorios/
+graficos/
+*.csv
+*.xlsx
+
+# --- Exceções Seguras (O que o app precisa para rodar) ---
+# Aqui dizemos: "Ignore todos os Excel, MAS permita os dois abaixo!"
+!dados/base_dados/base_mandatos.xlsx
+!dados/base_dados/index_atas.xlsx
+
+# --- Segurança do Streamlit ---
+.streamlit/secrets.toml

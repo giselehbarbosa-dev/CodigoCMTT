@@ -1,0 +1,8 @@
+[theme]
+primaryColor = "#0056b3"
+# Esse é um azul-claro bem suave e elegante (Alice Blue)
+backgroundColor = "#F0F8FF"
+# Um tom levemente diferente para a barra lateral (se você abrir)
+secondaryBackgroundColor = "#E6F2FF"
+textColor = "#31333F"
+font = "sans serif"

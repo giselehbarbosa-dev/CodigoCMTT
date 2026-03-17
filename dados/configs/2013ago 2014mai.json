@@ -1,0 +1,1123 @@
+{
+    "arquivo_origem": "2013ago 2014mai",
+    "cadeiras": [
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Representante da Associação Nacional do Transporte de Cargas e Logística – NTC",
+            "aliases_orgao": [
+                "Representante da Associação Nacional do Transporte de Cargas e Logística – NTC"
+            ],
+            "cadeira_padronizada": "CARGA - EMPRESAS 1",
+            "titulares": [
+                {
+                    "nome": "Celso Rodrigues Salgueiro Filho",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Adauto Bentivegna Filho",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato das Empresas de Transporte de Carga de São Paulo e Região – SETCESP",
+            "aliases_orgao": [
+                "Sindicato das Empresas de Transporte de Carga de São Paulo e Região – SETCESP"
+            ],
+            "cadeira_padronizada": "CARGA - EMPRESAS 2",
+            "titulares": [
+                {
+                    "nome": "Manoel Sousa Lima Júnior",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Altamir Filadelfi Cabral",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "São Paulo Transporte S/A – SPTrans - 2",
+            "aliases_orgao": [
+                "São Paulo Transporte S/A – SPTrans - 2"
+            ],
+            "cadeira_padronizada": "SPTRANS 2",
+            "titulares": [
+                {
+                    "nome": "Ana Odila de Paiva Souza",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Eduardo Faccini",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Pessoa com Deficiência e Mobilidade Reduzida",
+            "aliases_orgao": [
+                "Pessoa com Deficiência e Mobilidade Reduzida"
+            ],
+            "cadeira_padronizada": "CONVIDADO TEMÁTICOS - PCD",
+            "titulares": [
+                {
+                    "nome": "Ana Rita de Paula",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Companhia de Engenharia de Tráfego – CET - 1",
+            "aliases_orgao": [
+                "Companhia de Engenharia de Tráfego – CET - 1"
+            ],
+            "cadeira_padronizada": "CET 1",
+            "titulares": [
+                {
+                    "nome": "Edimar Gomes Silva",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Antonio Carlos Gambarini",
+                    "genero": "M",
+                    "cargo_extra": "Coordenação Executiva / Comissão Eleitoral",
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal da Pessoa com Deficiência e Mobilidade Reduzida – SMPED",
+            "aliases_orgao": [
+                "Secretaria Municipal da Pessoa com Deficiência e Mobilidade Reduzida – SMPED"
+            ],
+            "cadeira_padronizada": "PCD",
+            "titulares": [
+                {
+                    "nome": "Antonio Carlos Munhoz",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Silvana Cambiachi",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato dos Motoristas e Trabalhadores nas Empresas de Táxi do Município de São Paulo ­- SIMTETAXIS",
+            "aliases_orgao": [
+                "Sindicato dos Motoristas e Trabalhadores nas Empresas de Táxi do Município de São Paulo ­- SIMTETAXIS"
+            ],
+            "cadeira_padronizada": "TÁXI - EMPREGADOS",
+            "titulares": [
+                {
+                    "nome": "Antonio Raimundo Matias dos Santos – Ceará",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Manuel Alves Palavras",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "União Estadual dos Estudantes - UEESP",
+            "aliases_orgao": [
+                "União Estadual dos Estudantes - UEESP"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - UNIVERSITÁRIOS",
+            "titulares": [
+                {
+                    "nome": "Carina Vitral Costa",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Arthur Miranda",
+                    "genero": "M",
+                    "cargo_extra": "Comissão Eleitoral",
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato das Empresas de Transporte Coletivo Urbano de Passageiros de São Paulo – SP­ URBANUSS",
+            "aliases_orgao": [
+                "Sindicato das Empresas de Transporte Coletivo Urbano de Passageiros de São Paulo – SP­ URBANUSS"
+            ],
+            "cadeira_padronizada": "ÔNIBUS - EMPRESAS",
+            "titulares": [
+                {
+                    "nome": "Carlos Alberto Fernandes Rodrigues de Souza",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Wagner Palma Moreira",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Permissionárias do Sistema de Transporte Coletivo Urbano de Passageiros na Cidade de São Paulo",
+            "aliases_orgao": [
+                "Permissionárias do Sistema de Transporte Coletivo Urbano de Passageiros na Cidade de São Paulo"
+            ],
+            "cadeira_padronizada": "ÔNIBUS - PERMISSIONÁRIAS",
+            "titulares": [
+                {
+                    "nome": "Levi de Araújo",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Carlos Eugênio Pacheco",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - SETOR EMPRESARIAL",
+            "nome_orgao_exibicao": "Federação das Indústrias do Estado de São Paulo - FIESP",
+            "aliases_orgao": [
+                "Federação das Indústrias do Estado de São Paulo - FIESP"
+            ],
+            "cadeira_padronizada": "CONVIDADO - FIESP",
+            "titulares": [
+                {
+                    "nome": "Carolina Maria Lembo",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Comitê dos Santos Mártires",
+            "aliases_orgao": [
+                "Comitê dos Santos Mártires"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - OSC 2",
+            "titulares": [
+                {
+                    "nome": "Caroline Amanda Lopes Borges",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal do Verde e do Meio Ambiente – SVMA",
+            "aliases_orgao": [
+                "Secretaria Municipal do Verde e do Meio Ambiente – SVMA"
+            ],
+            "cadeira_padronizada": "MEIO AMBIENTE",
+            "titulares": [
+                {
+                    "nome": "José Eduardo de Mattos Canhadas",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Celso Buendia",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal de Finanças e Desenvolvimento Econômico – SF",
+            "aliases_orgao": [
+                "Secretaria Municipal de Finanças e Desenvolvimento Econômico – SF"
+            ],
+            "cadeira_padronizada": "FINANÇAS",
+            "titulares": [
+                {
+                    "nome": "Luis Felipe Vidal Arellano",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Chrystian Uski",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "São Paulo Transporte S/A – SPTrans - 1",
+            "aliases_orgao": [
+                "São Paulo Transporte S/A – SPTrans - 1"
+            ],
+            "cadeira_padronizada": "SPTRANS 1",
+            "titulares": [
+                {
+                    "nome": "Ciro Biderman",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "José Ferreira dos Santos – Zelão",
+                    "genero": "M",
+                    "cargo_extra": "Coordenação Executiva / Comissão Eleitoral",
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato das Empresas de Transporte de Passageiros por Fretamento e para Turismo de São Paulo e Região – TRANSFRETUR",
+            "aliases_orgao": [
+                "Sindicato das Empresas de Transporte de Passageiros por Fretamento e para Turismo de São Paulo e Região – TRANSFRETUR"
+            ],
+            "cadeira_padronizada": "FRETAMENTO - EMPRESAS",
+            "titulares": [
+                {
+                    "nome": "Claudinei Brogliato",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Jorge Miguel dos Santos",
+                    "genero": "M",
+                    "cargo_extra": "Coordenação Executiva / Comissão Eleitoral",
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Sindicato dos Metalúrgicos",
+            "aliases_orgao": [
+                "Sindicato dos Metalúrgicos"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SINDICATO 4",
+            "titulares": [
+                {
+                    "nome": "Cláudio Prado",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - PODER PÚBLICO",
+            "nome_orgao_exibicao": "Secretaria de Política para Mulheres",
+            "aliases_orgao": [
+                "Secretaria de Política para Mulheres"
+            ],
+            "cadeira_padronizada": "CONVIDADO - MULHERES",
+            "titulares": [
+                {
+                    "nome": "Denise Motta Dau",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato dos Motoristas e Trabalhadores em Transporte Rodoviário Urbano de São Paulo – SINDMOTORISTAS",
+            "aliases_orgao": [
+                "Sindicato dos Motoristas e Trabalhadores em Transporte Rodoviário Urbano de São Paulo – SINDMOTORISTAS"
+            ],
+            "cadeira_padronizada": "ÔNIBUS - EMPREGADOS",
+            "titulares": [
+                {
+                    "nome": "Marco Antonio Coutinho Silva",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                },
+                {
+                    "nome": "Nailton Francisco de Souza",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Domingos Dantas Pereira",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato dos Transportadores Autônomos de Escolares e das Microempresas de Transportes de Escolares do Estado de São Paulo – SIMETESP",
+            "aliases_orgao": [
+                "Sindicato dos Transportadores Autônomos de Escolares e das Microempresas de Transportes de Escolares do Estado de São Paulo – SIMETESP"
+            ],
+            "cadeira_padronizada": "ESCOLAR - AUTÔNOMOS",
+            "titulares": [
+                {
+                    "nome": "Maria de Lourdes Rodrigues – Lurdinha",
+                    "genero": "F",
+                    "cargo_extra": "Coordenação Executiva",
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Donay da Silva Jacinto Neto",
+                    "genero": "M",
+                    "cargo_extra": "Comissão Eleitoral",
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato dos Proprietários de Veículos Profissionais Autônomos que Trabalham no Transporte de Passageiros através de Lotação em São Paulo e Grande São Paulo – SINDLOTAÇÃO",
+            "aliases_orgao": [
+                "Sindicato dos Proprietários de Veículos Profissionais Autônomos que Trabalham no Transporte de Passageiros através de Lotação em São Paulo e Grande São Paulo – SINDLOTAÇÃO"
+            ],
+            "cadeira_padronizada": "ÔNIBUS - AUTÔNOMOS",
+            "titulares": [
+                {
+                    "nome": "Willanys da Silva Bezerra",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Edivaldo Nascimento Barboza",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Federação dos Usuários de Transporte Coletivos Rodoviários, Ferroviários, Hidroviários e Aéreos do Estado de São Paulo – FUSP",
+            "aliases_orgao": [
+                "Federação dos Usuários de Transporte Coletivos Rodoviários, Ferroviários, Hidroviários e Aéreos do Estado de São Paulo – FUSP"
+            ],
+            "cadeira_padronizada": "CONVIDADO TEMÁTICOS - FUSP",
+            "titulares": [
+                {
+                    "nome": "Engo Abner Saraiva Granjeiro",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Movimento Passe Livre",
+            "aliases_orgao": [
+                "Movimento Passe Livre"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - MOVIMENTOS SOCIAIS 1",
+            "titulares": [
+                {
+                    "nome": "Erica de Oliveira",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal de Planejamento, Orçamento e Gestão – SEMPLA",
+            "aliases_orgao": [
+                "Secretaria Municipal de Planejamento, Orçamento e Gestão – SEMPLA"
+            ],
+            "cadeira_padronizada": "PLANEJAMENTO E GESTÃO",
+            "titulares": [
+                {
+                    "nome": "Fábio Pereira",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Marcos Scarpi Costa",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Associação dos Ciclistas de SP",
+            "aliases_orgao": [
+                "Associação dos Ciclistas de SP"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - BICICLETA",
+            "titulares": [
+                {
+                    "nome": "Gabriel di Pierro",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - PODER PÚBLICO",
+            "nome_orgao_exibicao": "Coordenadoria da Juventude",
+            "aliases_orgao": [
+                "Coordenadoria da Juventude"
+            ],
+            "cadeira_padronizada": "CONVIDADO - JUVENTUDE",
+            "titulares": [
+                {
+                    "nome": "Gabriel Medina",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Coordenação de Políticas para Idosos, da Secretaria Municipal de Direitos Humanos e Cidadania – SMDHC",
+            "aliases_orgao": [
+                "Coordenação de Políticas para Idosos, da Secretaria Municipal de Direitos Humanos e Cidadania – SMDHC"
+            ],
+            "cadeira_padronizada": "IDOSOS",
+            "titulares": [
+                {
+                    "nome": "Guiomar Silva Lopes",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Gabriel Medina de Toledo",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal de Coordenação das Subprefeituras – SMSP",
+            "aliases_orgao": [
+                "Secretaria Municipal de Coordenação das Subprefeituras – SMSP"
+            ],
+            "cadeira_padronizada": "SUBPREFEITURAS",
+            "titulares": [
+                {
+                    "nome": "Odair Henrique Neto",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Geraldo Figueiredo de Almeida",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato dos Mensageiros, Motociclistas, Ciclistas e Mototaxistas de São Paulo –SINDIMOTOSP",
+            "aliases_orgao": [
+                "Sindicato dos Mensageiros, Motociclistas, Ciclistas e Mototaxistas de São Paulo –SINDIMOTOSP"
+            ],
+            "cadeira_padronizada": "MOTOFRETE - AUTÔNOMOS",
+            "titulares": [
+                {
+                    "nome": "Gilberto Almeida dos Santos",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Rodrigo Carlos Ferreira da Silva",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Sindicato dos Comerciários",
+            "aliases_orgao": [
+                "Sindicato dos Comerciários"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SINDICATO 3",
+            "titulares": [
+                {
+                    "nome": "Gilberto Almeida dos Santos",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Sindicato dos Taxistas Autônomos de São Paulo – SINDITAXI",
+            "aliases_orgao": [
+                "Sindicato dos Taxistas Autônomos de São Paulo – SINDITAXI"
+            ],
+            "cadeira_padronizada": "TÁXI - AUTÔNOMOS",
+            "titulares": [
+                {
+                    "nome": "Natalício Bezerra Silva",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Giovanni Romano",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Conselho Municipal de Política Urbana – CMPU",
+            "aliases_orgao": [
+                "Conselho Municipal de Política Urbana – CMPU"
+            ],
+            "cadeira_padronizada": "CMPU",
+            "titulares": [
+                {
+                    "nome": "Gustavo Partezani Rodrigues",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Ricardo Airut Pradas",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "União Municipal dos Estudantes Secundaristas - UMES",
+            "aliases_orgao": [
+                "União Municipal dos Estudantes Secundaristas - UMES"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SECUNDARISTAS",
+            "titulares": [
+                {
+                    "nome": "Henrique Hettwer",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Rede Nossa São Paulo",
+            "aliases_orgao": [
+                "Rede Nossa São Paulo"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - OSC 1",
+            "titulares": [
+                {
+                    "nome": "Mauricio Broinizi Pereira",
+                    "genero": "M",
+                    "cargo_extra": "Coordenação Executiva",
+                    "funcao_original": "TITULAR"
+                },
+                {
+                    "nome": "Victor Barau",
+                    "genero": "M",
+                    "cargo_extra": "Comissão Eleitoral",
+                    "funcao_original": ""
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Horácio Figueira",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal de Transportes – SMT",
+            "aliases_orgao": [
+                "Secretaria Municipal de Transportes – SMT"
+            ],
+            "cadeira_padronizada": "TRANSPORTE E MOBILIDADE",
+            "titulares": [
+                {
+                    "nome": "Jilmar Tatto",
+                    "genero": "M",
+                    "cargo_extra": "Presidente",
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "José Evaldo Gonçalo",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SECRETARIA EXECUTIVA",
+            "nome_orgao_exibicao": "Secretaria Executiva do CMTT",
+            "aliases_orgao": [
+                "Secretaria Executiva do CMTT"
+            ],
+            "cadeira_padronizada": "SECRETARIA EXECUTIVA",
+            "titulares": [
+                {
+                    "nome": "Josias Lech",
+                    "genero": "M",
+                    "cargo_extra": "Coordenação Executiva / Comissão Eleitoral",
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Sindicato dos Bancários",
+            "aliases_orgao": [
+                "Sindicato dos Bancários"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SINDICATO 1",
+            "titulares": [
+                {
+                    "nome": "Juvandia Moreira Leite",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Concessionárias do Sistema de Transporte Coletivo Urbano de Passageiros na Cidade de São Paulo",
+            "aliases_orgao": [
+                "Concessionárias do Sistema de Transporte Coletivo Urbano de Passageiros na Cidade de São Paulo"
+            ],
+            "cadeira_padronizada": "ÔNIBUS - CONCESSIONÁRIAS",
+            "titulares": [
+                {
+                    "nome": "Zania Maria Matias Gouveia",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Leandro da Silva Corrêa",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - SETOR EMPRESARIAL",
+            "nome_orgao_exibicao": "Associação para o Progresso de Empresas de Obras de Infraestrutura Social e Logística - APEOP",
+            "aliases_orgao": [
+                "Associação para o Progresso de Empresas de Obras de Infraestrutura Social e Logística - APEOP"
+            ],
+            "cadeira_padronizada": "CONVIDADO - APEOP",
+            "titulares": [
+                {
+                    "nome": "Luciano Amandio Filho",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Confederação Nacional das Associações de Moradores – CONAM",
+            "aliases_orgao": [
+                "Confederação Nacional das Associações de Moradores – CONAM"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - MOVIMENTOS SOCIAIS 3",
+            "titulares": [
+                {
+                    "nome": "Maria José da Silva",
+                    "genero": "F",
+                    "cargo_extra": "Coordenação Executiva",
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Maura Augusta Soares de Oliveira",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal dos Negócios Jurídicos – SNJ",
+            "aliases_orgao": [
+                "Secretaria Municipal dos Negócios Jurídicos – SNJ"
+            ],
+            "cadeira_padronizada": "JURÍDICO",
+            "titulares": [
+                {
+                    "nome": "Ricardo Martins Sartori",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Marianna Sampaio",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
+            "nome_orgao_exibicao": "Associação das Empresas de Táxi de Frota do Município de São Paulo – ADETAX",
+            "aliases_orgao": [
+                "Associação das Empresas de Táxi de Frota do Município de São Paulo – ADETAX"
+            ],
+            "cadeira_padronizada": "TÁXI - EMPRESAS",
+            "titulares": [
+                {
+                    "nome": "Ricardo Auriema",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Mauricio Alonso",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Sindicato dos Químicos",
+            "aliases_orgao": [
+                "Sindicato dos Químicos"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SINDICATO 5",
+            "titulares": [
+                {
+                    "nome": "Osvaldo da Silva Bezerra",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Sindicato dos Professores da Rede Estadual de SP – APEOESP",
+            "aliases_orgao": [
+                "Sindicato dos Professores da Rede Estadual de SP – APEOESP"
+            ],
+            "cadeira_padronizada": "CONVIDADO TEMÁTICOS - APEOESP",
+            "titulares": [
+                {
+                    "nome": "Roberto Guido Pereira",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Companhia de Engenharia de Tráfego – CET - 2",
+            "aliases_orgao": [
+                "Companhia de Engenharia de Tráfego – CET - 2"
+            ],
+            "cadeira_padronizada": "CET 2",
+            "titulares": [
+                {
+                    "nome": "Tadeu Leite",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "Ronaldo Tonobohn",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "União do Movimento de Moradia (UMM)",
+            "aliases_orgao": [
+                "União do Movimento de Moradia (UMM)"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - MOVIMENTOS SOCIAIS 2",
+            "titulares": [
+                {
+                    "nome": "Sidnei Pita",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "CONVIDADOS - PODER PÚBLICO",
+            "nome_orgao_exibicao": "Secretaria de Desenvolvimento Urbano",
+            "aliases_orgao": [
+                "Secretaria de Desenvolvimento Urbano"
+            ],
+            "cadeira_padronizada": "CONVIDADO - DESENVOLVIMENTO URBANO",
+            "titulares": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "CONVIDADOS - PODER PÚBLICO",
+            "nome_orgao_exibicao": "Secretaria Especial de Relações Governamentais",
+            "aliases_orgao": [
+                "Secretaria Especial de Relações Governamentais"
+            ],
+            "cadeira_padronizada": "CONVIDADO - RELAÇÕES GOVERNAMENTAIS",
+            "titulares": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "CONVIDADO"
+                }
+            ],
+            "suplentes": []
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL",
+            "nome_orgao_exibicao": "Sindicato dos Metroviários",
+            "aliases_orgao": [
+                "Sindicato dos Metroviários"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SINDICATO 2",
+            "titulares": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        }
+    ]
+}
