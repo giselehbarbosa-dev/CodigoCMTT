@@ -254,3 +254,5 @@ if termo and corpus_completo:
         )
     else:
         st.warning(f"∅ Nada encontrado para o termo '{termo}'.")
+
+        # forçando reinicio
