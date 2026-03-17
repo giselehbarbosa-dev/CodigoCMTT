@@ -13,8 +13,8 @@ graficos/
 
 # --- Exceções Seguras (O que o app precisa para rodar) ---
 # Aqui dizemos: "Ignore todos os Excel, MAS permita os dois abaixo!"
-!dados/base_dados/base_mandatos.xlsx
-!dados/base_dados/index_atas.xlsx
+!dados/base_dados/base_mandatosCMTT.xlsx
+!dados/base_dados/index_atasCMTT.xlsx
 
 # --- Segurança do Streamlit ---
 .streamlit/secrets.toml

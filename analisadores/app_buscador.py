@@ -13,8 +13,8 @@ sys.path.append(DIR_BASE)
 from extratores.gerenciador_io import ler_texto_pdf, carregar_index_atas
 
 CAMINHO_CACHE = os.path.join(DIR_BASE, 'dados', 'configs', '.cache_corpus_atas.json')
-CAMINHO_BASE_MANDATOS = os.path.join(DIR_BASE, 'dados', 'base_dados', 'base_mandatos.xlsx')
-CAMINHO_INDEX_EXCEL = os.path.join(DIR_BASE, 'dados', 'base_dados', 'index_atas.xlsx')
+CAMINHO_BASE_MANDATOS = os.path.join(DIR_BASE, 'dados', 'base_dados', 'base_mandatosCMTT.xlsx')
+CAMINHO_INDEX_EXCEL = os.path.join(DIR_BASE, 'dados', 'base_dados', 'index_atasCMTT.xlsx')
 
 # --- Configuração da Página ---
 st.set_page_config(page_title="BuscaCMTT", layout="wide", initial_sidebar_state="collapsed")
@@ -117,8 +117,8 @@ def carregar_corpus_memoria():
 def carregar_fontes_extras():
     extras = []
     fontes = {
-        "base_mandatos.xlsx": CAMINHO_BASE_MANDATOS,
-        "index_atas.xlsx": CAMINHO_INDEX_EXCEL
+        "base_mandatosCMTT.xlsx": CAMINHO_BASE_MANDATOS,
+        "index_atasCMTT.xlsx": CAMINHO_INDEX_EXCEL
     }
 
     for nome_arquivo, caminho in fontes.items():
