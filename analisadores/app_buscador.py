@@ -131,10 +131,10 @@ def carregar_fontes_extras():
                             "Linhas": linhas_df
                         })
                 os.remove(caminho_temp)
-            except Exception as e:
-                st.toast(f"⚠️ Erro ao ler {nome_arquivo}: {e}")
-        else:
-            st.toast(f"⚠️ Ficheiro não encontrado: {nome_arquivo}")
+                except Exception as e:
+                print(f"⚠️ Erro ao ler {nome_arquivo}: {e}")  # Trocamos st.toast por print
+            else:
+            print(f"⚠️ Ficheiro não encontrado: {nome_arquivo}")  # Trocamos st.toast por print
 
     return extras
 
