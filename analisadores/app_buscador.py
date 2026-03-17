@@ -239,31 +239,26 @@ if termo and corpus_completo:
 
 
         # Função inteligente que gera link de download embutido para PDF ou Excel
+        # Função nível Cloud: Cria links diretos para o GitHub (Zero consumo de memória)
         def linkar_fonte(fonte_str):
-            # Limpa o nome caso tenha a marcação "(Aba: Plan1)" do Excel
             nome_arquivo = fonte_str.split(" (Aba:")[0].strip()
 
-            caminho_arquivo = ""
-            mime_type = ""
-            icone = ""
+            # --- PREENCHA COM OS SEUS DADOS DO GITHUB ---
+            usuario = "giselehbarbosa-dev"
+            repo = "CodigoCMTT"
+            branch = "main"
 
             if nome_arquivo.endswith('.pdf'):
-                caminho_arquivo = os.path.join(DIR_BASE, "dados", "base_dados", "pdf_atas_pleno", nome_arquivo)
-                mime_type = "application/pdf"
-                icone = "📕"
+                # Cria o link direto para o PDF no GitHub
+                url = f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/pdf_atas_pleno/{nome_arquivo}"
+                return f'<a href="{url}" target="_blank" style="color: #1f77b4; text-decoration: none; font-weight: bold;">📕 {fonte_str}</a>'
+
             elif nome_arquivo.endswith('.xlsx'):
-                caminho_arquivo = os.path.join(DIR_BASE, "dados", "base_dados", nome_arquivo)
-                mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                icone = "📗"
-            else:
-                return fonte_str  # Retorna normal se não reconhecer
+                # Cria o link direto para a Planilha no GitHub
+                url = f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/{nome_arquivo}"
+                return f'<a href="{url}" target="_blank" style="color: #1f77b4; text-decoration: none; font-weight: bold;">📗 {fonte_str}</a>'
 
-            if os.path.exists(caminho_arquivo):
-                with open(caminho_arquivo, "rb") as f:
-                    b64 = base64.b64encode(f.read()).decode()
-                    return f'<a href="data:{mime_type};base64,{b64}" download="{nome_arquivo}" style="color: #1f77b4; text-decoration: none; font-weight: bold;">{icone} {fonte_str}</a>'
-
-            return f"⚠️ {fonte_str} (Arquivo não encontrado)"
+            return fonte_str  # Retorna normal se não reconhecer
 
 
         # Aplica a função de link na coluna Fonte
