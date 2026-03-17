@@ -18,6 +18,7 @@ CAMINHO_INDEX_EXCEL = os.path.join(DIR_BASE, 'dados', 'base_dados', 'index_atas.
 
 # --- Configuração da Página ---
 st.set_page_config(page_title="BuscaCMTT", layout="wide", initial_sidebar_state="collapsed")
+
 # --- Identidade Visual e Limpeza de UI ---
 esconder_estilo = """
     <style>
@@ -146,6 +147,9 @@ senha_admin = st.sidebar.text_input("Senha de Admin para Manutenção:", type="p
 if senha_admin == "cmtt2013":
     st.sidebar.warning("Modo Administrador Ativo")
     if st.sidebar.button("🔄 Reconstruir Cache (Geral)"):
+        # 👇 AQUI ESTÁ A MÁGICA: Limpa a memória teimosa do Streamlit antes de fazer qualquer coisa!
+        st.cache_data.clear()
+
         with st.spinner("Lendo PDFs e extraindo metadados..."):
             if construir_cache_novo():
                 st.sidebar.success("Cache atualizado!")
