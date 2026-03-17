@@ -54,7 +54,20 @@ O projeto foi desenhado sob o princípio de Separação de Responsabilidades (Se
 
 * **`relatorio_cadeiras.py`:** Gera a linha do tempo (Matriz) de presença, calcula a Taxa de Absenteísmo (%) e o Ranking de Rotatividade por cadeira.
 * **`relatorio_visitantes.py`:** Consolida as frequências de visitantes externos e históricos, criando o "Ranking de Lobby/Ativismo" (pessoas que foram a mais de 1 reunião).
-* **`app_buscador.py` (O Mini Google do CMTT):** Uma interface web interativa construída com `Streamlit`. Lê um cache JSON dos PDFs para garantir buscas ultra-rápidas. Permite buscas flexíveis (RegEx) simultâneas em todas as atas e gera relatórios de contexto para download. 
+* **`app_buscador.py` (O Mini Google do CMTT):** Interface web interativa construída com `Streamlit`.
+    * **Busca Inteligente:** Utiliza um cache JSON e processamento via RegEx para realizar buscas ultra-rápidas em todo o acervo histórico (PDFs e Planilhas) simultaneamente.
+    * **Visualização Responsiva:** Interface adaptada para Desktop e Mobile, exibindo contextos de busca em tabelas formatadas.
+    * **Download Híbrido:** Permite baixar o arquivo original (PDF ou Excel) clicando diretamente no nome da fonte (link dinâmico 📕/📗), além de exportar o relatório consolidado da busca em CSV. 
+
+---
+
+## ☁️ Arquitetura de Nuvem e Deploy
+
+O sistema foi otimizado para rodar no **Streamlit Community Cloud** utilizando uma estratégia de **Baixo Consumo de Recursos (Lightweight Deploy)**:
+
+* **Processamento Local (ETL):** A extração pesada de dados e geração de cache ocorre na máquina do administrador. Isso evita que o servidor na nuvem estoure o limite de memória RAM (1GB) ao tentar processar 90+ PDFs simultaneamente.
+* **Hospedagem de Ativos (GitHub Raw):** Os arquivos PDF e Excel não são carregados na memória do servidor do app. Em vez disso, o sistema gera links diretos para o conteúdo "Raw" do GitHub. 
+* **Performance:** Essa abordagem garante que o download seja processado pelos servidores do GitHub, deixando o App do CMTT livre apenas para a lógica de busca e interface, resultando em uma experiência rápida e sem travamentos ("Oh No" errors).
 
 ---
 
