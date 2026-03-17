@@ -5,11 +5,17 @@ import pdfplumber
 from datetime import datetime
 from extratores.config_filtros import converter_periodo_em_datas
 
-BASE_DIR = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo"
+# 1. O GPS MÁGICO (Descobre automaticamente a pasta raiz do projeto)
+# Como este arquivo está dentro da pasta 'extratores', mandamos ele voltar uma pasta para achar a raiz (Codigo)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# 2. Caminhos relativos e dinâmicos (Funcionam no PC, no Mac, no Linux e na Nuvem!)
 CAMINHO_CONFIGS = os.path.join(BASE_DIR, "dados", "configs")
 CAMINHO_INDEX_JSON = os.path.join(CAMINHO_CONFIGS, "index_atas.json")
-CAMINHO_PDFS_PADRAO = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\dados\base_dados\pdf_atas_pleno"
 
+# 3. Caminho dos PDFs acompanhando a sua organização de pastas
+# Assumindo que você colocou a pasta de PDFs dentro de dados/base_dados/ como mostrou na foto
+CAMINHO_PDFS_PADRAO = os.path.join(BASE_DIR, "dados", "base_dados", "pdf_atas_pleno")
 
 def verificar_pastas():
     if not os.path.exists(CAMINHO_CONFIGS):
