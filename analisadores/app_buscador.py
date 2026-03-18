@@ -238,44 +238,55 @@ if termo and corpus_completo:
         st.success(f"Encontradas {len(df_res)} ocorrências!")
 
 
-        # Função inteligente que gera link de download embutido para PDF ou Excel
-        # Função nível Cloud: Cria links diretos para o GitHub (Zero consumo de memória)
-        def linkar_fonte(fonte_str):
+        # Função para gerar a URL bruta
+        def gerar_url(fonte_str):
             nome_arquivo = fonte_str.split(" (Aba:")[0].strip()
-
-            # --- PREENCHA COM OS SEUS DADOS DO GITHUB ---
             usuario = "giselehbarbosa-dev"
             repo = "CodigoCMTT"
             branch = "main"
 
             if nome_arquivo.endswith('.pdf'):
-                # Cria o link direto para o PDF no GitHub
-                url = f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/pdf_atas_pleno/{nome_arquivo}"
-                return f'<a href="{url}" target="_blank" style="color: #1f77b4; text-decoration: none; font-weight: bold;">📕 {fonte_str}</a>'
-
+                return f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/pdf_atas_pleno/{nome_arquivo}"
             elif nome_arquivo.endswith('.xlsx'):
-                # Cria o link direto para a Planilha no GitHub
-                url = f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/{nome_arquivo}"
-                return f'<a href="{url}" target="_blank" style="color: #1f77b4; text-decoration: none; font-weight: bold;">📗 {fonte_str}</a>'
-
-            return fonte_str  # Retorna normal se não reconhecer
+                return f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/{nome_arquivo}"
+            return ""
 
 
-        # Aplica a função de link na coluna Fonte
-        df_res['Fonte'] = df_res['Fonte'].apply(linkar_fonte)
+        # --- A) PREPARANDO A TABELA PARA O CSV (Limpa e com coluna de Link) ---
+        df_csv = df_res.copy()
+        df_csv['Link Original'] = df_csv['Fonte'].apply(gerar_url)
+        # O df_csv já mantém a 'Fonte' limpa automaticamente, sem o HTML!
 
-        # Exibe a tabela renderizando o HTML do link e aplicando nosso CSS customizado
-        tabela_html = df_res.to_html(escape=False, index=False, classes="tabela-resultados")
+        # --- B) PREPARANDO A TABELA PARA A TELA (HTML Embutido) ---
+        df_tela = df_res.copy()
+
+
+        def aplicar_html(fonte_str):
+            url = gerar_url(fonte_str)
+            is_pdf = fonte_str.endswith('.pdf')
+            icone = "📕" if is_pdf else "📗"
+
+            if url:
+                return f'<a href="{url}" target="_blank" style="color: #1f77b4; text-decoration: none; font-weight: bold;">{icone} {fonte_str}</a>'
+            return fonte_str
+
+
+        df_tela['Fonte'] = df_tela['Fonte'].apply(aplicar_html)
+
+        # Exibe a tabela na tela renderizando o HTML
+        tabela_html = df_tela.to_html(escape=False, index=False, classes="tabela-resultados")
         st.write(tabela_html, unsafe_allow_html=True)
 
         st.write("---")
-        csv = df_res.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
+
+        # Botão de download usando o df_csv (Sem sujeira de HTML)
+        csv_bytes = df_csv.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
         data_hoje = pd.Timestamp.now().strftime("%Y-%m-%d")
         nome_arquivo_csv = f"busca_CMTT_{termo.replace(' ', '_')}_{data_hoje}.csv"
 
         st.download_button(
             label="📊 Baixar Tabela de Resultados (CSV)",
-            data=csv,
+            data=csv_bytes,
             file_name=nome_arquivo_csv,
             mime="text/csv",
             use_container_width=True
