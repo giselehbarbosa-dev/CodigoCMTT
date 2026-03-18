@@ -1,6 +1,8 @@
 🏛️ Projeto CMTT - Mineração e Análise de Dados (Fase 1)
 Documentação Oficial da Arquitetura de Extração de Identidades
 
+O CMTT Pipeline evoluiu para um modelo de Explainable AI (XAI). Em vez de uma caixa-preta de decisões, o sistema adota a estratégia de Alta Revogação (High Recall): ele busca todas as combinações possíveis de nomes para evitar perdas (falsos negativos), mas 'confessa' o que leu em uma coluna de auditoria, permitindo uma validação humana rápida e 100% segura.
+
 🎯 Objetivo da Fase 1
 Criar um pipeline automatizado e escalável capaz de ler atas em PDF do Conselho Municipal de Trânsito e Transporte (CMTT), extrair os nomes dos presentes, cruzar com a base oficial de conselheiros (titulares e suplentes) e classificar os participantes entre Oficiais, Históricos e Visitantes Externos, lidando com erros de digitação, lixo de chat e extração de texto sujo.
 Além disso, disponibilizar uma interface de busca flexível (App Web) para consulta rápida em todo o acervo histórico.
@@ -9,7 +11,7 @@ Além disso, disponibilizar uma interface de busca flexível (App Web) para cons
 Para garantir a reprodutibilidade do projeto em qualquer máquina, é necessário instalar as bibliotecas base e o modelo de linguagem do spaCy.
 
 **1. Instale as bibliotecas via terminal:**
-`pip install pandas numpy pdfplumber thefuzz spacy streamlit`
+`pip install pandas numpy pdfplumber thefuzz spacy streamlit tqdm`
 
 **2. Faça o download do modelo gramatical do spaCy (em português):**
 `python -m spacy download pt_core_news_sm`
@@ -44,10 +46,15 @@ O projeto foi desenhado sob o princípio de Separação de Responsabilidades (Se
     * Possui o "Exterminador em Loop" para decapitar preposições e títulos (Sr., Dra., Conselheira).
     * Usa Extração Inversa por Prefixos para barrar centenas de termos institucionais e lixos de chat sem bloquear nomes próprios.
     * Resolve a ambiguidade de nomes curtos (ex: "Rafael"), vasculhando os arquivos e criando a coluna `Nome_Associado` para diferenciar Conselheiros de Munícipes comuns.
-    * **Lógica Invertida (Anti-Fantasmas):** Exige que múltiplas partes do nome oficial sejam encontradas na ata para validar a presença, erradicando falsos positivos.
+    * Lógica Invertida (Anti-Fantasmas): Exige que múltiplas partes do nome oficial sejam encontradas na ata para validar a presença, erradicando falsos positivos.
+    * **Nova Lógica de Arrastão (N-Grams):** Agora utiliza a biblioteca itertools para gerar combinações automáticas de nomes (ex: Primeiro + Último). Isso garante que o sistema capture variações como "Ana de Paula" ou "Rita Paula", mesmo que o nome oficial seja "Ana Rita de Paula".
+
+Sistema de Confissão: A função de busca foi alterada para retornar não apenas o "match", mas o trecho bruto lido no PDF, alimentando a nova coluna de auditoria.
 
 * **6. `motor_extracao.py` (O "Maestro")**
   * O arquivo principal que orquestra todos os outros.
+  * Barra de Progresso: Implementação da tqdm para monitoramento visual do tempo de processamento das atas.
+  * Auditoria XAI: Agora injeta a coluna Nome_na_Ata no CSV oficial, permitindo conferência humana instantânea de falsos positivos.
   * **O que faz:** Roda o loop principal pelas atas, aplica táticas "Anti-Negrito" e "Anti-Anexos" na leitura, chama o matcher para separar as entidades e exporta o resultado, ordenando perfeitamente a lista alfabética e ignorando acentos. Aplica o **Bypass Ninja**: Lê o texto bruto linha a linha para curar a "cegueira" da IA em tabelas espremidas do PDF, garantindo a captura de 100% dos conselheiros presentes.
 
 ### 📁 Pasta: `analisadores/` (Interface e Relatórios)
@@ -74,10 +81,8 @@ O sistema foi otimizado para rodar no **Streamlit Community Cloud** utilizando u
 ## 💾 Produtos de Dados Gerados (Outputs)
 Ao rodar o `motor_extracao.py`, o sistema gera três bases de dados no formato CSV na pasta `dados/processados/` (prontas para Excel ou PowerBI):
 
-1. **`presenca_oficial.csv`:** Apenas conselheiros ativos no mandato da ata, com marcação binária (1 para presente, 0 para ausente).
-2. **`visitantes_historico.csv`:** Pessoas que já foram conselheiras em mandatos passados, mas continuam frequentando as reuniões atuais.
-3. **`visitantes_externos.csv`:** Munícipes, ativistas, representantes de OSCs e empresas. Classificados entre Visitantes Externos comuns, Possível Conselheiro e Possível Ex-Conselheiro (quando encontrados apenas com nome único).
-
+1. **`presenca_oficial.csv`:** Apenas conselheiros ativos no mandato da ata, com marcação binária (1 para presente, 0 para ausente). Inclui as colunas Periodo_Mandato (para facilitar gráficos temporais) e Nome_na_Ata para auditoria.
+2. **`visitantes_geral.csv`:** (One Big Table) - Unificação das antigas bases de históricos e externos. Centraliza todos os não-conselheiros daquela ata em um único arquivo, classificando-os via coluna Tipo_Visitante. Puxa automaticamente o histórico completo (Mandatos anteriores, Segmentos e Órgãos) de quem já passou pelo conselho.
 ---
 
 ## 🏃 Como Executar o Projeto
