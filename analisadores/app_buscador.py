@@ -38,7 +38,7 @@ esconder_estilo = """
         background-color: transparent !important;
     }
 
-    /* CSS para deixar a tabela de resultados com cara de sistema profissional */
+    /* CSS para a tabela de resultados com cara de sistema corporativo */
     .tabela-resultados { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 14px; }
     .tabela-resultados th { background-color: #f0f2f6; padding: 12px; text-align: left; border-bottom: 2px solid #ccc; color: #31333F; }
     .tabela-resultados td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; color: #31333F; }
@@ -153,7 +153,7 @@ senha_admin = st.sidebar.text_input("Senha de Admin para Manutenção:", type="p
 if senha_admin == "cmtt2013":
     st.sidebar.warning("Modo Administrador Ativo")
     if st.sidebar.button("🔄 Reconstruir Cache (Geral)"):
-        st.cache_data.clear()  # Limpa a memória do Streamlit
+        st.cache_data.clear()
         with st.spinner("Lendo PDFs e extraindo metadados..."):
             if construir_cache_novo():
                 st.sidebar.success("Cache atualizado!")
@@ -167,7 +167,6 @@ st.sidebar.markdown("---")
 
 # --- Área Principal ---
 
-# 1. O Retângulo Branco com os Logos (Comportamento Flexível e Responsivo para Mobile)
 caminho_logo_pref = os.path.join(DIR_BASE, 'dados', 'configs', 'logo_prefeitura.png')
 caminho_logo_cmtt = os.path.join(DIR_BASE, 'dados', 'configs', 'logo_cmtt.jpg')
 
@@ -201,7 +200,17 @@ with col_miolo:
     corpus_completo = carregar_corpus_memoria() + carregar_fontes_extras()
 
     if corpus_completo:
-        termo = st.text_input("Busca Oculta", label_visibility="collapsed")
+        termo = st.text_input("Busca Oculta", label_visibility="collapsed", placeholder="O que você procura?")
+
+        # --- Filtro de Ano ---
+        anos_unicos = sorted(list(set(str(doc.get("Data", "N/A")) for doc in corpus_completo)), reverse=True)
+        anos_selecionados = st.multiselect(
+            "📅 Filtrar por Ano (Opcional):",
+            options=anos_unicos,
+            default=[],
+            placeholder="Selecione um ou mais anos (deixe vazio para buscar em todo o acervo)"
+        )
+
         st.markdown(
             "<p style='text-align: center; color: #6c757d; font-size: 16px; margin-top: 12px;'>💡 Dica: Use termos entre aspas para buscas mais específicas ou apenas palavras-chave para busca flexível.</p>",
             unsafe_allow_html=True)
@@ -224,11 +233,17 @@ if termo and corpus_completo:
     resultados = []
 
     for doc in corpus_completo:
+        data_doc = str(doc.get("Data", "N/A"))
+
+        # Aplica o filtro de ano (pula se não estiver nos anos selecionados)
+        if anos_selecionados and data_doc not in anos_selecionados:
+            continue
+
         for linha in doc["Linhas"]:
             if regex.search(linha):
                 resultados.append({
                     "Fonte": doc.get("Fonte", "N/A"),
-                    "Data": doc.get("Data", "N/A"),
+                    "Data": data_doc,
                     "Reunião/Origem": doc.get("Reunião", "N/A"),
                     "Contexto": linha.strip()
                 })
@@ -255,7 +270,6 @@ if termo and corpus_completo:
         # --- A) PREPARANDO A TABELA PARA O CSV (Limpa e com coluna de Link) ---
         df_csv = df_res.copy()
         df_csv['Link Original'] = df_csv['Fonte'].apply(gerar_url)
-        # O df_csv já mantém a 'Fonte' limpa automaticamente, sem o HTML!
 
         # --- B) PREPARANDO A TABELA PARA A TELA (HTML Embutido) ---
         df_tela = df_res.copy()
