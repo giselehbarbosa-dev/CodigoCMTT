@@ -2,6 +2,7 @@ import re
 import difflib
 import unicodedata
 import spacy
+import itertools
 from thefuzz import fuzz
 from config_filtros import normalizar, contem_lixo_visual, MESES_PT
 
@@ -181,22 +182,38 @@ def get_single_word_match(word, lista_oficiais, mapa_historico):
 
 
 def linha_contem_oficial(linha_pdf, nome_oficial):
-    if nome_oficial == "VAGO": return False
+    if nome_oficial == "VAGO": return False, ""
+
     linha_norm = normalizar_fonetica(linha_pdf)
     off_norm = normalizar_fonetica(nome_oficial)
-    linha_tokens = linha_norm.split()
-    off_tokens = off_norm.split()
-    matches = 0
-    valid_off_tokens = [ot for ot in off_tokens if len(ot) > 2]
-    if not valid_off_tokens: return False
+    ignore_tokens = {"de", "da", "do", "das", "dos", "e"}
 
-    for ot in valid_off_tokens:
-        best_score = max([difflib.SequenceMatcher(None, ot, lt).ratio() * 100 for lt in linha_tokens] + [0])
-        if best_score >= 80: matches += 1
+    linha_tokens = [t for t in linha_norm.split() if t not in ignore_tokens]
+    off_tokens = [t for t in off_norm.split() if t not in ignore_tokens and len(t) > 2]
 
-    if matches >= 2 and matches >= (len(valid_off_tokens) - 1):
-        return True
-    return False
+    if not off_tokens: return False, ""
+    total_validos = len(off_tokens)
+
+    def verificar_bloco_exato(bloco_tokens):
+        matches = 0
+        for bt in bloco_tokens:
+            best_score = max([fuzz.ratio(bt, lt) for lt in linha_tokens] + [0])
+            if best_score >= 80: matches += 1
+        return matches == len(bloco_tokens)
+
+    # 1. Nomes curtos (Ex: Cristiane Santos) -> Exige 100% para não alucinar com sobrenomes soltos
+    if total_validos <= 2:
+        if verificar_bloco_exato(off_tokens):
+            return True, linha_pdf.strip()
+
+    # 2. O ARRASTÃO: Testa todas as combinações possíveis de 2 ou mais nomes
+    else:
+        for tamanho in range(total_validos, 1, -1):
+            for combinacao in itertools.combinations(off_tokens, tamanho):
+                if verificar_bloco_exato(list(combinacao)):
+                    return True, linha_pdf.strip()
+
+    return False, ""
 
 
 def is_same_person(cand_bruto, off_bruto):

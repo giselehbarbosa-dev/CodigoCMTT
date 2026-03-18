@@ -2,13 +2,15 @@ import pandas as pd
 import os
 import numpy as np
 
-BASE_DIR = r"/"
-CAMINHO_CSV = os.path.join(BASE_DIR, "analisadores/dados", "processados", "presenca_oficial.csv")
-CAMINHO_RELATORIOS = os.path.join(BASE_DIR, "../relatorios")
+# IMPORTA O MESMO BASE_DIR DO MOTOR (Fonte Única da Verdade!)
+from extratores.gerenciador_io import BASE_DIR
+
+# Agora os caminhos ficam iguaizinhos aos do motor de extração:
+CAMINHO_CSV = os.path.join(BASE_DIR, "dados", "processados", "presenca_oficial.csv")
+CAMINHO_RELATORIOS = os.path.join(BASE_DIR, "relatorios")
 
 if not os.path.exists(CAMINHO_RELATORIOS):
     os.makedirs(CAMINHO_RELATORIOS)
-
 
 def gerar_relatorio_cadeiras():
     print(f"📊 Lendo dados oficiais de: {CAMINHO_CSV}")
@@ -17,13 +19,15 @@ def gerar_relatorio_cadeiras():
         print("❌ Arquivo não encontrado! Rode o 'motor_extracao.py' primeiro.")
         return
 
-    df = pd.read_csv(CAMINHO_CSV, sep=';')
+    # Lê o CSV garantindo a codificação correta
+    df = pd.read_csv(CAMINHO_CSV, sep=';', encoding='utf-8-sig')
 
-    # BLINDAGEM: Garante que o Pandas lê a data corretamente (Ano-Mês-Dia ou Dia/Mês/Ano)
+    # BLINDAGEM: Garante que o Pandas lê a data corretamente
     df['Data'] = pd.to_datetime(df['Data'], errors='coerce')
-    df = df.dropna(subset=['Data'])  # Remove eventuais linhas com erro na data
+    df = df.dropna(subset=['Data'])
 
     print("⏳ Gerando Matriz Histórica Consolidada...")
+    # Agrupa pegando o valor MÁXIMO de presença (Se titular ou suplente foi, a cadeira ganha 1)
     df_cadeira = df.groupby(['Data', 'Reuniao', 'Segmento', 'Cadeira'])['Presente'].max().reset_index()
 
     datas_unicas = sorted(df_cadeira['Data'].unique())
@@ -70,8 +74,7 @@ def gerar_relatorio_cadeiras():
         matriz_final.to_excel(writer, sheet_name="Matriz e Absenteismo", index=False)
         rotatividade.to_excel(writer, sheet_name="Rotatividade de Nomes", index=False)
 
-    print(f"✅ RELATÓRIO PRONTO! Salvo em: {arquivo_saida}")
-
+    print(f"✅ RELATÓRIO DE CADEIRAS PRONTO! Salvo em: {arquivo_saida}")
 
 if __name__ == "__main__":
     gerar_relatorio_cadeiras()

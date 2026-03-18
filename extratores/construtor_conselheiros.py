@@ -3,7 +3,7 @@ import json
 import os
 
 BASE_DIR = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo"
-CAMINHO_EXCEL = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo\dados\base_dados\base_mandatos.xlsx"
+CAMINHO_EXCEL = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo\dados\base_dados\base_mandatosCMTT.xlsx"
 PASTA_SAIDA = os.path.join(BASE_DIR, "dados", "configs")
 
 COL_FUNCAO, COL_SEGMENTO, COL_ORGAO = "FUNÇÃO", "SEGMENTO", "ÓRGÃO"

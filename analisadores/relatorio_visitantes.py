@@ -1,57 +1,65 @@
 import pandas as pd
 import os
 
-BASE_DIR = r"/"
-CAMINHO_HISTORICO = os.path.join(BASE_DIR, "analisadores/dados", "processados", "visitantes_historico.csv")
-CAMINHO_EXTERNOS = os.path.join(BASE_DIR, "analisadores/dados", "processados", "visitantes_externos.csv")
-CAMINHO_RELATORIOS = os.path.join(BASE_DIR, "../relatorios")
+# IMPORTA O MESMO BASE_DIR DO MOTOR
+from extratores.gerenciador_io import BASE_DIR
 
-if not os.path.exists(CAMINHO_RELATORIOS): os.makedirs(CAMINHO_RELATORIOS)
+CAMINHO_GERAL = os.path.join(BASE_DIR, "dados", "processados", "visitantes_geral.csv")
+CAMINHO_RELATORIOS = os.path.join(BASE_DIR, "relatorios")
 
-
-def ler_arquivo(caminho):
-    if not os.path.exists(caminho): return pd.DataFrame()
-    return pd.read_csv(caminho, sep=';')
-
+if not os.path.exists(CAMINHO_RELATORIOS):
+    os.makedirs(CAMINHO_RELATORIOS)
 
 def gerar_relatorio_visitantes():
-    print("📊 Gerando Relatórios de Visitantes...")
+    print(f"📊 Lendo dados unificados de visitantes de: {CAMINHO_GERAL}")
 
-    df_hist = ler_arquivo(CAMINHO_HISTORICO)
-    df_ext = ler_arquivo(CAMINHO_EXTERNOS)
+    if not os.path.exists(CAMINHO_GERAL):
+        print("❌ Arquivo unificado não encontrado! Rode o 'motor_extracao.py' primeiro.")
+        return
+
+    # Lê o arquivo OBT (One Big Table)
+    df_visitantes = pd.read_csv(CAMINHO_GERAL, sep=';', encoding='utf-8-sig')
+
+    if df_visitantes.empty:
+        print("⚠️ O arquivo de visitantes está vazio.")
+        return
+
+    df_visitantes['Data'] = pd.to_datetime(df_visitantes['Data'], errors='coerce').dt.strftime('%d/%m/%Y')
+
+    # SEPARANDO OS PÚBLICOS USANDO A COLUNA 'Tipo_Visitante'
+    mask_ex_conselheiros = df_visitantes['Tipo_Visitante'].str.contains('Ex-Conselheiro', na=False, case=False)
+    df_ex = df_visitantes[mask_ex_conselheiros].copy()
+    df_ext_comuns = df_visitantes[~mask_ex_conselheiros].copy()
 
     arquivo_saida = os.path.join(CAMINHO_RELATORIOS, "Relatorio_Visitantes_Lobby.xlsx")
 
     with pd.ExcelWriter(arquivo_saida) as writer:
 
-        if not df_hist.empty:
-            df_hist['Data'] = pd.to_datetime(df_hist['Data'], errors='coerce').dt.strftime('%d/%m/%Y')
-            rank_hist = df_hist['Nome_Original'].value_counts().reset_index()
-            rank_hist.columns = ['Ex-Conselheiro', 'Frequência Pós-Mandato']
+        # 1. ABA DE TODOS OS VISITANTES (A Base Completa)
+        df_visitantes.to_excel(writer, sheet_name="Todos_os_Visitantes", index=False)
 
-            df_hist.to_excel(writer, sheet_name="Histórico_Detalhado", index=False)
-            rank_hist.to_excel(writer, sheet_name="Ranking_Historico", index=False)
+        # 2. RANKING DE EX-CONSELHEIROS
+        if not df_ex.empty:
+            rank_ex = df_ex.groupby(
+                ['Nome_Oficial_Associado', 'Tipo_Visitante', 'Periodo_Mandato', 'Segmento_Anterior']
+            ).size().reset_index(name='Total_Presencas_Pos_Mandato')
 
-        if not df_ext.empty:
-            df_ext['Data'] = pd.to_datetime(df_ext['Data'], errors='coerce').dt.strftime('%d/%m/%Y')
+            rank_ex = rank_ex.sort_values(by='Total_Presencas_Pos_Mandato', ascending=False)
+            rank_ex.to_excel(writer, sheet_name="Ranking_Ex_Conselheiros", index=False)
 
-            # PREPARAÇÃO PARA O NOVO AGRUPAMENTO
-            # Preenche os "NaN" com espaço vazio para o groupby não apagar os visitantes comuns
-            if 'Nome_Associado' in df_ext.columns:
-                df_ext['Nome_Associado'] = df_ext['Nome_Associado'].fillna("")
-                rank_ext = df_ext.groupby(['Nome', 'Tipo', 'Nome_Associado']).size().reset_index(name='Total Presenças')
-            else:
-                # Fallback caso a coluna ainda não exista
-                rank_ext = df_ext.groupby(['Nome', 'Tipo']).size().reset_index(name='Total Presenças')
+        # 3. RANKING DE VISITANTES COMUNS (O Filtro do Lobby)
+        if not df_ext_comuns.empty:
+            df_ext_comuns['Nome_Oficial_Associado'] = df_ext_comuns['Nome_Oficial_Associado'].fillna("")
 
-            # Ordena do maior para o menor número de presenças
-            rank_ext = rank_ext.sort_values(by='Total Presenças', ascending=False)
+            rank_comum = df_ext_comuns.groupby(
+                ['Nome_na_Ata', 'Tipo_Visitante', 'Nome_Oficial_Associado']
+            ).size().reset_index(name='Total_Presencas')
 
-            # Pessoas que foram mais de 1 vez (Filtra o lixo ocasional)
-            rank_ext_limpo = rank_ext[rank_ext['Total Presenças'] > 1]
+            rank_comum = rank_comum.sort_values(by='Total_Presencas', ascending=False)
 
-            df_ext.to_excel(writer, sheet_name="Externos_Detalhado", index=False)
-            rank_ext_limpo.to_excel(writer, sheet_name="Ranking_Externos_Lobby", index=False)
+            # Limpa o ruído: mostra só quem foi mais de 1 vez
+            rank_comum_limpo = rank_comum[rank_comum['Total_Presencas'] > 1]
+            rank_comum_limpo.to_excel(writer, sheet_name="Ranking_Visitantes_Comuns", index=False)
 
     print(f"✅ RELATÓRIO DE VISITANTES PRONTO! Salvo em: {arquivo_saida}")
 

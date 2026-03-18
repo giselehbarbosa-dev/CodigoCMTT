@@ -5,11 +5,11 @@ from datetime import datetime
 from tqdm import tqdm
 
 # IMPORTAÇÕES DOS SEUS MÓDULOS
-from gerenciador_io import (
+from extratores.gerenciador_io import (
     BASE_DIR, carregar_index_atas, carregar_bases_mandatos, ler_texto_pdf, verificar_pastas
 )
-from config_filtros import normalizar, MESES_PT
-from ferramentas_matcher import (
+from extratores.config_filtros import normalizar, MESES_PT
+from extratores.ferramentas_matcher import (
     linha_contem_oficial, is_same_person, criar_mapa_historico, minerar_visitantes
 )
 
@@ -31,9 +31,6 @@ def limpar_para_ordem(texto):
 
 
 def agregar_metadados(nome_oficial, mapa_historico):
-    """
-    Busca no mapa histórico todos os mandatos da pessoa e concatena (Opção A).
-    """
     if not nome_oficial:
         return {"Periodo_Mandato": "", "Segmento": "", "Orgao": "", "Cadeira": "", "Funcao": "", "Genero": ""}
 
@@ -61,7 +58,7 @@ def agregar_metadados(nome_oficial, mapa_historico):
 
 
 def main():
-    print("🛡️ MOTOR DE EXTRAÇÃO V88 (OBT - HISTÓRICO CONCATENADO) 🛡️")
+    print("🛡️ MOTOR DE EXTRAÇÃO V90 (ARRASTÃO + AUDITORIA + MANDATO NO OFICIAL) 🛡️")
 
     if not verificar_pastas(): return
 
@@ -120,11 +117,15 @@ def main():
                     if not nome or nome == "VAGO": continue
 
                     conselheiros_nomes_norm.append(nome)
+
                     esta_presente = False
+                    trecho_encontrado = ""
 
                     for linha in linhas_norm_uteis:
-                        if linha_contem_oficial(linha, nome):
+                        achou, trecho = linha_contem_oficial(linha, nome)
+                        if achou:
                             esta_presente = True
+                            trecho_encontrado = trecho
                             break
 
                     if esta_presente: presentes_nesta_ata.add(nome)
@@ -134,10 +135,12 @@ def main():
                         "Data": data_reuniao,
                         "Local": local_reuniao,
                         "Arquivo": pdf_nome,
+                        "Periodo_Mandato": periodo_str,  # <--- AQUI ESTÁ A SUA NOVA COLUNA!
                         "Segmento": cadeira["segmento"],
                         "Orgao": nome_orgao,
                         "Cadeira": cadeira["cadeira_padronizada"],
                         "Nome": nome,
+                        "Nome_na_Ata": trecho_encontrado,
                         "Tipo": tipo,
                         "Presente": 1 if esta_presente else 0,
                         "Genero": membro.get("genero"),
@@ -148,9 +151,6 @@ def main():
             linhas_originais, conselheiros_nomes_norm, mapa_historico, periodo_str, presentes_nesta_ata
         )
 
-        # =========================================================
-        # FUSÃO INTELIGENTE: Remove duplicados na mesma ata e agrega
-        # =========================================================
         visitantes_unicos_ata = {}
 
         for r in regs_hist:
@@ -179,7 +179,6 @@ def main():
                     "Nome_Oficial_Associado": r.get("Nome_Associado", "")
                 }
 
-        # Enriquecer os visitantes com os dados agregados do mapa histórico
         for vis in visitantes_unicos_ata.values():
             metadados = agregar_metadados(vis["Nome_Oficial_Associado"], mapa_historico)
             vis.update(metadados)
@@ -190,11 +189,16 @@ def main():
     if dados_oficiais:
         df_oficial = pd.DataFrame(dados_oficiais)
         df_oficial = df_oficial.drop_duplicates(subset=["Arquivo", "Nome", "Cadeira"])
+        # Reorganizando as colunas para a Periodo_Mandato ficar logo após o Arquivo
+        colunas_ordem = ["Reuniao", "Data", "Local", "Arquivo", "Periodo_Mandato", "Segmento", "Orgao", "Cadeira",
+                         "Nome", "Nome_na_Ata", "Tipo", "Presente", "Genero", "Cargo_Extra"]
+        df_oficial = df_oficial[colunas_ordem]
+
         df_oficial.to_csv(
             os.path.join(CAMINHO_SAIDA_DADOS, "presenca_oficial.csv"),
             index=False, sep=';', encoding='utf-8-sig'
         )
-        print("✅ presenca_oficial.csv gerado.")
+        print("✅ presenca_oficial.csv gerado (com Coluna de Auditoria e Período do Mandato!).")
 
     if dados_visitantes_geral:
         df_visitantes = pd.DataFrame(dados_visitantes_geral)
@@ -202,12 +206,6 @@ def main():
         df_visitantes.to_csv(os.path.join(CAMINHO_SAIDA_DADOS, "visitantes_geral.csv"), index=False, sep=';',
                              encoding='utf-8-sig')
         print("✅ visitantes_geral.csv gerado com históricos agregados!")
-
-    # Apaga os ficheiros antigos para evitar confusão
-    for old_file in ["visitantes_historico.csv", "visitantes_externos.csv"]:
-        old_path = os.path.join(CAMINHO_SAIDA_DADOS, old_file)
-        if os.path.exists(old_path):
-            os.remove(old_path)
 
 
 if __name__ == "__main__":
