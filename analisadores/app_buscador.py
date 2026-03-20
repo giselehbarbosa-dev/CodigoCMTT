@@ -38,7 +38,7 @@ esconder_estilo = """
         background-color: transparent !important;
     }
 
-    /* CSS para a tabela de resultados com cara de sistema corporativo */
+    /* CSS para a tabela de resultados corporativa */
     .tabela-resultados { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 14px; }
     .tabela-resultados th { background-color: #f0f2f6; padding: 12px; text-align: left; border-bottom: 2px solid #ccc; color: #31333F; }
     .tabela-resultados td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; color: #31333F; }
@@ -105,8 +105,14 @@ def construir_cache_novo():
     return True
 
 
+# --- NOVIDADE: O Olho de Hórus do Arquivo (Carimbos de Tempo) ---
+def get_carimbo_tempo(caminho):
+    """Lê a data/hora exata da última modificação do arquivo no sistema."""
+    return os.path.getmtime(caminho) if os.path.exists(caminho) else 0
+
+
 @st.cache_data(show_spinner=False)
-def carregar_corpus_memoria():
+def carregar_corpus_memoria(carimbo_cache):
     if os.path.exists(CAMINHO_CACHE):
         with open(CAMINHO_CACHE, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -114,7 +120,7 @@ def carregar_corpus_memoria():
 
 
 @st.cache_data(show_spinner=False)
-def carregar_fontes_extras():
+def carregar_fontes_extras(carimbo_mandatos, carimbo_index):
     extras = []
     fontes = {
         "base_mandatosCMTT.xlsx": CAMINHO_BASE_MANDATOS,
@@ -197,7 +203,14 @@ with col_miolo:
         "<h3 style='text-align: center; color: #2C3E50; margin-bottom: 25px;'>🔍 Digite para buscar nas bases do CMTT</h3>",
         unsafe_allow_html=True)
 
-    corpus_completo = carregar_corpus_memoria() + carregar_fontes_extras()
+    # --- A MÁGICA DOS CARIMBOS DE TEMPO AQUI ---
+    # Captura a hora exata em que os arquivos foram alterados pela última vez
+    carimbo_cache = get_carimbo_tempo(CAMINHO_CACHE)
+    carimbo_mandatos = get_carimbo_tempo(CAMINHO_BASE_MANDATOS)
+    carimbo_index = get_carimbo_tempo(CAMINHO_INDEX_EXCEL)
+
+    # O Streamlit agora compara a hora. Se for mais recente, ele lê tudo de novo sozinho!
+    corpus_completo = carregar_corpus_memoria(carimbo_cache) + carregar_fontes_extras(carimbo_mandatos, carimbo_index)
 
     if corpus_completo:
         termo = st.text_input("Busca Oculta", label_visibility="collapsed", placeholder="O que você procura?")
@@ -235,7 +248,7 @@ if termo and corpus_completo:
     for doc in corpus_completo:
         data_doc = str(doc.get("Data", "N/A"))
 
-        # Aplica o filtro de ano (pula se não estiver nos anos selecionados)
+        # Aplica o filtro de ano (pula o arquivo inteiro se o ano não estiver selecionado)
         if anos_selecionados and data_doc not in anos_selecionados:
             continue
 
@@ -253,7 +266,7 @@ if termo and corpus_completo:
         st.success(f"Encontradas {len(df_res)} ocorrências!")
 
 
-        # Função para gerar a URL bruta
+        # Função para gerar a URL bruta para o GitHub
         def gerar_url(fonte_str):
             nome_arquivo = fonte_str.split(" (Aba:")[0].strip()
             usuario = "giselehbarbosa-dev"
@@ -267,7 +280,7 @@ if termo and corpus_completo:
             return ""
 
 
-        # --- A) PREPARANDO A TABELA PARA O CSV (Limpa e com coluna de Link) ---
+        # --- A) PREPARANDO A TABELA PARA O CSV (Limpa e com coluna de Link Original) ---
         df_csv = df_res.copy()
         df_csv['Link Original'] = df_csv['Fonte'].apply(gerar_url)
 
@@ -287,13 +300,13 @@ if termo and corpus_completo:
 
         df_tela['Fonte'] = df_tela['Fonte'].apply(aplicar_html)
 
-        # Exibe a tabela na tela renderizando o HTML
+        # Exibe a tabela na tela renderizando o HTML sem quebrar o CSV depois
         tabela_html = df_tela.to_html(escape=False, index=False, classes="tabela-resultados")
         st.write(tabela_html, unsafe_allow_html=True)
 
         st.write("---")
 
-        # Botão de download usando o df_csv (Sem sujeira de HTML)
+        # Botão de download usando o df_csv (Limpíssimo para Excel)
         csv_bytes = df_csv.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
         data_hoje = pd.Timestamp.now().strftime("%Y-%m-%d")
         nome_arquivo_csv = f"busca_CMTT_{termo.replace(' ', '_')}_{data_hoje}.csv"
