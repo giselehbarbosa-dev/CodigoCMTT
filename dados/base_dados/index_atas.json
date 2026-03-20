@@ -1,0 +1,548 @@
+{
+    "01_2013_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "1ª Reunião Ordinária",
+        "data_correta": "02/08/2013",
+        "local": "Auditório da Biblioteca Mario de Andrade",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\01_2013_Pleno_ordin_ata.pdf"
+    },
+    "02_2013_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "2ª Reunião Ordinária",
+        "data_correta": "25/09/2013",
+        "local": "Praça das Artes - Av. São João, 281 - Centro – São Paulo.",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\02_2013_Pleno_ordin_ata.pdf"
+    },
+    "03_2013_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "3ª Reunião Ordinária",
+        "data_correta": "31/10/2013",
+        "local": "Ed. Matarazzo - Vd. do Chá - 7º andar - São Paulo.",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\03_2013_Pleno_ordin_ata.pdf"
+    },
+    "04_2013_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "4ª Reunião Ordinária",
+        "data_correta": "19/12/2013",
+        "local": "Museu dos Transportes Público Gaetano Ferolla",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\04_2013_Pleno_ordin_ata.pdf"
+    },
+    "05_2014_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "5ª Reunião Ordinária",
+        "data_correta": "15/01/2014",
+        "local": "Não informado",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\05_2014_Pleno_ordin_ata.pdf"
+    },
+    "06_2014_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "6ª Reunião Ordinária",
+        "data_correta": "26/03/2014",
+        "local": "Biblioteca Mário de Andrade – Rua da Consolação, 94 – Centro",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\06_2014_Pleno_ordin_ata.pdf"
+    },
+    "07_2014_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "7ª Reunião Ordinária",
+        "data_correta": "04/06/2014",
+        "local": "Rua Genebra, 25 – Centro",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\07_2014_Pleno_ordin_ata.pdf"
+    },
+    "08_2014_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "8ª Reunião Ordinária",
+        "data_correta": "30/07/2014",
+        "local": "Auditório da Biblioteca Mário de Andrade",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\08_2014_Pleno_ordin_ata.pdf"
+    },
+    "09_2014_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "9ª Reunião Ordinária",
+        "data_correta": "25/09/2014",
+        "local": "Rua da Consolação, 94 – Centro – Auditório da Biblioteca Mário de Andrade",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\09_2014_Pleno_ordin_ata.pdf"
+    },
+    "10_2014_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "10ª Reunião Ordinária",
+        "data_correta": "04/12/2014",
+        "local": "Conselho Regional e Contabilidade- CRC – Rua Rosa e Silva- 60",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\10_2014_Pleno_ordin_ata.pdf"
+    },
+    "11_2015_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "11ª Reunião Ordinária",
+        "data_correta": "24/02/2015",
+        "local": "Prefeitura Municipal de São Paulo - Viaduto do Chá - 7º andar",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\11_2015_Pleno_ordin_ata.pdf"
+    },
+    "12_2015_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "12ª Reunião Ordinária",
+        "data_correta": "16/04/2015",
+        "local": "Conselho Regional e Contabilidade- CRC – Rua Rosa e Silva- 60",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\12_2015_Pleno_ordin_ata.pdf"
+    },
+    "13_2015_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "13ª Reunião Ordinária",
+        "data_correta": "18/06/2015",
+        "local": "Conselho Regional e Contabilidade- CRC – Rua Rosa e Silva- 60",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\13_2015_Pleno_ordin_ata.pdf"
+    },
+    "14_2015_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "14ª Reunião Ordinária",
+        "data_correta": "20/08/2015",
+        "local": "Conselho Regional e Contabilidade- CRC – Rua Rosa e Silva- 60",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\14_2015_Pleno_ordin_ata.pdf"
+    },
+    "15_2015_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "15ª Reunião Ordinária",
+        "data_correta": "29/10/2015",
+        "local": "Conselho Regional e Contabilidade- CRC – Rua Rosa e Silva- 60",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\15_2015_Pleno_ordin_ata.pdf"
+    },
+    "16_2015_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "16ª Reunião Ordinária",
+        "data_correta": "18/12/2015",
+        "local": "Conselho Regional e Contabilidade- CRC – Rua Rosa e Silva- 60",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\16_2015_Pleno_ordin_ata.pdf"
+    },
+    "17_2016_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "17ª Reunião Ordinária",
+        "data_correta": "03/03/2016",
+        "local": "Biblioteca Mário de Andrade",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\17_2016_Pleno_ordin_ata.pdf"
+    },
+    "18_2016_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "18ª Reunião Ordinária",
+        "data_correta": "28/04/2016",
+        "local": "Museu do Transporte – Avenida Cruzeiro do Sul, 780 - Canindé.",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\18_2016_Pleno_ordin_ata.pdf"
+    },
+    "19_2016_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "19ª Reunião Ordinária",
+        "data_correta": "20/09/2016",
+        "local": "Auditório do Sindicato dos Engenheiros do Estado de São Paulo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\19_2016_Pleno_ordin_ata.pdf"
+    },
+    "extra_01_2016_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "23/11/2016",
+        "local": "Rua Barão de Itapetininga, 18 - 14º andar",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_01_2016_Pleno_ata.pdf"
+    },
+    "20_2016_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "20ª Reunião Ordinária",
+        "data_correta": "06/12/2016",
+        "local": "Auditório do Sindicato dos Engenheiros do Estado de São Paulo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\20_2016_Pleno_ordin_ata.pdf"
+    },
+    "21_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "21ª Reunião Ordinária",
+        "data_correta": "19/01/2017",
+        "local": "Auditório da Biblioteca Mário de Andrade",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\21_2017_Pleno_ordin_ata.pdf"
+    },
+    "22_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "22ª Reunião Ordinária",
+        "data_correta": "16/02/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de São Paulo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\22_2017_Pleno_ordin_ata.pdf"
+    },
+    "23_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "23ª Reunião Ordinária",
+        "data_correta": "27/04/2017",
+        "local": "Auditório do Conselho Regional de Contabilidade de São Paulo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\23_2017_Pleno_ordin_ata.pdf"
+    },
+    "24_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "24ª Reunião Ordinária",
+        "data_correta": "24/05/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\24_2017_Pleno_ordin_ata.pdf"
+    },
+    "25_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "25ª Reunião Ordinária",
+        "data_correta": "22/06/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de São Paulo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\25_2017_Pleno_ordin_ata.pdf"
+    },
+    "27_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "27ª Reunião Ordinária",
+        "data_correta": "17/08/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\27_2017_Pleno_ordin_ata.pdf"
+    },
+    "28_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "28ª Reunião Ordinária",
+        "data_correta": "28/09/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\28_2017_Pleno_ordin_ata.pdf"
+    },
+    "29_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "29ª Reunião Ordinária",
+        "data_correta": "31/10/2017",
+        "local": "Auditório da Prefeitura Regional Santana-Tucuruvi",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\29_2017_Pleno_ordin_ata.pdf"
+    },
+    "30_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "30ª Reunião Ordinária",
+        "data_correta": "23/11/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\30_2017_Pleno_ordin_ata.pdf"
+    },
+    "31_2017_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "31ª Reunião Ordinária",
+        "data_correta": "14/12/2017",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\31_2017_Pleno_ordin_ata.pdf"
+    },
+    "32_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "32ª Reunião Ordinária",
+        "data_correta": "31/01/2018",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\32_2018_Pleno_ordin_ata.pdf"
+    },
+    "33_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "33ª Reunião Ordinária",
+        "data_correta": "21/02/2018",
+        "local": "Prefeitura Regional de Santo Amaro",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\33_2018_Pleno_ordin_ata.pdf"
+    },
+    "34_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "34ª Reunião Ordinária",
+        "data_correta": "22/03/2018",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\34_2018_Pleno_ordin_ata.pdf"
+    },
+    "35_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "35ª Reunião Ordinária",
+        "data_correta": "19/04/2018",
+        "local": "Prefeitura Regional da Lapa",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\35_2018_Pleno_ordin_ata.pdf"
+    },
+    "36_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "36ª Reunião Ordinária",
+        "data_correta": "23/05/2018",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\36_2018_Pleno_ordin_ata.pdf"
+    },
+    "37_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "37ª Reunião Ordinária",
+        "data_correta": "20/06/2018",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\37_2018_Pleno_ordin_ata.pdf"
+    },
+    "38_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "38ª Reunião Ordinária",
+        "data_correta": "19/07/2018",
+        "local": "Auditório do Centro de Pesquisa e Educação em Mobilidade – CEMOB | Rua Vilela, 579",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\38_2018_Pleno_ordin_ata.pdf"
+    },
+    "39_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "39ª Reunião Ordinária",
+        "data_correta": "23/08/2018",
+        "local": "Auditório do Centro de Pesquisa e Educação em Mobilidade – CEMOB | Rua Vilela, 579",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\39_2018_Pleno_ordin_ata.pdf"
+    },
+    "40_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "40ª Reunião Ordinária",
+        "data_correta": "19/09/2018",
+        "local": "Auditório do Sindicato dos Engenheiros no Estado de SP",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\40_2018_Pleno_ordin_ata.pdf"
+    },
+    "41_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "41ª Reunião Ordinária",
+        "data_correta": "17/10/2018",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo *",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\41_2018_Pleno_ordin_ata.pdf"
+    },
+    "42_2018_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "42ª Reunião Ordinária",
+        "data_correta": "04/12/2018",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo *",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\42_2018_Pleno_ordin_ata.pdf"
+    },
+    "43_2019_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "43ª Reunião Ordinária",
+        "data_correta": "21/02/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\43_2019_Pleno_ordin_ata.pdf"
+    },
+    "44_2019_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "44ª Reunião Ordinária",
+        "data_correta": "25/04/2019",
+        "local": "Sindicato dos Engenheiros – Rua Genebra, 25",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\44_2019_Pleno_ordin_ata.pdf"
+    },
+    "tecni_01_2019_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Técnica Ordinária",
+        "data_correta": "23/05/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo*",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\tecni_01_2019_Pleno_ata.pdf"
+    },
+    "extra_02_2019_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "10/06/2019",
+        "local": "Auditório Sindicato dos Engenheiros no Estado de SP – Rua Genebra, 25.",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_02_2019_Pleno_ata.pdf"
+    },
+    "45_2019_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "45ª Reunião Ordinária",
+        "data_correta": "18/06/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\45_2019_Pleno_ordin_ata.pdf"
+    },
+    "46_2019_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "46ª Reunião Ordinária",
+        "data_correta": "22/08/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\46_2019_Pleno_ordin_ata.pdf"
+    },
+    "47_2019_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "47ª Reunião Ordinária",
+        "data_correta": "23/10/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\47_2019_Pleno_ordin_ata.pdf"
+    },
+    "48_2019_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "48ª Reunião Ordinária",
+        "data_correta": "13/12/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\48_2019_Pleno_ordin_ata.pdf"
+    },
+    "extra_03_2019_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "19/12/2019",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_03_2019_Pleno_ata.pdf"
+    },
+    "49_2020_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "49ª Reunião Ordinária",
+        "data_correta": "18/02/2020",
+        "local": "Rua Barão de Itapetininga, 18 – Térreo",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\49_2020_Pleno_ordin_ata.pdf"
+    },
+    "50_2020_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "50ª Reunião Ordinária",
+        "data_correta": "09/06/2020",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\50_2020_Pleno_ordin_ata.pdf"
+    },
+    "extra_04_2020_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "30/06/2020",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_04_2020_Pleno_ata.pdf"
+    },
+    "51_2020_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "51ª Reunião Ordinária",
+        "data_correta": "21/07/2020",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\51_2020_Pleno_ordin_ata.pdf"
+    },
+    "52_2020_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "52ª Reunião Ordinária",
+        "data_correta": "28/09/2020",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\52_2020_Pleno_ordin_ata.pdf"
+    },
+    "53_2020_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "53ª Reunião Ordinária",
+        "data_correta": "08/12/2020",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\53_2020_Pleno_ordin_ata.pdf"
+    },
+    "extra_05_2020_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "29/12/2020",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_05_2020_Pleno_ata.pdf"
+    },
+    "54_2021_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "54ª Reunião Ordinária",
+        "data_correta": "26/02/2021",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\54_2021_Pleno_ordin_ata.pdf"
+    },
+    "55_2021_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "55ª Reunião Ordinária",
+        "data_correta": "30/04/2021",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\55_2021_Pleno_ordin_ata.pdf"
+    },
+    "56_2021_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "56ª Reunião Ordinária",
+        "data_correta": "31/08/2021",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\56_2021_Pleno_ordin_ata.pdf"
+    },
+    "57_2021_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "57ª Reunião Ordinária",
+        "data_correta": "22/10/2021",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\57_2021_Pleno_ordin_ata.pdf"
+    },
+    "58_2021_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "58ª Reunião Ordinária",
+        "data_correta": "17/12/2021",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\58_2021_Pleno_ordin_ata.pdf"
+    },
+    "extra_06_2021_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "22/12/2021",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_06_2021_Pleno_ata.pdf"
+    },
+    "59_2022_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "59ª Reunião Ordinária",
+        "data_correta": "25/02/2022",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\59_2022_Pleno_ordin_ata.pdf"
+    },
+    "60_2022_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "60ª Reunião Ordinária",
+        "data_correta": "29/04/2022",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\60_2022_Pleno_ordin_ata.pdf"
+    },
+    "61_2022_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "61ª Reunião Ordinária",
+        "data_correta": "24/06/2022",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\61_2022_Pleno_ordin_ata.pdf"
+    },
+    "62_2022_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "62ª Reunião Ordinária",
+        "data_correta": "26/08/2022",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\62_2022_Pleno_ordin_ata.pdf"
+    },
+    "63_2022_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "63ª Reunião Ordinária",
+        "data_correta": "21/10/2022",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\63_2022_Pleno_ordin_ata.pdf"
+    },
+    "64_2022_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "64ª Reunião Ordinária",
+        "data_correta": "16/12/2022",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\64_2022_Pleno_ordin_ata.pdf"
+    },
+    "65_2023_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "65ª Reunião Ordinária",
+        "data_correta": "28/02/2023",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\65_2023_Pleno_ordin_ata.pdf"
+    },
+    "66_2023_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "66ª Reunião Ordinária",
+        "data_correta": "28/04/2023",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\66_2023_Pleno_ordin_ata.pdf"
+    },
+    "67_2023_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "67ª Reunião Ordinária",
+        "data_correta": "30/06/2023",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\67_2023_Pleno_ordin_ata.pdf"
+    },
+    "68_2023_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "68ª Reunião Ordinária",
+        "data_correta": "25/08/2023",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\68_2023_Pleno_ordin_ata.pdf"
+    },
+    "69_2023_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "69ª Reunião Ordinária",
+        "data_correta": "27/10/2023",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\69_2023_Pleno_ordin_ata.pdf"
+    },
+    "70_2023_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "70ª Reunião Ordinária",
+        "data_correta": "15/12/2023",
+        "local": "online",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\70_2023_Pleno_ordin_ata.pdf"
+    },
+    "71_2024_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "71ª Reunião Ordinária",
+        "data_correta": "01/03/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\71_2024_Pleno_ordin_ata.pdf"
+    },
+    "72_2024_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "72ª Reunião Ordinária",
+        "data_correta": "26/04/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\72_2024_Pleno_ordin_ata.pdf"
+    },
+    "73_2024_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "73ª Reunião Ordinária",
+        "data_correta": "28/06/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\73_2024_Pleno_ordin_ata.pdf"
+    },
+    "74_2024_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "74ª Reunião Ordinária",
+        "data_correta": "30/08/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\74_2024_Pleno_ordin_ata.pdf"
+    },
+    "75_2024_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "75ª Reunião Ordinária",
+        "data_correta": "01/11/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\75_2024_Pleno_ordin_ata.pdf"
+    },
+    "extra_07_2024_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "22/11/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_07_2024_Pleno_ata.pdf"
+    },
+    "76_2024_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "76ª Reunião Ordinária",
+        "data_correta": "13/12/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\76_2024_Pleno_ordin_ata.pdf"
+    },
+    "extra_08_2024_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "26/12/2024",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_08_2024_Pleno_ata.pdf"
+    },
+    "77_2025_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "77ª Reunião Ordinária",
+        "data_correta": "28/02/2025",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\77_2025_Pleno_ordin_ata.pdf"
+    },
+    "extra_09_2025_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "14/03/2025",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_09_2025_Pleno_ata.pdf"
+    },
+    "78_2025_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "78ª Reunião Ordinária",
+        "data_correta": "25/04/2025",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\78_2025_Pleno_ordin_ata.pdf"
+    },
+    "80_2025_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "80ª Reunião Ordinária",
+        "data_correta": "29/08/2025",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\80_2025_Pleno_ordin_ata.pdf"
+    },
+    "81_2025_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "81ª Reunião Ordinária",
+        "data_correta": "31/10/2025",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\81_2025_Pleno_ordin_ata.pdf"
+    },
+    "82_2025_Pleno_ordin_ata.pdf": {
+        "titulo_reuniao": "82ª Reunião Ordinária",
+        "data_correta": "19/12/2025",
+        "local": "Não informado",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\82_2025_Pleno_ordin_ata.pdf"
+    },
+    "extra_10_2026_Pleno_ata.pdf": {
+        "titulo_reuniao": "Reunião Extraordinária",
+        "data_correta": "02/01/2026",
+        "local": "Online – Plataforma Microsoft Teams",
+        "caminho_absoluto": "C:\\Users\\m124712\\OneDrive - rede.sp\\Documentos\\CMTT\\Codigo\\dados\\base_dados\\pdf_atas_pleno\\extra_10_2026_Pleno_ata.pdf"
+    }
+}

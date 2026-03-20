@@ -6,9 +6,9 @@ from datetime import datetime
 import unicodedata
 
 BASE_DIR = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo"
-CAMINHO_CONFIGS = os.path.join(BASE_DIR, "dados", "configs")
+CAMINHO_CONFIGS = os.path.join(BASE_DIR, "dados", "base_dados")
 CAMINHO_SAIDA_JSON = os.path.join(CAMINHO_CONFIGS, "index_atas.json")
-CAMINHO_ARQUIVO_EXCEL = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo\dados\base_dados\index_atas.xlsx"
+CAMINHO_ARQUIVO_EXCEL = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo\dados\base_dados\index_atasCMTT.xlsx"
 CAMINHO_PDFS = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo\dados\base_dados\pdf_atas_pleno"
 
 if not os.path.exists(CAMINHO_CONFIGS): os.makedirs(CAMINHO_CONFIGS)
