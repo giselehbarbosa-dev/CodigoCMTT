@@ -3,14 +3,15 @@ import pandas as pd
 import unicodedata
 from datetime import datetime
 from tqdm import tqdm
+from thefuzz import fuzz
 
-# IMPORTAÇÕES DOS SEUS MÓDULOS
 from extratores.gerenciador_io import (
     BASE_DIR, carregar_index_atas, carregar_bases_mandatos, ler_texto_pdf, verificar_pastas
 )
 from extratores.config_filtros import normalizar, MESES_PT
 from extratores.ferramentas_matcher import (
-    linha_contem_oficial, is_same_person, criar_mapa_historico, minerar_visitantes
+    linha_contem_oficial, is_same_person, criar_mapa_historico, minerar_visitantes,
+    normalizar_fonetica
 )
 
 CAMINHO_SAIDA_DADOS = os.path.join(BASE_DIR, "dados", "processados")
@@ -55,6 +56,45 @@ def agregar_metadados(nome_oficial, mapa_historico):
         "Funcao": unicos("Funcao"),
         "Genero": unicos("Genero")
     }
+
+def refinar_presencas_finais(dados_oficiais):
+    print("\n🕵️ Iniciando Auto-Auditoria para desempate de Falsos Positivos...")
+    df = pd.DataFrame(dados_oficiais)
+
+    # Isola apenas quem recebeu presença para analisar
+    df_presentes = df[df['Presente'] == 1]
+
+    # Agrupa por Arquivo e pelo Trecho exato da Ata lido
+    # Se uma linha tem mais de 1 pessoa, temos o "Efeito Família" (Ex: Osvaldo vs Natalício)
+    agrupamento = df_presentes.groupby(['Arquivo', 'Nome_na_Ata'])
+
+    falsos_positivos_removidos = 0
+
+    for (arquivo, trecho_ata), grupo in agrupamento:
+        if len(grupo) > 1:
+            scores = []
+            for index, row in grupo.iterrows():
+                nome_oficial = normalizar_fonetica(row['Nome'])
+                trecho_limpo = normalizar_fonetica(row['Nome_na_Ata'])
+
+                # Usa o token_set_ratio para ver qual nome tem mais aderência ao trecho
+                score = fuzz.token_set_ratio(nome_oficial, trecho_limpo)
+                scores.append((index, score))
+
+            # Descobre qual foi a maior pontuação matemática
+            max_score = max(scores, key=lambda x: x[1])[1]
+
+            # Rebaixa quem teve pontuação menor (Os impostores)
+            for index, score in scores:
+                if score < max_score:
+                    df.at[index, 'Presente'] = 0
+                    df.at[index, 'Nome_na_Ata'] = "FALSO POSITIVO (Descartado na Auditoria)"
+                    falsos_positivos_removidos += 1
+
+    if falsos_positivos_removidos > 0:
+        print(f"🧹 Limpeza concluída: {falsos_positivos_removidos} 'fantasmas' removidos por desempate fonético!")
+
+    return df.to_dict('records')  # Devolve a lista limpa para o Motor salvar
 
 
 def main():
@@ -114,28 +154,31 @@ def main():
                 for membro in lista:
                     nome = membro.get("nome", "")
 
-                    if not nome or nome == "VAGO": continue
-
-                    conselheiros_nomes_norm.append(nome)
+                    if not nome: continue  # Só pula se vier 100% vazio por erro
 
                     esta_presente = False
                     trecho_encontrado = ""
 
-                    for linha in linhas_norm_uteis:
-                        achou, trecho = linha_contem_oficial(linha, nome)
-                        if achou:
-                            esta_presente = True
-                            trecho_encontrado = trecho
-                            break
+                    # SE NÃO FOR VAGO, ELE TENTA ACHAR NO PDF
+                    if nome != "VAGO":
+                        conselheiros_nomes_norm.append(nome)
 
-                    if esta_presente: presentes_nesta_ata.add(nome)
+                        for linha in linhas_norm_uteis:
+                            achou, trecho = linha_contem_oficial(linha, nome)
+                            if achou:
+                                esta_presente = True
+                                trecho_encontrado = trecho
+                                break
 
+                        if esta_presente: presentes_nesta_ata.add(nome)
+
+                    # ADICIONA NO CSV OFICIAL (Mesmo se for VAGO, para garantir a cadeira no relatório!)
                     dados_oficiais.append({
                         "Reuniao": titulo_reuniao,
                         "Data": data_reuniao,
                         "Local": local_reuniao,
                         "Arquivo": pdf_nome,
-                        "Periodo_Mandato": periodo_str,  # <--- AQUI ESTÁ A SUA NOVA COLUNA!
+                        "Periodo_Mandato": periodo_str,
                         "Segmento": cadeira["segmento"],
                         "Orgao": nome_orgao,
                         "Cadeira": cadeira["cadeira_padronizada"],
@@ -187,9 +230,12 @@ def main():
     print("\n💾 Salvando arquivos CSV...")
 
     if dados_oficiais:
-        df_oficial = pd.DataFrame(dados_oficiais)
+        # A MÁGICA ACONTECE AQUI: Passamos a base pelo Juiz de Desempate!
+        dados_oficiais_limpos = refinar_presencas_finais(dados_oficiais)
+
+        df_oficial = pd.DataFrame(dados_oficiais_limpos)
         df_oficial = df_oficial.drop_duplicates(subset=["Arquivo", "Nome", "Cadeira"])
-        # Reorganizando as colunas para a Periodo_Mandato ficar logo após o Arquivo
+
         colunas_ordem = ["Reuniao", "Data", "Local", "Arquivo", "Periodo_Mandato", "Segmento", "Orgao", "Cadeira",
                          "Nome", "Nome_na_Ata", "Tipo", "Presente", "Genero", "Cargo_Extra"]
         df_oficial = df_oficial[colunas_ordem]
@@ -198,7 +244,7 @@ def main():
             os.path.join(CAMINHO_SAIDA_DADOS, "presenca_oficial.csv"),
             index=False, sep=';', encoding='utf-8-sig'
         )
-        print("✅ presenca_oficial.csv gerado (com Coluna de Auditoria e Período do Mandato!).")
+        print("✅ presenca_oficial.csv gerado (Auditado e Refinado!).")
 
     if dados_visitantes_geral:
         df_visitantes = pd.DataFrame(dados_visitantes_geral)

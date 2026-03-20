@@ -41,7 +41,8 @@ def gerar_relatorio_visitantes():
         # 2. RANKING DE EX-CONSELHEIROS
         if not df_ex.empty:
             rank_ex = df_ex.groupby(
-                ['Nome_Oficial_Associado', 'Tipo_Visitante', 'Periodo_Mandato', 'Segmento_Anterior']
+                # 👇 AQUI! Trocamos 'Segmento_Anterior' por 'Segmento'
+                ['Nome_Oficial_Associado', 'Tipo_Visitante', 'Periodo_Mandato', 'Segmento']
             ).size().reset_index(name='Total_Presencas_Pos_Mandato')
 
             rank_ex = rank_ex.sort_values(by='Total_Presencas_Pos_Mandato', ascending=False)
