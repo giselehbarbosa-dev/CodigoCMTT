@@ -7,14 +7,15 @@ import base64
 import pandas as pd
 import streamlit as st
 
-# --- Configuração de Caminhos ---
-DIR_BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(DIR_BASE)
-from extratores.gerenciador_io import ler_texto_pdf, carregar_index_atas
+# O Streamlit às vezes perde a raiz do projeto, então garantimos que ele ache a pasta 'core'
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from core import config_ambiente
+from core.gerenciador_io import ler_texto_pdf, carregar_index_atas
 
-CAMINHO_CACHE = os.path.join(DIR_BASE, 'dados', 'configs', '.cache_corpus_atas.json')
-CAMINHO_BASE_MANDATOS = os.path.join(DIR_BASE, 'dados', 'base_dados', 'base_mandatosCMTT.xlsx')
-CAMINHO_INDEX_EXCEL = os.path.join(DIR_BASE, 'dados', 'base_dados', 'index_atasCMTT.xlsx')
+CAMINHO_CACHE = config_ambiente.CAMINHO_CACHE_BUSCADOR
+CAMINHO_BASE_MANDATOS = config_ambiente.CAMINHO_EXCEL_MANDATOS
+CAMINHO_INDEX_EXCEL = config_ambiente.CAMINHO_EXCEL_INDEX
+DIR_BASE = config_ambiente.BASE_DIR
 
 # --- Configuração da Página ---
 st.set_page_config(page_title="BuscaCMTT", layout="wide", initial_sidebar_state="collapsed")
@@ -26,12 +27,12 @@ esconder_estilo = """
     footer {visibility: hidden;}
 
     /* CSS para deixar a barra de busca azul clara */
-    div[data-baseweb="input"] {
+    div[dados-baseweb="input"] {
         background-color: #e1effe !important;
         border: 1px solid #b3d7ff !important;
         border-radius: 8px !important;
     }
-    div[data-baseweb="input"] > div {
+    div[dados-baseweb="input"] > div {
         background-color: transparent !important;
     }
     input[type="text"] {
@@ -83,7 +84,7 @@ def construir_cache_novo():
 
             linhas = ler_texto_pdf(arquivo)
             if linhas:
-                data_doc = item.get('data') or item.get('Data') or "N/A"
+                data_doc = item.get('dados') or item.get('Data') or "N/A"
                 if data_doc == "N/A":
                     ano_match = re.search(r'20\d{2}', nome_arq)
                     data_doc = ano_match.group() if ano_match else "N/A"
@@ -107,7 +108,7 @@ def construir_cache_novo():
 
 # --- NOVIDADE: O Olho de Hórus do Arquivo (Carimbos de Tempo) ---
 def get_carimbo_tempo(caminho):
-    """Lê a data/hora exata da última modificação do arquivo no sistema."""
+    """Lê a dados/hora exata da última modificação do arquivo no sistema."""
     return os.path.getmtime(caminho) if os.path.exists(caminho) else 0
 
 
@@ -156,7 +157,7 @@ def carregar_fontes_extras(carimbo_mandatos, carimbo_index):
 st.sidebar.header("⚙️ Configurações")
 senha_admin = st.sidebar.text_input("Senha de Admin para Manutenção:", type="password")
 
-if senha_admin == "cmtt2013":
+if senha_admin == config_ambiente.SENHA_ADMIN:
     st.sidebar.warning("Modo Administrador Ativo")
     if st.sidebar.button("🔄 Reconstruir Cache (Geral)"):
         st.cache_data.clear()
@@ -173,25 +174,25 @@ st.sidebar.markdown("---")
 
 # --- Área Principal ---
 
-caminho_logo_pref = os.path.join(DIR_BASE, 'dados', 'configs', 'logo_prefeitura.png')
-caminho_logo_cmtt = os.path.join(DIR_BASE, 'dados', 'configs', 'logo_cmtt.jpg')
+caminho_logo1 = config_ambiente.CAMINHO_LOGO1
+caminho_logo2 = config_ambiente.CAMINHO_LOGO2
 
 try:
-    with open(caminho_logo_pref, "rb") as img1, open(caminho_logo_cmtt, "rb") as img2:
-        b64_pref = base64.b64encode(img1.read()).decode()
-        b64_cmtt = base64.b64encode(img2.read()).decode()
+    with open(caminho_logo1, "rb") as img1, open(caminho_logo2, "rb") as img2:
+        b64_logo1 = base64.b64encode(img1.read()).decode()
+        b64_logo2 = base64.b64encode(img2.read()).decode()
 
         html_cabecalho = f"""
         <div style="display: flex; justify-content: center; margin-bottom: 2rem; margin-top: 1rem;">
             <div style="background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; max-width: 95%;">
-                <img src="data:image/png;base64,{b64_pref}" style="height: 100px; width: auto; max-width: 100%; object-fit: contain;">
-                <img src="data:image/jpeg;base64,{b64_cmtt}" style="height: 70px; width: auto; max-width: 100%; object-fit: contain;">
+                <img src="data:image/png;base64,{b64_logo1}" style="height: 100px; width: auto; max-width: 100%; object-fit: contain;">
+                <img src="data:image/jpeg;base64,{b64_logo2}" style="height: 70px; width: auto; max-width: 100%; object-fit: contain;">
             </div>
         </div>
         """
         st.markdown(html_cabecalho, unsafe_allow_html=True)
 except Exception as e:
-    st.warning("⚠️ Não foi possível carregar os logos no cabeçalho. Verifique os nomes dos arquivos.")
+    st.warning("⚠️ Não foi possível carregar os logos no cabeçalho. Verifique os caminhos e arquivos.")
 
 st.write("---")
 
@@ -269,16 +270,16 @@ if termo and corpus_completo:
         # Função para gerar a URL bruta para o GitHub
         def gerar_url(fonte_str):
             nome_arquivo = fonte_str.split(" (Aba:")[0].strip()
-            usuario = "giselehbarbosa-dev"
-            repo = "CodigoCMTT"
-            branch = "main"
+            # Puxando dinamicamente do config_ambiente!
+            usuario = config_ambiente.GITHUB_USER
+            repo = config_ambiente.GITHUB_REPO
+            branch = config_ambiente.GITHUB_BRANCH
 
             if nome_arquivo.endswith('.pdf'):
                 return f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/pdf_atas_pleno/{nome_arquivo}"
             elif nome_arquivo.endswith('.xlsx'):
                 return f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/{nome_arquivo}"
             return ""
-
 
         # --- A) PREPARANDO A TABELA PARA O CSV (Limpa e com coluna de Link Original) ---
         df_csv = df_res.copy()

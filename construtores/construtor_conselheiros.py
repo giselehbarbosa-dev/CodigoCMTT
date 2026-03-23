@@ -1,10 +1,14 @@
 import pandas as pd
 import json
 import os
+import sys
 
-BASE_DIR = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo"
-CAMINHO_EXCEL = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo\dados\base_dados\base_mandatosCMTT.xlsx"
-PASTA_SAIDA = os.path.join(BASE_DIR, "dados", "configs")
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from core import config_ambiente
+
+CAMINHO_EXCEL = config_ambiente.CAMINHO_EXCEL_MANDATOS
+PASTA_SAIDA = config_ambiente.CAMINHO_CONFIGS
 
 COL_FUNCAO, COL_SEGMENTO, COL_ORGAO = "FUNÇÃO", "SEGMENTO", "ÓRGÃO"
 COL_PADRONIZADA, COL_NOME = "CADEIRA_PADRONIZADA", "NOME"

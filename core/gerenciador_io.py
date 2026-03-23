@@ -3,41 +3,32 @@ import re
 import json
 import pdfplumber
 from datetime import datetime
-from extratores.config_filtros import converter_periodo_em_datas
 
-# 1. O GPS MÁGICO (Descobre automaticamente a pasta raiz do projeto)
-# Como este arquivo está dentro da pasta 'extratores', mandamos ele voltar uma pasta para achar a raiz (Codigo)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# 2. Caminhos relativos e dinâmicos (Funcionam no PC, no Mac, no Linux e na Nuvem!)
-CAMINHO_CONFIGS = os.path.join(BASE_DIR, "dados", "configs")
-CAMINHO_INDEX_JSON = os.path.join(CAMINHO_CONFIGS, "index_atas.json")
-
-# 3. Caminho dos PDFs acompanhando a sua organização de pastas
-# Assumindo que você colocou a pasta de PDFs dentro de dados/base_dados/ como mostrou na foto
-CAMINHO_PDFS_PADRAO = os.path.join(BASE_DIR, "dados", "base_dados", "pdf_atas_pleno")
+# Importa o coração do sistema
+from core import config_ambiente
+from utils.config_filtros import converter_periodo_em_datas
 
 def verificar_pastas():
-    if not os.path.exists(CAMINHO_CONFIGS):
-        print(f"❌ Erro: Pasta de configs não encontrada em {CAMINHO_CONFIGS}")
+    if not os.path.exists(config_ambiente.CAMINHO_CONFIGS):
+        print(f"❌ Erro: Pasta de configs não encontrada em {config_ambiente.CAMINHO_CONFIGS}")
         return False
     return True
 
 def carregar_index_atas():
-    if not os.path.exists(CAMINHO_INDEX_JSON):
+    if not os.path.exists(config_ambiente.CAMINHO_INDEX_JSON):
         return {}
-    with open(CAMINHO_INDEX_JSON, 'r', encoding='utf-8') as f:
+    with open(config_ambiente.CAMINHO_INDEX_JSON, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def carregar_bases_mandatos():
     mandatos = []
-    if not os.path.exists(CAMINHO_CONFIGS): return []
-    for arq in os.listdir(CAMINHO_CONFIGS):
+    if not os.path.exists(config_ambiente.CAMINHO_CONFIGS): return []
+    for arq in os.listdir(config_ambiente.CAMINHO_CONFIGS):
         if arq.endswith('.json') and 'index_atas' not in arq:
             ini, fim = converter_periodo_em_datas(arq)
             if ini != datetime.min:
                 try:
-                    with open(os.path.join(CAMINHO_CONFIGS, arq), 'r', encoding='utf-8') as f:
+                    with open(os.path.join(config_ambiente.CAMINHO_CONFIGS, arq), 'r', encoding='utf-8') as f:
                         mandatos.append({"inicio": ini, "fim": fim, "arquivo": arq, "dados": json.load(f)})
                 except Exception as e:
                     print(f"⚠️ Erro ao ler mandato {arq}: {e}")
@@ -45,7 +36,7 @@ def carregar_bases_mandatos():
 
 def ler_texto_pdf(caminho_arquivo):
     if not os.path.exists(caminho_arquivo):
-        caminho_arquivo = os.path.join(CAMINHO_PDFS_PADRAO, os.path.basename(caminho_arquivo))
+        caminho_arquivo = os.path.join(config_ambiente.CAMINHO_PDFS_PADRAO, os.path.basename(caminho_arquivo))
         if not os.path.exists(caminho_arquivo):
             return []
     linhas_orig = []

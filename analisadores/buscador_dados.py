@@ -4,14 +4,13 @@ import re
 import json
 import pandas as pd
 
-# 1. Ajuste do Path para encontrar o gerenciador_io na pasta extratores
+# 1. Ajuste do Path para encontrar a pasta core
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from extratores.gerenciador_io import ler_texto_pdf, carregar_index_atas
+from core import config_ambiente
+from core.gerenciador_io import ler_texto_pdf, carregar_index_atas
 
-# 2. Define onde o cache oculto será salvo
-CAMINHO_CACHE = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', 'dados', 'configs', '.cache_corpus_atas.json'))
-
+# 2. Define onde o cache oculto será salvo usando o nosso mapa
+CAMINHO_CACHE = config_ambiente.CAMINHO_CACHE_BUSCADOR
 
 def criar_padrao_flexivel(termo_busca):
     palavras = termo_busca.strip().split()
@@ -60,7 +59,7 @@ def construir_ou_carregar_cache(forcar_atualizacao=False):
             if linhas_extraidas:
                 corpus_cache.append({
                     "Fonte": os.path.basename(caminho),
-                    "Data": item.get('data', 'N/A'),
+                    "Data": item.get('dados', 'N/A'),
                     "Reunião": item.get('nome_reuniao', 'N/A'),
                     "Linhas": linhas_extraidas
                 })
@@ -110,17 +109,18 @@ def main():
                     "Fonte": documento['Fonte']
                 })
 
-    # Relatório Final
-    if resultados:
-        df = pd.DataFrame(resultados)
-        print("\n" + "=" * 80)
-        print(df[['Data', 'Fonte', 'Contexto']].to_string(index=False))
-        print("=" * 80)
-        df.to_excel("ultimo_resultado_busca.xlsx", index=False)
-        print(f"✅ {len(df)} ocorrências salvas em 'ultimo_resultado_busca.xlsx'")
-    else:
-        print("\n∅ Nada encontrado para este termo.")
+        # Relatório Final
+        if resultados:
+            df = pd.DataFrame(resultados)
+            print("\n" + "=" * 80)
+            print(df[['Data', 'Fonte', 'Contexto']].to_string(index=False))
+            print("=" * 80)
 
+            # Amarração: Salvando e imprimindo usando as variáveis do config_ambiente!
+            df.to_excel(config_ambiente.CAMINHO_EXCEL_BUSCA, index=False)
+            print(f"✅ {len(df)} ocorrências salvas em '{config_ambiente.NOME_EXCEL_BUSCA}'")
+        else:
+            print("\n∅ Nada encontrado para este termo.")
 
 if __name__ == "__main__":
     main()

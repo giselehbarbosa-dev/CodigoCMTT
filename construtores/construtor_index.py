@@ -1,18 +1,21 @@
 import os
+import sys
 import json
 import re
 import pandas as pd
-from datetime import datetime
 import unicodedata
-from extratores.gerenciador_io import BASE_DIR
 
-CAMINHO_CONFIGS = os.path.join(BASE_DIR, "dados", "configs")
-CAMINHO_SAIDA_JSON = os.path.join(CAMINHO_CONFIGS, "index_atas.json")
-CAMINHO_ARQUIVO_EXCEL = os.path.join(BASE_DIR, "dados", "base_dados", "index_atasCMTT.xlsx")
-CAMINHO_PDFS = os.path.join(BASE_DIR, "dados", "base_dados", "pdf_atas_pleno")
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from datetime import datetime
+from core import config_ambiente
+
+CAMINHO_CONFIGS = config_ambiente.CAMINHO_CONFIGS
+CAMINHO_SAIDA_JSON = config_ambiente.CAMINHO_INDEX_JSON
+CAMINHO_ARQUIVO_EXCEL = config_ambiente.CAMINHO_EXCEL_INDEX
+CAMINHO_PDFS = config_ambiente.CAMINHO_PDFS_PADRAO
 
 if not os.path.exists(CAMINHO_CONFIGS): os.makedirs(CAMINHO_CONFIGS)
-
 
 def normalizar_texto(texto):
     if not isinstance(texto, str): return str(texto)
@@ -27,7 +30,7 @@ def extrair_numero_do_pdf(nome_arquivo):
 
 def normalizar_data(data_str):
     if not isinstance(data_str, str): data_str = str(data_str)
-    limpo = re.sub(r'(?i)data:|em:|dia:', '', data_str).split()[0].strip().rstrip('.,')
+    limpo = re.sub(r'(?i)dados:|em:|dia:', '', data_str).split()[0].strip().rstrip('.,')
     for fmt in ["%d/%m/%Y", "%d.%m.%Y", "%Y-%m-%d", "%d-%m-%Y", "%d/%m/%y"]:
         try:
             return datetime.strptime(limpo, fmt)
@@ -87,7 +90,7 @@ def processar_index_excel():
             reuniao_atual = {"titulo": linha_texto, "data_obj": None, "local": "Não informado"}
             continue
 
-        if "data:" in linha_clean or "em:" in linha_clean:
+        if "dados:" in linha_clean or "em:" in linha_clean:
             dt = normalizar_data(linha_texto)
             if dt and reuniao_atual: reuniao_atual["data_obj"] = dt
 

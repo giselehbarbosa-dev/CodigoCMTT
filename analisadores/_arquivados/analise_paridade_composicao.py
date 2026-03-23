@@ -2,19 +2,22 @@
 Módulo: Análise de Paridade e Composição (Fase 2) - Padrão Executivo
 Objetivo: Gerar Dashboards Interativos (HTML) e Estáticos (PNG) usando Plotly.
 """
-
 import os
+import sys
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+# Garante que o script acha o nosso GPS Mágico
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from core import config_ambiente
+
 # ==========================================
 # 1. CONFIGURAÇÕES E DIRETÓRIOS
 # ==========================================
-DIRETORIO_RAIZ = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo"
-PASTA_DADOS = os.path.join(DIRETORIO_RAIZ, "dados", "processados")
-PASTA_GRAFICOS = os.path.join(DIRETORIO_RAIZ, "graficos")
-CSV_PRESENCA = os.path.join(PASTA_DADOS, "presenca_oficial.csv")
+PASTA_DADOS = config_ambiente.CAMINHO_PROCESSADOS
+PASTA_GRAFICOS = config_ambiente.CAMINHO_GRAFICOS
+CSV_PRESENCA = config_ambiente.CAMINHO_CSV_PRESENCA
 
 os.makedirs(PASTA_GRAFICOS, exist_ok=True)
 

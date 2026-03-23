@@ -4,7 +4,7 @@ import unicodedata
 import spacy
 import itertools
 from thefuzz import fuzz
-from config_filtros import normalizar, contem_lixo_visual, MESES_PT
+from utils.config_filtros import normalizar, contem_lixo_visual, MESES_PT
 
 try:
     nlp = spacy.load("pt_core_news_sm")

@@ -1,22 +1,29 @@
 import os
+import sys
 import pandas as pd
 import unicodedata
 from datetime import datetime
 from tqdm import tqdm
 from thefuzz import fuzz
 
-from extratores.gerenciador_io import (
-    BASE_DIR, carregar_index_atas, carregar_bases_mandatos, ler_texto_pdf, verificar_pastas
-)
-from extratores.config_filtros import normalizar, MESES_PT
-from extratores.ferramentas_matcher import (
-    linha_contem_oficial, is_same_person, criar_mapa_historico, minerar_visitantes,
-    normalizar_fonetica
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Importando a infraestrutura (Core)
+from core import config_ambiente
+from core.gerenciador_io import (
+    carregar_index_atas, carregar_bases_mandatos, ler_texto_pdf, verificar_pastas
 )
 
-CAMINHO_SAIDA_DADOS = os.path.join(BASE_DIR, "dados", "processados")
-if not os.path.exists(CAMINHO_SAIDA_DADOS): os.makedirs(CAMINHO_SAIDA_DADOS)
+# Importando as ferramentas (Utils)
+from utils.config_filtros import normalizar, MESES_PT
+from utils.ferramentas_matcher import (
+    linha_contem_oficial, criar_mapa_historico, minerar_visitantes, normalizar_fonetica
+)
 
+# Usando o caminho já blindado pelo nosso config_ambiente!
+CAMINHO_SAIDA_DADOS = config_ambiente.CAMINHO_PROCESSADOS
+if not os.path.exists(CAMINHO_SAIDA_DADOS):
+    os.makedirs(CAMINHO_SAIDA_DADOS)
 
 def selecionar_mandato(data_reuniao, mandatos):
     for m in mandatos:
@@ -25,7 +32,6 @@ def selecionar_mandato(data_reuniao, mandatos):
     for m in mandatos:
         if m["inicio"] <= data_reuniao: return m
     return None
-
 
 def limpar_para_ordem(texto):
     return u"".join([c for c in unicodedata.normalize('NFKD', str(texto)) if not unicodedata.combining(c)]).lower()
@@ -240,19 +246,23 @@ def main():
                          "Nome", "Nome_na_Ata", "Tipo", "Presente", "Genero", "Cargo_Extra"]
         df_oficial = df_oficial[colunas_ordem]
 
+        # Salvando usando o GPS Mágico!
         df_oficial.to_csv(
-            os.path.join(CAMINHO_SAIDA_DADOS, "presenca_oficial.csv"),
+            config_ambiente.CAMINHO_CSV_PRESENCA,
             index=False, sep=';', encoding='utf-8-sig'
         )
-        print("✅ presenca_oficial.csv gerado (Auditado e Refinado!).")
+        print(f"✅ {config_ambiente.NOME_CSV_PRESENCA} gerado (Auditado e Refinado!).")
 
     if dados_visitantes_geral:
         df_visitantes = pd.DataFrame(dados_visitantes_geral)
         df_visitantes = df_visitantes.sort_values(by="Nome_na_Ata", key=lambda x: x.map(limpar_para_ordem))
-        df_visitantes.to_csv(os.path.join(CAMINHO_SAIDA_DADOS, "visitantes_geral.csv"), index=False, sep=';',
-                             encoding='utf-8-sig')
-        print("✅ visitantes_geral.csv gerado com históricos agregados!")
 
+        # Salvando usando o GPS Mágico!
+        df_visitantes.to_csv(
+            config_ambiente.CAMINHO_CSV_VISITANTES,
+            index=False, sep=';', encoding='utf-8-sig'
+        )
+        print(f"✅ {config_ambiente.NOME_CSV_VISITANTES} gerado com históricos agregados!")
 
 if __name__ == "__main__":
     main()

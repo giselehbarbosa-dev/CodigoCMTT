@@ -1,14 +1,12 @@
 import pandas as pd
 import os
+from core import config_ambiente
 
-# IMPORTA O MESMO BASE_DIR DO MOTOR
-from extratores.gerenciador_io import BASE_DIR
+# Usa o caminho direto blindado!
+CAMINHO_GERAL = config_ambiente.CAMINHO_CSV_VISITANTES
+CAMINHO_RELATORIOS = config_ambiente.CAMINHO_RELATORIOS
 
-CAMINHO_GERAL = os.path.join(BASE_DIR, "dados", "processados", "visitantes_geral.csv")
-CAMINHO_RELATORIOS = os.path.join(BASE_DIR, "relatorios")
-
-if not os.path.exists(CAMINHO_RELATORIOS):
-    os.makedirs(CAMINHO_RELATORIOS)
+if not os.path.exists(CAMINHO_RELATORIOS): os.makedirs(CAMINHO_RELATORIOS)
 
 def gerar_relatorio_visitantes():
     print(f"📊 Lendo dados unificados de visitantes de: {CAMINHO_GERAL}")
@@ -31,7 +29,7 @@ def gerar_relatorio_visitantes():
     df_ex = df_visitantes[mask_ex_conselheiros].copy()
     df_ext_comuns = df_visitantes[~mask_ex_conselheiros].copy()
 
-    arquivo_saida = os.path.join(CAMINHO_RELATORIOS, "Relatorio_Visitantes_Lobby.xlsx")
+    arquivo_saida = config_ambiente.CAMINHO_EXCEL_VISITANTES
 
     with pd.ExcelWriter(arquivo_saida) as writer:
 

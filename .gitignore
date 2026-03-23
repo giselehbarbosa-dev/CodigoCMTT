@@ -6,8 +6,8 @@ __pycache__/
 
 # --- Escudo LGPD e Risco Político (Outputs) ---
 dados/processados/
-relatorios/
-graficos/
+outputs/relatorios/
+outputs/graficos/
 *.csv
 *.xlsx
 
@@ -18,3 +18,6 @@ graficos/
 
 # --- Segurança do Streamlit ---
 .streamlit/secrets.toml
+
+# Variaveis de Ambiente Ocultas
+.env

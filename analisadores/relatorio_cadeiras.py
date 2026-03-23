@@ -1,16 +1,13 @@
 import pandas as pd
 import os
 import numpy as np
+from core import config_ambiente
 
-# IMPORTA O MESMO BASE_DIR DO MOTOR (Fonte Única da Verdade!)
-from extratores.gerenciador_io import BASE_DIR
+# Usa o caminho direto blindado!
+CAMINHO_CSV = config_ambiente.CAMINHO_CSV_PRESENCA
+CAMINHO_RELATORIOS = config_ambiente.CAMINHO_RELATORIOS
 
-# Agora os caminhos ficam iguaizinhos aos do motor de extração:
-CAMINHO_CSV = os.path.join(BASE_DIR, "dados", "processados", "presenca_oficial.csv")
-CAMINHO_RELATORIOS = os.path.join(BASE_DIR, "relatorios")
-
-if not os.path.exists(CAMINHO_RELATORIOS):
-    os.makedirs(CAMINHO_RELATORIOS)
+if not os.path.exists(CAMINHO_RELATORIOS): os.makedirs(CAMINHO_RELATORIOS)
 
 def gerar_relatorio_cadeiras():
     print(f"📊 Lendo dados oficiais de: {CAMINHO_CSV}")
@@ -22,7 +19,7 @@ def gerar_relatorio_cadeiras():
     # Lê o CSV garantindo a codificação correta
     df = pd.read_csv(CAMINHO_CSV, sep=';', encoding='utf-8-sig')
 
-    # BLINDAGEM: Garante que o Pandas lê a data corretamente
+    # BLINDAGEM: Garante que o Pandas lê a dados corretamente
     df['Data'] = pd.to_datetime(df['Data'], errors='coerce')
     df = df.dropna(subset=['Data'])
 
@@ -68,7 +65,7 @@ def gerar_relatorio_cadeiras():
     rotatividade.columns = ['Segmento', 'Cadeira Padronizada', 'Qtd_Nomes_Diferentes_Historico']
     rotatividade.sort_values(by='Qtd_Nomes_Diferentes_Historico', ascending=False, inplace=True)
 
-    arquivo_saida = os.path.join(CAMINHO_RELATORIOS, "Relatorio_Cadeiras_Absenteismo.xlsx")
+    arquivo_saida = config_ambiente.CAMINHO_EXCEL_CADEIRAS
 
     with pd.ExcelWriter(arquivo_saida) as writer:
         matriz_final.to_excel(writer, sheet_name="Matriz e Absenteismo", index=False)

@@ -2,23 +2,26 @@
 Módulo: Teia de Influência e Engajamento (Fase 3)
 Objetivo: Gerar infográficos de fluxo (Sankey), Redes (Lobby) e Quadrantes (Saúde Democrática).
 """
-
 import os
+import sys
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import networkx as nx
 import numpy as np
 
+# Garante que o script acha o nosso GPS Mágico
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from core import config_ambiente
+
 # ==========================================
 # 1. CONFIGURAÇÕES E DIRETÓRIOS
 # ==========================================
-DIRETORIO_RAIZ = r"C:\Users\m124712\OneDrive - rede.sp\Documentos\CMTT\Codigo"
-PASTA_DADOS = os.path.join(DIRETORIO_RAIZ, "dados", "processados")
-PASTA_GRAFICOS = os.path.join(DIRETORIO_RAIZ, "graficos")
+PASTA_DADOS = config_ambiente.CAMINHO_PROCESSADOS
+PASTA_GRAFICOS = config_ambiente.CAMINHO_GRAFICOS
 
-CSV_PRESENCA = os.path.join(PASTA_DADOS, "presenca_oficial.csv")
-CSV_VISITANTES = os.path.join(PASTA_DADOS, "visitantes_geral.csv")
+CSV_PRESENCA = config_ambiente.CAMINHO_CSV_PRESENCA
+CSV_VISITANTES = config_ambiente.CAMINHO_CSV_VISITANTES
 
 os.makedirs(PASTA_GRAFICOS, exist_ok=True)
 
