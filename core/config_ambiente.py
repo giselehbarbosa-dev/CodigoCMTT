@@ -4,10 +4,14 @@ from dotenv import load_dotenv
 # Carrega as variáveis do cofre (.env)
 load_dotenv()
 
-# 1. RAIZ DO PROJETO
+# 1. RAIZ DO PROJETO (Auto-Detectável)
 BASE_DIR = os.getenv("BASE_DIR_PROJETO")
+
+# Se não achar o cofre (ex: rodando na nuvem do Streamlit), o sistema descobre a raiz sozinho!
 if not BASE_DIR:
-    raise ValueError("❌ Erro: BASE_DIR_PROJETO não encontrado no .env.")
+    # O config_ambiente.py está na pasta 'core'. O "pai" dela ('..') é a raiz do projeto.
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    print(f"⚠️ BASE_DIR_PROJETO não encontrado no .env. Auto-detectado: {BASE_DIR}")
 
 DIR_REDE_INTERNA = os.getenv("DIR_REDE_INTERNA") # (Opcional)
 
