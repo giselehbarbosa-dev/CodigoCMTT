@@ -5,3 +5,6 @@ pdfplumber
 thefuzz
 spacy
 python-dotenv
+plotly
+networkx
+kaleido

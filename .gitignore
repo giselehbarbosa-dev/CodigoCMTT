@@ -11,13 +11,13 @@ outputs/graficos/
 *.csv
 *.xlsx
 
+# --- Arquivos de Cache Temporários ---
+dados/configs/.cache_corpus_atas.json
+
 # --- Exceções Seguras (O que o app precisa para rodar) ---
-# Aqui dizemos: "Ignore todos os Excel, MAS permita os dois abaixo!"
 !dados/base_dados/base_mandatosCMTT.xlsx
 !dados/base_dados/index_atasCMTT.xlsx
 
-# --- Segurança do Streamlit ---
+# --- Segurança do Streamlit e Cofre ---
 .streamlit/secrets.toml
-
-# Variaveis de Ambiente Ocultas
 .env
