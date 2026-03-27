@@ -194,19 +194,64 @@ def linha_contem_oficial(linha_pdf, nome_oficial):
     if not off_tokens: return False, ""
     total_validos = len(off_tokens)
 
-    def verificar_bloco_exato(bloco_tokens):
-        matches = 0
-        for bt in bloco_tokens:
-            best_score = max([fuzz.ratio(bt, lt) for lt in linha_tokens] + [0])
-            if best_score >= 80: matches += 1
-        return matches == len(bloco_tokens)
+    # ==========================================
+    # 🛑 REGRA 1: LIMITE DE CONTEXTO (Anti-Frase Aleatória)
+    # ==========================================
+    # Se a linha for muito longa, ela precisa ter um "crachá" institucional.
+    # Caso contrário, ficamos extremamente rigorosos com a matemática (limite sobe para 90%).
+    titulos_oficiais = {"conselheir", "titular", "suplent", "senhor", "sr", "sra", "representant", "presid"}
+    linha_tem_titulo = any(tit in linha_norm for tit in titulos_oficiais)
 
-    # 1. Nomes curtos (Ex: Cristiane Santos) -> Exige 100% para não alucinar com sobrenomes soltos
+    limite_fuzz = 80
+    if len(linha_tokens) > 8 and not linha_tem_titulo:
+        limite_fuzz = 90
+
+    def verificar_bloco_exato(bloco_tokens):
+        indices_encontrados = []
+
+        for bt in bloco_tokens:
+            best_score = 0
+            best_idx = -1
+
+            for i, lt in enumerate(linha_tokens):
+                # 🛑 REGRA 2: ANTI-ALUCINAÇÃO DE PALAVRAS CURTAS ("anos" não pode virar "anjos")
+                if len(lt) <= 4 and len(bt) >= 5:
+                    continue
+
+                score = fuzz.ratio(bt, lt)
+                if score > best_score:
+                    best_score = score
+                    best_idx = i
+
+            if best_score >= limite_fuzz:
+                indices_encontrados.append(best_idx)
+
+        # Se não achou todos do bloco, falha imediatamente
+        if len(indices_encontrados) != len(bloco_tokens):
+            return False
+
+        # ==========================================
+        # 🛑 REGRA 3: PENALIDADE DE DISTÂNCIA
+        # ==========================================
+        # As palavras do nome não podem estar separadas por um "abismo" na frase.
+        min_idx = min(indices_encontrados)
+        max_idx = max(indices_encontrados)
+        distancia = max_idx - min_idx
+
+        # Tolerância: Tamanho do nome + 2 "intrusos" no meio (ex: nome do meio omitido)
+        tolerancia_distancia = len(bloco_tokens) + 2
+
+        if distancia <= tolerancia_distancia:
+            return True
+
+        return False
+
+    # 1. Nomes curtos (Ex: Cristiane Santos)
     if total_validos <= 2:
         if verificar_bloco_exato(off_tokens):
             return True, linha_pdf.strip()
 
-    # 2. O ARRASTÃO: Testa todas as combinações possíveis de 2 ou mais nomes
+    # 2. O ARRASTÃO COM COLEIRA: Testa combinações, mas exige proximidade
     else:
         for tamanho in range(total_validos, 1, -1):
             for combinacao in itertools.combinations(off_tokens, tamanho):

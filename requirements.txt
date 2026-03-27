@@ -8,3 +8,5 @@ python-dotenv
 plotly
 networkx
 kaleido
+requests
+beautifulsoup4
