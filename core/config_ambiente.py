@@ -115,19 +115,46 @@ REGRAS_CONSELHO = {
     "tipos_reuniao": {
         "Reunião Extraordinária": [r"extraordin[aá]ria"],
         "Reunião Técnica": [r"t[eé]cnica"],
-        "Reunião Ordinária": [r"ordin[aá]ria", r"reuni[aã]o"] # Padrão
+        "Reunião Ordinária": [r"ordin[aá]ria", r"reuni[aã]o"]  # Padrão
     },
     "identificadores_links": {
         "Link Reunião (Online)": [r"teams\.microsoft", r"zoom", r"meet"],
         "Apresentacoes": [r"apresentaç", r"apresentac"],
         "Ata": [r"ata"]
     },
-    "palavras_navegacao_subpaginas": [r"c[aâ]mara\s*tem[aá]tica"]
+    "palavras_navegacao_subpaginas": [r"c[aâ]mara\s*tem[aá]tica"],
+
+    # 🆕 Dicionário Temático Escalável (10 Categorias - Versão Consolidada)
+    "dicionario_temas": {
+        "Composição e Governança do Conselho": [r"regimento interno", r"eleiç", r"eleic", r"posse", r"instalaç",
+                                                r"conselheiro", r"mandato", r"votaç"],
+        "Mobilidade Urbana: Organização Geral e Prestação de Contas": [r"planmob", r"plano de mobilidade",
+                                                                       r"plano diretor", r"orçament", r"orcament",
+                                                                       r"custos", r"prestação de contas", r"tarifa",
+                                                                       r"subsídio"],
+        "Estrutura e Organização da Rede Viária": [r"rodízio", r"rodizio", r"corredor", r"faixa exclusiva",
+                                                   r"recapeamento", r"asfalto", r"semáforo", r"semaforo", r"via"],
+        "Mobilidade Ativa e Acessibilidade": [r"pedestre", r"calçada", r"calcada", r"acessibilidade", r"cadeirante",
+                                              r"ciclovia", r"ciclofaixa", r"bicicleta", r"ciclista", r"bike",
+                                              r"mobilidade a pé", r"patinete"],
+        "Transporte Público Coletivo": [r"ônibus", r"onibus", r"sptrans", r"bilhete único", r"transporte coletivo",
+                                        r"frota", r"lotação", r"emtu", r"intermunicipal", r"perua"],
+        "Transporte Individual Privado (Táxis e Aplicativos)": [r"táxi", r"taxi", r"aplicativo", r"uber", r"99",
+                                                                r"transporte individual", r"alvará", r"dtp"],
+        "Transporte Escolar e Fretamento": [r"escolar", r"tegui", r"fretamento", r"ônibus privado", r"fretado"],
+        "Motocicletas e Motofrete": [r"moto", r"motocicleta", r"motofrete", r"motoboy", r"entregador", r"delivery"],
+        "Logística Urbana e Transporte de Cargas": [r"carga", r"caminhão", r"caminhao", r"vuc", r"logística",
+                                                    r"logistica", r"frete", r"zmrc"],
+        "Segurança Viária e Visão Zero": [r"segurança", r"seguranca", r"sinistro", r"acidente", r"atropelamento",
+                                          r"visão zero", r"visao zero", r"morte", r"óbito", r"velocidade"]
+    }
 }
 
 URL_BASE_SITE = os.getenv("URL_BASE_SITE", REGRAS_CONSELHO["url_base_site"])
 COLUNAS_INDEX_BASE = REGRAS_CONSELHO["colunas_excel_index"]
 MAPA_ORGAOS_TERMOS = REGRAS_CONSELHO["orgaos_palavras_chave"]
+# 🆕 Exportação do Dicionário para uso nos Motores
+DICIONARIO_TEMAS = REGRAS_CONSELHO["dicionario_temas"]
 
 # GERAÇÃO DINÂMICA DE CAMINHOS (Apenas calcula as strings, não cria pastas)
 MAPA_REDE_INTERNA = {}

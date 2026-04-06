@@ -31,6 +31,16 @@ Crie um arquivo `.env` na raiz do projeto (use o `.env.example` como base) e def
 
 O projeto foi refatorado sob o princípio de **Separação de Responsabilidades**. Cada pasta tem um domínio único e específico, tornando o código altamente escalável.
 
+### 🕷️ 0. A Coleta Automatizada (Fase 0 - Web Scraping)
+* **`coletores/coletor_atas.py` (O Robô de Extração Web)**
+  * O ponto de partida do pipeline. Responsável por minerar a matéria-prima bruta diretamente da fonte oficial.
+  * **O que faz:** Acessa o portal da Prefeitura (via `requests` e `BeautifulSoup`), varre o HTML não-estruturado em busca de novas reuniões e faz o download seguro dos PDFs (Atas e Apresentações).
+  * **Padronização Estrita (Renomeação Inteligente):** Elimina o caos de nomes de arquivos baixados da internet. O robô extrai os metadados do texto e renomeia os PDFs para um padrão previsível e auditável (ex: `78_2025_Pleno_ordin_ata.pdf` ou `extra_01_2015_CT_Bicicleta_ata.pdf`).
+  * **Roteamento Dinâmico (Dual Save):** Salva os arquivos simultaneamente no Data Lake local (para processamento do pipeline) e na rede interna da secretaria, criando rotas dinâmicas específicas para o Conselho Pleno ou Câmaras Temáticas.
+  * **Eficiência (Trava Anti-Duplicação):** Antes de realizar qualquer requisição de download, o robô verifica o ecossistema local. Se o PDF já existir na base, ele pula a etapa, economizando banda e tempo de processamento.
+  * **Interface com o Sistema:** Alimenta diretamente a pasta `dados/base_dados/pdf_atas_pleno/`, entregando os arquivos limpos e mastigados para o `construtor_index.py` (Fase 1) iniciar o mapeamento.
+* **`coletores/coletor_excel.py`:** Um spider web que varre as subpáginas e atualiza o mapeamento de datas e reuniões na planilha oficial.
+
 ### 📍 1. O Coração do Sistema
 * **`core/config_ambiente.py`:** A Fonte Única da Verdade. Centraliza caminhos, arquivos e variáveis de nuvem. Possui auto-detecção de diretório para deploys dinâmicos.
 * **`core/gerenciador_io.py` (O Bibliotecário):** Abre PDFs via `pdfplumber`, extrai textos removendo quebras de linha invisíveis do Windows e valida o ecossistema de dados.
@@ -52,15 +62,15 @@ O projeto foi refatorado sob o princípio de **Separação de Responsabilidades*
     * Nova Lógica de Arrastão (N-Grams): Agora utiliza a biblioteca itertools para gerar combinações automáticas de nomes (ex: Primeiro + Último). Isso garante que o sistema capture variações como "Ana de Paula" ou "Rita Paula", mesmo que o nome oficial seja "Ana Rita de Paula".
     * Sistema de Confissão: A função de busca foi alterada para retornar não apenas o "match", mas o trecho bruto lido no PDF, alimentando a nova coluna de auditoria.
 
-
-### 🏗️ 3. Os Preparadores de Terreno
+### 🏗️ 3. Os Preparadores de Terreno (Construtores)
+* **`construtores/construtor_ambiente.py`:** Gera a infraestrutura de diretórios (Data Lake).
 * **`construtores/construtor_index.py` (O Indexador)**
   * Mapeia o caos de arquivos e planilhas soltas.
   * **O que faz:** Lê a planilha de controle de atas, usa Expressões Regulares (RegEx) flexíveis para ignorar cabeçalhos, extrair datas/locais e criar um dicionário de gabarito (`index_atas.json`) vinculando cada PDF ao seu respectivo mandato e reunião.
 * **`construtores/construtor_conselheiros.py` (O RH)**
   * Mapeia a estrutura de poder do Conselho.
   * **O que faz:** Lê a planilha oficial de mandatos do Excel, entende quem tem direito a voto, estrutura a geometria de poder, agrupando titulares e suplentes por segmento/cadeira (usando chaves compostas) e gera JSONs determinísticos e padronizados para cada mandato. Possui blindagem contra cabeçalhos mal digitados e células vazias (NaN). Possui trava de Auditoria de Vacância (assinala cadeiras sem nome como "VAGO" em vez de excluí-las).
-
+* **`construtores/construtor_cache.py`:** O Moinho. Lê os PDFs pesados uma única vez e gera um Cérebro JSON super rápido (`.cache_corpus_atas.json`), evitando a releitura constante dos documentos pelos motores de IA.
 
 ### 🏭 4. A Linha de Produção
 * **`motores/motor_extracao.py` (O Maestro)**
@@ -68,9 +78,11 @@ O projeto foi refatorado sob o princípio de **Separação de Responsabilidades*
   * Barra de Progresso: Implementação da tqdm para monitoramento visual do tempo de processamento das atas.
   * Auditoria XAI: Injeta a coluna Nome_na_Ata no CSV oficial, permitindo conferência humana instantânea de falsos positivos.
   * **O que faz:** Roda o loop principal pelas atas, aplica táticas "Anti-Negrito" e "Anti-Anexos" na leitura, chama o matcher para separar as entidades e exporta o resultado, ordenando perfeitamente a lista alfabética e ignorando acentos. Aplica o **Bypass Ninja**: Lê o texto bruto linha a linha para curar a "cegueira" da IA em tabelas espremidas do PDF, garantindo a captura de 100% dos conselheiros presentes.
-
+* **`motores/motor_tematico.py`:** Aplica a técnica de *Extração Inversa* (usando a base de pessoas como escudo) e minera Organizações da Sociedade Civil (OSCs) e os principais temas debatidos na ata via spaCy.
+* **`motores/atualizar_cache_auto.py`:** Orquestrador que roda em segundo plano para manter o cérebro JSON atualizado.
 
 ### 📊 5. Interface e Geradores de Produtos
+* Módulos geradores de relatórios.
 * **`analisadores/relatorio_cadeiras.py`:** Gera a linha do tempo (Matriz) de presença, calcula a Taxa de Absenteísmo (%) e o Ranking de Rotatividade por cadeira.
 * **`analisadores/relatorio_visitantes.py`:** Consolida as frequências de visitantes externos e históricos, criando o "Ranking de Lobby/Ativismo" (pessoas que foram a mais de 1 reunião).
 * **`analisadores/exportador_bases_graficos.py`:** Consolida dados complexos em planilhas limpas para dashboards.
@@ -85,6 +97,7 @@ O projeto foi refatorado sob o princípio de **Separação de Responsabilidades*
 
 O projeto divide estritamente o que é "Meio" e o que é "Fim". Os arquivos gerados ficam prontos para Excel ou PowerBI:
 
+* 📁 **`coletores/`:** Scripts de web scraping e automação de extração da fonte oficial da prefeitura.
 * 📁 **`dados/` (O Data Lake):**
   * `base_dados/`: Os PDFs brutos e planilhas oficiais.
   * `configs/`: Regras e mapeamentos JSON gerados pelos construtores.
@@ -110,19 +123,25 @@ O sistema foi otimizado para rodar no **Streamlit Community Cloud** utilizando u
 
 ---
 
-## 🏃 Como Executar o Pipeline de Dados
+## 🏃 Como Executar o Pipeline de Dados (O Grafo de Execução)
 
-Para gerar ou atualizar a base de extração do zero, rode no terminal:
+O projeto segue um fluxo de extração estrito (DAG). Para atualizar o acervo inteiro, a ordem de execução no terminal deve ser:
 
 ```bash
-# 1. Atualize as regras de negócio
+# 1. Coleta de Novos Dados (Web Scraping)
+python coletores/coletor_atas.py
+python coletores/coletor_excel.py
+
+# 2. Atualização dos Gabaritos e do Cérebro (Cache JSON)
 python construtores/construtor_conselheiros.py
 python construtores/construtor_index.py
+python construtores/construtor_cache.py
 
-# 2. Rode a extração principal (O Maestro)
+# 3. Mineração NLP e Cruzamento de Dados (A ordem aqui é obrigatória)
 python motores/motor_extracao.py
+python motores/motor_tematico.py
 
-# 3. Gere os relatórios analíticos e exporte as bases consolidadas
+# 4. Geração de Painéis Analíticos
 python analisadores/relatorio_cadeiras.py
 python analisadores/relatorio_visitantes.py
 python analisadores/exportador_bases_graficos.py

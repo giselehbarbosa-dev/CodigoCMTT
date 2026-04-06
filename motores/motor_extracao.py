@@ -2,6 +2,7 @@ import os
 import sys
 import pandas as pd
 import unicodedata
+import json
 from datetime import datetime
 from tqdm import tqdm
 from thefuzz import fuzz
@@ -11,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Importando a infraestrutura (Core)
 from core import config_ambiente
 from core.gerenciador_io import (
-    carregar_index_atas, carregar_bases_mandatos, ler_texto_pdf, verificar_pastas
+    carregar_index_atas, carregar_bases_mandatos, verificar_pastas
 )
 
 # Importando as ferramentas (Utils)
@@ -71,7 +72,6 @@ def refinar_presencas_finais(dados_oficiais):
     df_presentes = df[df['Presente'] == 1]
 
     # Agrupa por Arquivo e pelo Trecho exato da Ata lido
-    # Se uma linha tem mais de 1 pessoa, temos o "Efeito Família" (Ex: Osvaldo vs Natalício)
     agrupamento = df_presentes.groupby(['Arquivo', 'Nome_na_Ata'])
 
     falsos_positivos_removidos = 0
@@ -103,8 +103,8 @@ def refinar_presencas_finais(dados_oficiais):
     return df.to_dict('records')  # Devolve a lista limpa para o Motor salvar
 
 
-def main():
-    print("🛡️ MOTOR DE EXTRAÇÃO V90 (ARRASTÃO + AUDITORIA + MANDATO NO OFICIAL) 🛡️")
+def executar_extracao():
+    print("🛡️ MOTOR DE EXTRAÇÃO V91 (CACHE PARTICIONADO + REGRA UNIVERSAL) 🛡️")
 
     if not verificar_pastas(): return
 
@@ -114,6 +114,23 @@ def main():
     if not index_atas or not mandatos:
         print("❌ Dados insuficientes (Index ou Mandatos vazios).")
         return
+
+    if not os.path.exists(config_ambiente.CAMINHO_CACHE_BUSCADOR):
+        print("❌ Cache não encontrado! Rode o construtor_cache.py primeiro.")
+        return
+
+    print("⏳ Carregando textos do Cache...")
+    with open(config_ambiente.CAMINHO_CACHE_BUSCADOR, 'r', encoding='utf-8') as f:
+        corpus_cache = json.load(f)
+
+    # 🆕 LÓGICA DE DESEMPACOTAMENTO: Lê o dicionário (prateleiras) e aplana para consulta rápida
+    dicionario_textos = {}
+    if isinstance(corpus_cache, dict):
+        for orgao, lista_docs in corpus_cache.items():
+            for doc in lista_docs:
+                dicionario_textos[doc["Fonte"]] = doc["Linhas"]
+    else:
+        dicionario_textos = {doc["Fonte"]: doc["Linhas"] for doc in corpus_cache}
 
     mapa_historico = criar_mapa_historico(mandatos)
 
@@ -139,14 +156,18 @@ def main():
         fim_str = f"{mandato_ativo['fim'].year}{MESES_PT[mandato_ativo['fim'].month]}"
         periodo_str = f"{ini_str}_{fim_str}"
 
-        linhas_originais = ler_texto_pdf(caminho_pdf)
+        nome_arquivo_base = os.path.basename(caminho_pdf)
+        linhas_originais = dicionario_textos.get(nome_arquivo_base, [])
 
+        if not linhas_originais:
+            continue  # Pula se o PDF não estava no cache
+
+        # 🆕 REGRA UNIVERSAL E ESCALÁVEL: Ignora sujeira em vez de usar palavras rígidas do CMTT
         linhas_norm_uteis = []
         for l in linhas_originais:
             linha_norm = normalizar(l)
-            if "composicao do conselho" in linha_norm or "anexo i" in linha_norm or "membros nomeados" in linha_norm:
-                break
-            linhas_norm_uteis.append(linha_norm)
+            if len(linha_norm) > 10:  # Evita ler número de páginas e rodapés vazios
+                linhas_norm_uteis.append(linha_norm)
 
         if not linhas_norm_uteis: continue
 
@@ -160,12 +181,11 @@ def main():
                 for membro in lista:
                     nome = membro.get("nome", "")
 
-                    if not nome: continue  # Só pula se vier 100% vazio por erro
+                    if not nome: continue
 
                     esta_presente = False
                     trecho_encontrado = ""
 
-                    # SE NÃO FOR VAGO, ELE TENTA ACHAR NO PDF
                     if nome != "VAGO":
                         conselheiros_nomes_norm.append(nome)
 
@@ -178,7 +198,6 @@ def main():
 
                         if esta_presente: presentes_nesta_ata.add(nome)
 
-                    # ADICIONA NO CSV OFICIAL (Mesmo se for VAGO, para garantir a cadeira no relatório!)
                     dados_oficiais.append({
                         "Reuniao": titulo_reuniao,
                         "Data": data_reuniao,
@@ -236,9 +255,7 @@ def main():
     print("\n💾 Salvando arquivos CSV...")
 
     if dados_oficiais:
-        # A MÁGICA ACONTECE AQUI: Passamos a base pelo Juiz de Desempate!
         dados_oficiais_limpos = refinar_presencas_finais(dados_oficiais)
-
         df_oficial = pd.DataFrame(dados_oficiais_limpos)
         df_oficial = df_oficial.drop_duplicates(subset=["Arquivo", "Nome", "Cadeira"])
 
@@ -246,23 +263,14 @@ def main():
                          "Nome", "Nome_na_Ata", "Tipo", "Presente", "Genero", "Cargo_Extra"]
         df_oficial = df_oficial[colunas_ordem]
 
-        # Salvando usando o GPS Mágico!
-        df_oficial.to_csv(
-            config_ambiente.CAMINHO_CSV_PRESENCA,
-            index=False, sep=';', encoding='utf-8-sig'
-        )
+        df_oficial.to_csv(config_ambiente.CAMINHO_CSV_PRESENCA, index=False, sep=';', encoding='utf-8-sig')
         print(f"✅ {config_ambiente.NOME_CSV_PRESENCA} gerado (Auditado e Refinado!).")
 
     if dados_visitantes_geral:
         df_visitantes = pd.DataFrame(dados_visitantes_geral)
         df_visitantes = df_visitantes.sort_values(by="Nome_na_Ata", key=lambda x: x.map(limpar_para_ordem))
-
-        # Salvando usando o GPS Mágico!
-        df_visitantes.to_csv(
-            config_ambiente.CAMINHO_CSV_VISITANTES,
-            index=False, sep=';', encoding='utf-8-sig'
-        )
+        df_visitantes.to_csv(config_ambiente.CAMINHO_CSV_VISITANTES, index=False, sep=';', encoding='utf-8-sig')
         print(f"✅ {config_ambiente.NOME_CSV_VISITANTES} gerado com históricos agregados!")
 
 if __name__ == "__main__":
-    main()
+    executar_extracao()

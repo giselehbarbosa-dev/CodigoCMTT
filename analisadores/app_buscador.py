@@ -12,13 +12,17 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from core import config_ambiente
 from core.gerenciador_io import ler_texto_pdf, carregar_index_atas
 
+# 🆕 A ÚNICA MUDANÇA: Importamos o construtor centralizado de cache!
+from construtores.construtor_cache import construir_cache_novo
+
 CAMINHO_CACHE = config_ambiente.CAMINHO_CACHE_BUSCADOR
 CAMINHO_BASE_MANDATOS = config_ambiente.CAMINHO_EXCEL_MANDATOS
 CAMINHO_INDEX_EXCEL = config_ambiente.CAMINHO_EXCEL_INDEX
 DIR_BASE = config_ambiente.BASE_DIR
 
 # --- Configuração da Página ---
-st.set_page_config(page_title="BuscaCMTT", layout="wide", initial_sidebar_state="collapsed")
+sigla_conselho = config_ambiente.REGRAS_CONSELHO.get("sigla", "Conselho")
+st.set_page_config(page_title=f"Busca{sigla_conselho}", layout="wide", initial_sidebar_state="collapsed")
 
 # --- Identidade Visual e Limpeza de UI ---
 esconder_estilo = """
@@ -27,12 +31,12 @@ esconder_estilo = """
     footer {visibility: hidden;}
 
     /* CSS para deixar a barra de busca azul clara */
-    div[dados-baseweb="input"] {
+    div[data-baseweb="input"] {
         background-color: #e1effe !important;
         border: 1px solid #b3d7ff !important;
         border-radius: 8px !important;
     }
-    div[dados-baseweb="input"] > div {
+    div[data-baseweb="input"] > div {
         background-color: transparent !important;
     }
     input[type="text"] {
@@ -57,55 +61,6 @@ def criar_padrao_flexivel(termo_busca):
     return re.compile(padrao, re.IGNORECASE)
 
 
-def construir_cache_novo():
-    dados_index = carregar_index_atas()
-    if not dados_index:
-        st.error("❌ Índice oficial não encontrado.")
-        return False
-
-    lista_arquivos = []
-    if isinstance(dados_index, dict):
-        for chave, metadados in dados_index.items():
-            item = metadados.copy() if isinstance(metadados, dict) else {}
-            if 'arquivo' not in item: item['arquivo'] = chave
-            lista_arquivos.append(item)
-    else:
-        lista_arquivos = dados_index
-
-    corpus_cache = []
-    texto_progresso = st.empty()
-    barra_progresso = st.progress(0)
-
-    for i, item in enumerate(lista_arquivos):
-        arquivo = item.get('arquivo') or item.get('caminho')
-        if arquivo:
-            nome_arq = os.path.basename(arquivo)
-            texto_progresso.text(f"Processando: {nome_arq}...")
-
-            linhas = ler_texto_pdf(arquivo)
-            if linhas:
-                data_doc = item.get('dados') or item.get('Data') or "N/A"
-                if data_doc == "N/A":
-                    ano_match = re.search(r'20\d{2}', nome_arq)
-                    data_doc = ano_match.group() if ano_match else "N/A"
-
-                corpus_cache.append({
-                    "Fonte": nome_arq,
-                    "Data": data_doc,
-                    "Reunião": item.get('nome_reuniao') or item.get('reuniao') or "Ata de Reunião",
-                    "Linhas": linhas
-                })
-        barra_progresso.progress((i + 1) / len(lista_arquivos))
-
-    with open(CAMINHO_CACHE, 'w', encoding='utf-8') as f:
-        json.dump(corpus_cache, f, ensure_ascii=False, indent=2)
-
-    texto_progresso.empty()
-    barra_progresso.empty()
-    carregar_corpus_memoria.clear()
-    return True
-
-
 # --- NOVIDADE: O Olho de Hórus do Arquivo (Carimbos de Tempo) ---
 def get_carimbo_tempo(caminho):
     """Lê a dados/hora exata da última modificação do arquivo no sistema."""
@@ -116,7 +71,11 @@ def get_carimbo_tempo(caminho):
 def carregar_corpus_memoria(carimbo_cache):
     if os.path.exists(CAMINHO_CACHE):
         with open(CAMINHO_CACHE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            dados = json.load(f)
+            # 🆕 Se for o cache particionado (dicionário), achata para o buscador varrer tudo
+            if isinstance(dados, dict):
+                return [doc for lista_docs in dados.values() for doc in lista_docs]
+            return dados
     return []
 
 
@@ -161,7 +120,9 @@ if senha_admin == config_ambiente.SENHA_ADMIN:
     st.sidebar.warning("Modo Administrador Ativo")
     if st.sidebar.button("🔄 Reconstruir Cache (Geral)"):
         st.cache_data.clear()
-        with st.spinner("Lendo PDFs e extraindo metadados..."):
+
+        # 🆕 Ajuste leve: como removemos a função interna, usamos o spinner nativo do Streamlit
+        with st.spinner("Lendo PDFs e reconstruindo cérebro de buscas... Isso pode demorar alguns minutos."):
             if construir_cache_novo():
                 st.sidebar.success("Cache atualizado!")
                 st.rerun()
@@ -201,16 +162,14 @@ _, col_miolo, _ = st.columns([1, 6, 1])
 
 with col_miolo:
     st.markdown(
-        "<h3 style='text-align: center; color: #2C3E50; margin-bottom: 25px;'>🔍 Digite para buscar nas bases do CMTT</h3>",
+        f"<h3 style='text-align: center; color: #2C3E50; margin-bottom: 25px;'>🔍 Digite para buscar nas bases do {sigla_conselho}</h3>",
         unsafe_allow_html=True)
 
     # --- A MÁGICA DOS CARIMBOS DE TEMPO AQUI ---
-    # Captura a hora exata em que os arquivos foram alterados pela última vez
     carimbo_cache = get_carimbo_tempo(CAMINHO_CACHE)
     carimbo_mandatos = get_carimbo_tempo(CAMINHO_BASE_MANDATOS)
     carimbo_index = get_carimbo_tempo(CAMINHO_INDEX_EXCEL)
 
-    # O Streamlit agora compara a hora. Se for mais recente, ele lê tudo de novo sozinho!
     corpus_completo = carregar_corpus_memoria(carimbo_cache) + carregar_fontes_extras(carimbo_mandatos, carimbo_index)
 
     if corpus_completo:
@@ -281,6 +240,7 @@ if termo and corpus_completo:
                 return f"https://raw.githubusercontent.com/{usuario}/{repo}/{branch}/dados/base_dados/{nome_arquivo}"
             return ""
 
+
         # --- A) PREPARANDO A TABELA PARA O CSV (Limpa e com coluna de Link Original) ---
         df_csv = df_res.copy()
         df_csv['Link Original'] = df_csv['Fonte'].apply(gerar_url)
@@ -310,7 +270,7 @@ if termo and corpus_completo:
         # Botão de download usando o df_csv (Limpíssimo para Excel)
         csv_bytes = df_csv.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
         data_hoje = pd.Timestamp.now().strftime("%Y-%m-%d")
-        nome_arquivo_csv = f"busca_CMTT_{termo.replace(' ', '_')}_{data_hoje}.csv"
+        nome_arquivo_csv = f"busca_{sigla_conselho}_{termo.replace(' ', '_')}_{data_hoje}.csv"
 
         st.download_button(
             label="📊 Baixar Tabela de Resultados (CSV)",
