@@ -7,6 +7,7 @@ utilizando o motor NLP oficial do projeto para gerar insumos para o Excel.
 import os
 import pandas as pd
 from thefuzz import fuzz
+from utils.config_filtros import mapear_macro_forcas
 
 # Importando a inteligência da SUA arquitetura!
 from core import config_ambiente
@@ -23,14 +24,6 @@ CSV_VISITANTES = config_ambiente.CAMINHO_CSV_VISITANTES
 EXCEL_SAIDA = config_ambiente.CAMINHO_EXCEL_GRAFICOS
 
 os.makedirs(PASTA_GRAFICOS, exist_ok=True)
-
-def mapear_macro_forcas(segmento):
-    """Classifica os segmentos em categorias de poder para análise macro."""
-    seg = str(segmento).upper()
-    if 'SOCIEDADE CIVIL' in seg: return 'Sociedade Civil'
-    elif 'OPERADORES' in seg or 'SETOR EMPRESARIAL' in seg: return 'Operadores'
-    elif 'ÓRGÃO' in seg or 'PÚBLICO' in seg or 'MUNICIPAL' in seg: return 'Poder Público'
-    return 'Outros'
 
 # ==========================================
 # 2. MOTOR DE PROCESSAMENTO

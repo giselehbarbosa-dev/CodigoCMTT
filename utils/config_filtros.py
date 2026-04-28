@@ -1,6 +1,7 @@
 import re
 import unicodedata
 from datetime import datetime
+from core import config_ambiente
 
 # ==========================================
 # CONSTANTES DE DATAS
@@ -37,3 +38,14 @@ def converter_periodo_em_datas(nome_arquivo):
     except Exception:
         pass
     return datetime.min, datetime.min
+
+def mapear_macro_forcas(segmento):
+    """Classifica os segmentos dinamicamente baseada no mapa do config_ambiente."""
+    seg = str(segmento).upper()
+
+    # Percorre o dicionário do ambiente buscando correspondências
+    for forca, termos in config_ambiente.MAPA_MACRO_FORCAS.items():
+        if any(termo in seg for termo in termos):
+            return forca
+
+    return 'Outros'

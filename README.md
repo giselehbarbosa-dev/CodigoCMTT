@@ -2,8 +2,7 @@
 
 **Documentação Oficial da Arquitetura de Extração de Identidades e Busca em Larga Escala**
 
-O CMTT Pipeline evoluiu para um modelo de **Explainable AI (XAI)** estruturado em um framework **White-Label**. Em vez de uma caixa-preta de decisões, o sistema adota a estratégia de Alta Revogação (High Recall): ele busca todas as combinações possíveis de nomes para evitar perdas (falsos negativos), mas 'confessa' o que leu em uma coluna de auditoria, permitindo uma validação humana rápida e 100% segura.
-
+O CMTT Pipeline evoluiu para um modelo de **Explainable AI (XAI)** estruturado em um framework **White-Label** implementando a moderna Arquitetura Medalhão (Camadas Bronze, Prata e Ouro). Em vez de uma caixa-preta de decisões, o sistema adota a estratégia de Alta Revogação (High Recall): ele busca todas as combinações possíveis de nomes para evitar perdas (falsos negativos), mas 'confessa' o que leu em uma coluna de auditoria, permitindo um fluxo Human-in-the-Loop para validação humana rápida e 100% segura.
 🎯 **Objetivo:** Criar um pipeline automatizado e escalável capaz de ler atas em PDF do Conselho Municipal de Trânsito e Transporte (CMTT), extrair os nomes dos presentes, cruzar com a base oficial de conselheiros e classificar os participantes entre Oficiais, Históricos e Visitantes Externos, lidando com erros de digitação, lixo de chat e extração de texto sujo. Além disso, disponibilizar uma interface web de busca flexível (App Web) para consulta rápida em todo o acervo histórico.
 
 ---
@@ -71,20 +70,22 @@ O projeto foi refatorado sob o princípio de **Separação de Responsabilidades*
   * Mapeia a estrutura de poder do Conselho.
   * **O que faz:** Lê a planilha oficial de mandatos do Excel, entende quem tem direito a voto, estrutura a geometria de poder, agrupando titulares e suplentes por segmento/cadeira (usando chaves compostas) e gera JSONs determinísticos e padronizados para cada mandato. Possui blindagem contra cabeçalhos mal digitados e células vazias (NaN). Possui trava de Auditoria de Vacância (assinala cadeiras sem nome como "VAGO" em vez de excluí-las).
 * **`construtores/construtor_cache.py`:** O Moinho. Lê os PDFs pesados uma única vez e gera um Cérebro JSON super rápido (`.cache_corpus_atas.json`), evitando a releitura constante dos documentos pelos motores de IA.
+* **`construtores/construtor_dicionario.py`:** Data Governance. O Guardião de Metadados. Lê a base oficial e gera o Catálogo_de_Metadados_CMTT.xlsx, rastreando a evolução histórica de Secretarias/Órgãos e a alocação de Titulares e Suplentes ao longo de todos os mandatos.
 
-### 🏭 4. A Linha de Produção
+### 🏭 4. A Linha de Produção e Auditoria
 * **`motores/motor_extracao.py` (O Maestro)**
   * O arquivo principal que orquestra todos os outros.
   * Barra de Progresso: Implementação da tqdm para monitoramento visual do tempo de processamento das atas.
   * Auditoria XAI: Injeta a coluna Nome_na_Ata no CSV oficial, permitindo conferência humana instantânea de falsos positivos.
   * **O que faz:** Roda o loop principal pelas atas, aplica táticas "Anti-Negrito" e "Anti-Anexos" na leitura, chama o matcher para separar as entidades e exporta o resultado, ordenando perfeitamente a lista alfabética e ignorando acentos. Aplica o **Bypass Ninja**: Lê o texto bruto linha a linha para curar a "cegueira" da IA em tabelas espremidas do PDF, garantindo a captura de 100% dos conselheiros presentes.
+* **`motores/atualizador_bases.py` :** O Consolidador - Camada Prata. Peça-chave do ciclo Human-in-the-Loop. Lê o gabarito preenchido pela equipe de auditoria na Camada Staging, corrige presenças faltantes, remove falsos-visitantes e gera as bases _conferido.csv. Garante a Rastreabilidade Absoluta (Data Lineage) sem sobrescrever os dados lidos pela máquina.
 * **`motores/motor_tematico.py`:** Aplica a técnica de *Extração Inversa* (usando a base de pessoas como escudo) e minera Organizações da Sociedade Civil (OSCs) e os principais temas debatidos na ata via spaCy.
 * **`motores/atualizar_cache_auto.py`:** Orquestrador que roda em segundo plano para manter o cérebro JSON atualizado.
 
-### 📊 5. Interface e Geradores de Produtos
+### 📊 5. Interface e Geradores de Produtos (Camada Ouro)
 * Módulos geradores de relatórios.
-* **`analisadores/relatorio_cadeiras.py`:** Gera a linha do tempo (Matriz) de presença, calcula a Taxa de Absenteísmo (%) e o Ranking de Rotatividade por cadeira.
-* **`analisadores/relatorio_visitantes.py`:** Consolida as frequências de visitantes externos e históricos, criando o "Ranking de Lobby/Ativismo" (pessoas que foram a mais de 1 reunião).
+* **`analisadores/relatorio_cadeiras.py`:** Orquestrador XAI duplo. Gera o Relatório Snapshot (Matriz Histórica da máquina) e exporta a planilha Auditoria_Humana_XAI.xlsx (Camada Staging) estruturada para preenchimento ágil da equipe de auditores.
+* **`analisadores/relatorio_visitantes.py`:** Consolida as frequências de visitantes, criando o "Ranking de Lobby/Ativismo" (pessoas que foram a mais de 1 reunião). Preserva o Snapshot da máquina na Fase 1.
 * **`analisadores/exportador_bases_graficos.py`:** Consolida dados complexos em planilhas limpas para dashboards.
 * **`analisadores/app_buscador.py` (O Mini Google do CMTT):** Interface web interativa construída com `Streamlit`.
     * Busca Inteligente: Utiliza um cache JSON e processamento via RegEx para realizar buscas ultra-rápidas em todo o acervo histórico (PDFs e Planilhas) simultaneamente.
@@ -93,7 +94,7 @@ O projeto foi refatorado sob o princípio de **Separação de Responsabilidades*
 * **`analisadores/_arquivados/`:** Scripts geradores de gráficos analíticos com Plotly e NetworkX (Radar de Paridade, Sankey de Funil, Teia de Lobby).
 ---
 
-## 🗄️ Ecossistema de Dados e Entregáveis
+## 🗄️ Ecossistema de Dados e Entregáveis (Medallion Architecture)
 
 O projeto divide estritamente o que é "Meio" e o que é "Fim". Os arquivos gerados ficam prontos para Excel ou PowerBI:
 
@@ -101,14 +102,14 @@ O projeto divide estritamente o que é "Meio" e o que é "Fim". Os arquivos gera
 * 📁 **`dados/` (O Data Lake):**
   * `base_dados/`: Os PDFs brutos e planilhas oficiais.
   * `configs/`: Regras e mapeamentos JSON gerados pelos construtores.
-  * `processados/`: Resultados do motor (`presenca_oficial.csv` usando marcação binária 1/0; e `visitantes_geral.csv` como *One Big Table* agrupando histórico de externos).
-* 📁 **`outputs/` (As Entregas Finais):** Guarda os produtos de alto nível gerados pelos analisadores, divididos nas pastas `relatorios/` (Tabelas Excel) e `graficos/` (Painéis interativos HTML e Imagens estáticas).
+  * `processados/`: A fornalha de dados. Guarda os resultados brutos do motor (Camada Bronze: presenca_oficial.csv e visitantes_geral.csv), a ferramenta de auditoria manual (Auditoria_Humana_XAI.xlsx) e os dados auditados e consolidados (Camada Prata: *_conferido.csv).
+* 📁 **`outputs/` (As Entregas Finais - Camada Ouro):** Guarda os produtos de alto nível formatados e prontos para leitura humana, divididos nas pastas relatorios/ (Tabelas Excel, Catálogo de Metadados) e graficos/ (Painéis interativos HTML e Imagens estáticas). Ninguém edita arquivos nesta pasta.
 
 ## 💾 Produtos de Dados Gerados (Outputs)
 Ao rodar o `motor_extracao.py`, o sistema gera duas bases de dados no formato CSV na pasta `dados/processados/` (prontas para Excel ou PowerBI):
 
-1. **`presenca_oficial.csv`:** Apenas conselheiros ativos no mandato da ata, com marcação binária (1 para presente, 0 para ausente). Inclui as colunas Periodo_Mandato (para facilitar gráficos temporais) e Nome_na_Ata para auditoria.
-2. **`visitantes_geral.csv`:** (One Big Table) - Unificação das antigas bases de históricos e externos. Centraliza todos os não-conselheiros daquela ata em um único arquivo, classificando-os via coluna Tipo_Visitante. Puxa automaticamente o histórico completo (Mandatos anteriores, Segmentos e Órgãos) de quem já passou pelo conselho.
+1. **`presenca_oficial.csv`:** (Bronze e Prata) Apenas conselheiros ativos no mandato da ata, com marcação binária (1 para presente, 0 para ausente). Inclui as colunas Periodo_Mandato (para facilitar gráficos temporais) e Nome_na_Ata para auditoria.
+2. **`visitantes_geral.csv`:** (Bronze e Prata - One Big Table) Unificação das antigas bases de históricos e externos. Centraliza todos os não-conselheiros daquela ata em um único arquivo, classificando-os via coluna Tipo_Visitante. Puxa automaticamente o histórico completo (Mandatos anteriores, Segmentos e Órgãos) de quem já passou pelo conselho.
 
 ---
 
@@ -136,14 +137,20 @@ python coletores/coletor_excel.py
 python construtores/construtor_conselheiros.py
 python construtores/construtor_index.py
 python construtores/construtor_cache.py
+python construtores/construtor_dicionario.py  # Gera o Catálogo de Metadados
 
-# 3. Mineração NLP e Cruzamento de Dados (A ordem aqui é obrigatória)
+# 3. Mineração NLP e Cruzamento de Dados (Fase 1: Snapshot da IA - Camada Bronze)
 python motores/motor_extracao.py
 python motores/motor_tematico.py
+python analisadores/relatorio_cadeiras.py     # Gera a matriz base e a planilha de auditoria
+python analisadores/relatorio_visitantes.py   # Gera o ranking inicial do lobby
 
-# 4. Geração de Painéis Analíticos
-python analisadores/relatorio_cadeiras.py
-python analisadores/relatorio_visitantes.py
+# 4. Human-in-the-Loop (A Auditoria)
+# -> O usuário humano abre "dados/processados/Auditoria_Humana_XAI.xlsx", preenche P ou V e salva.
+
+# 5. Consolidação (Fase 2: Camadas Prata e Ouro)
+python motores/atualizador_bases.py           # Lê as correções e gera os CSVs conferidos
+# Após as bases conferidas, os relatórios finais (PowerBI/Excel) podem ser gerados.
 python analisadores/exportador_bases_graficos.py
 ```
 

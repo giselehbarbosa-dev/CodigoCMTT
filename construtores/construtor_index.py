@@ -30,7 +30,8 @@ def extrair_numero_do_pdf(nome_arquivo):
 
 def normalizar_data(data_str):
     if not isinstance(data_str, str): data_str = str(data_str)
-    limpo = re.sub(r'(?i)dados:|em:|dia:', '', data_str).split()[0].strip().rstrip('.,')
+    # CORREÇÃO 1: Adicionado 'data:' na regra de limpeza para não bugar o datetime
+    limpo = re.sub(r'(?i)data:|dados:|em:|dia:', '', data_str).split()[0].strip().rstrip('.,')
     for fmt in ["%d/%m/%Y", "%d.%m.%Y", "%Y-%m-%d", "%d-%m-%Y", "%d/%m/%y"]:
         try:
             return datetime.strptime(limpo, fmt)
@@ -90,7 +91,8 @@ def processar_index_excel():
             reuniao_atual = {"titulo": linha_texto, "data_obj": None, "local": "Não informado"}
             continue
 
-        if "dados:" in linha_clean or "em:" in linha_clean:
+        # CORREÇÃO 2: Adicionado 'data:' na verificação para o robô achar a linha
+        if "data:" in linha_clean or "dados:" in linha_clean or "em:" in linha_clean:
             dt = normalizar_data(linha_texto)
             if dt and reuniao_atual: reuniao_atual["data_obj"] = dt
 

@@ -100,6 +100,12 @@ GITHUB_BRANCH = os.getenv("GITHUB_BRANCH", "main")
 REGRAS_CONSELHO = {
     "sigla": "CMTT",
     "url_base_site": "https://prefeitura.sp.gov.br/mobilidade/w/participacao_social/215759",
+
+    # 🆕 NOVAS REGRAS DE LEITURA (Escalabilidade da Auditoria)
+    "termo_reuniao_extra": r"Extraordinária",
+    "regex_arquivo_extra": r"extra_(\d+)",
+    "label_auditoria_ia": "Possível Conselheiro",
+
     "colunas_excel_index": [
         "Órgão", "Nome da Reunião", "Data", "Horário",
         "Local", "Link Reunião (Online)", "Ata"
@@ -163,3 +169,10 @@ if DIR_REDE_INTERNA:
         nome_limpo = ''.join(c for c in unicodedata.normalize('NFD', orgao) if unicodedata.category(c) != 'Mn')
         nome_pasta = re.sub(r'Camara_Tematica_(de_)?', 'CT_', nome_limpo.replace(" ", "_"), flags=re.IGNORECASE)
         MAPA_REDE_INTERNA[orgao] = os.path.join(DIR_REDE_INTERNA, nome_pasta)
+
+# Mapeamento de Macro Forças (White-Label)
+MAPA_MACRO_FORCAS = {
+    "Poder Público": ["ÓRGÃO", "PÚBLICO", "MUNICIPAL", "SECRETARIA", "ESTADUAL"],
+    "Operadores": ["OPERADORES", "SETOR EMPRESARIAL", "SINDICATO", "EMPRESA"],
+    "Sociedade Civil": ["SOCIEDADE CIVIL", "ONG", "ASSOCIAÇÃO", "COLETIVO", "MOVIMENTO"]
+}

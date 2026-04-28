@@ -12,66 +12,74 @@ except OSError:
     print("⚠️ ERRO: Modelo do spaCy não encontrado.")
 
 # ==========================================
-# 1. AS LISTAS DE BLOQUEIO INTELIGENTES
+# 1. AS LISTAS DE BLOQUEIO INTELIGENTES (CORRIGIDAS E ORDENADAS)
 # ==========================================
 
+# TUDO SEM ACENTO E SEM CEDILHA PARA O MATCH FUNCIONAR!
 PREFIXOS_BLOQUEIO = (
-    "abert", "abraç", "acess", "agradec", "ambient", "apresent", "aprov", "aproveit", "assessor", "associa",
+    "abert", "abrac", "acess", "agradec", "ambient", "apresent", "aprov", "aproveit", "assessor", "associa",
     "atend", "auditori", "avaliac", "avenid", "balancet", "benefici", "biciclet", "bilhet", "boletin", "cadunic",
-    "calcul", "calendari", "cert", "ciclov", "civil", "cidad", "clinic", "colegi", "coletiv", "comissa", "comite",
-    "comod", "comuni", "composica", "comunica", "concord", "conferenc", "conselh", "considera", "consumid", "convid",
-    "convit", "coorden", "cooper", "corajos", "corbucc", "corret", "cozinh", "critic", "cultur", "debat", "declaraca",
-    "deficienc", "demanda", "denunci", "departament", "deputad", "desafi", "desculp", "descrica", "desenvolviment",
-    "diari", "direto", "divers", "doutor", "educac", "eleic", "eleitor", "eletronic", "empres", "engenhar", "equipament",
-    "errad", "esclareciment", "escol", "esport", "esquec", "estad", "estat", "estrateg", "estud", "exempl", "executiv",
-    "expans", "express", "faculdad", "fatalidad", "fazend", "ferrament", "financ", "frot", "gentilez", "gerenc", "gesta",
-    "gratuidad", "habitac", "hospit", "implantaca", "inclusa", "inflaca", "inform", "institucion",
-    "institut", "inter", "justic", "legend", "liberd", "licenci", "licitac", "livr", "link", "logistic", "manutenca",
-    "margin", "membr", "mentir", "metodologi", "metropolitan", "metrovia", "microonib", "mini", "modernizaca", "moto",
-    "moviment", "munic", "obrigad", "observador", "observatori", "onibu", "opera", "orcament", "orga", "palavr",
-    "participa","passag", "paulist", "paut", "pedestr", "perfeit", "pergunt", "perimetr", "perspectiv", "planejament",
-    "plenari","polici", "poluica", "pont", "prac", "prefeit", "presid", "previsa", "prezad", "privad", "procediment",
-    "procurador", "prof", "program", "projet", "promoca", "promotor", "propositiv", "prosper", "public", "quadr",
-    "rapid", "realment", "recomenda", "reduca", "region", "regiment", "regulamentaca", "relator", "remuneraca",
-    "representant", "resoluca", "respond", "respost", "ressalv", "resultad", "resum", "reunia", "reveillon",
-    "rodizi", "saud", "secretar", "seguranc", "senador", "segur", "senhor", "sindicat", "sistem", "sociedad",
-    "sub", "sugesta", "super", "suplent", "tarif", "taxi", "tecnic", "tematic", "tent", "termin", "titular",
-    "transit", "transport", "turism", "uber", "universidad", "urban", "usuari", "veicul", "velocidad", "verdad",
-    "vereador", "verific", "viadut", "viari", "vias", "visao", "visitant"
+    "calcul", "calendari", "camer", "cert", "ciclov", "cidad", "civil", "clinic", "colegi", "coletiv",
+    "comissa", "comite", "comod", "composica", "comuni", "comunica", "concord", "conferenc", "conselh", "considera",
+    "consumid", "convid", "convit", "cooper", "coorden", "corajos", "corbucc", "corret", "cozinh", "critic",
+    "cultur", "debat", "declaraca", "deficienc", "demanda", "denunci", "departament", "deputad", "desafi", "descrica",
+    "desculp", "desenvolviment", "diari", "direto", "divers", "doutor", "educac", "eleic", "eleitor", "eletronic",
+    "empres", "engenhar", "equipament", "errad", "esclareciment", "escol", "esport", "esquec", "estad", "estat",
+    "estrateg", "estud", "executiv", "exempl", "expans", "express", "faculdad", "fatalidad", "fazend", "ferrament",
+    "financ", "frot", "gentilez", "gerenc", "gesta", "gratuidad", "habitac", "hospit", "implantaca", "inclusa",
+    "inflaca", "inform", "institucion", "institut", "inter", "justic", "legend", "liberd", "licenci", "licitac",
+    "link", "livr", "logistic", "manutenca", "margin", "membr", "mentir", "metodologi", "metropolitan", "metrovia",
+    "microonib", "mini", "modernizaca", "moto", "moviment", "munic", "obrigad", "observador", "observatori", "onibu",
+    "opera", "orcament", "orga", "palavr", "participa", "passag", "paulist", "paut", "pedestr", "perfeit",
+    "pergunt", "perimetr", "perspectiv", "planejament", "plenari", "polici", "poluica", "pont", "prac", "prefeit",
+    "presid", "previsa", "prezad", "privad", "procediment", "procurador", "prof", "program", "projet", "promoca",
+    "promotor", "propositiv", "prosper", "public", "quadr", "rapid", "realment", "recomenda", "reduca", "region",
+    "regiment", "regulamentaca", "relator", "remuneraca", "representant", "resoluca", "respond", "respost", "ressalv",
+    "resultad", "resum", "reunia", "reveillon", "rodizi", "saud", "secretar", "segur", "seguranc", "senador",
+    "senhor", "sindicat", "sistem", "sociedad", "sub", "sugesta", "super", "suplent", "tarif", "taxi",
+    "tecnic", "tematic", "tent", "termin", "titular", "transit", "transport", "turism", "uber", "universidad",
+    "urban", "usuari", "veicul", "velocidad", "verdad", "vereador", "verific", "viadut", "viari", "vias",
+    "visao", "visitant"
 )
 
+# 🛑 VÍRGULAS CORRIGIDAS E EM ORDEM ALFABÉTICA
 TERMOS_EXATOS = set([
-    "abc", "abd", "abraciclo", "absurdo", "acompanho", "alega", "ambiente", "antp", "aricanduva", "artesp", "audiencia"
-    "bairro", "berrini", "biogas", "brasil", "butanta", "cades", "camara", "camera", "capelinha", "centro", "cet",
-    "cid", "ciclocidade", "cmtt", "cmpu", "cnpu", "coab", "cocaia", "cohab", "companhia", "consumidor", "contran",
-    "cptm", "crc", "cupece", "dados", "decoro", "denatran", "detran", "dtp", "emtt", "emtu", "escola", "esporte", "faculdade",
-    "fazenda", "financas", "forum", "frota", "fundacao", "gabinete", "gigantesca", "gratuidade", "grupo", "guaianases",
-    "hospital", "ibirapuera", "idec", "idosos", "iguatemi", "iii", "imirim", "infraestrutura", "instituto", "ipiranga",
-    "itaquera", "jabaquara", "jacana", "justica", "justo", "lapa", "lazer", "legenda", "lei", "leste",
-    "local", "logica", "logistica", "logradouro", "marginal", "marketing", "meio", "metro", "microonibus", "norte",
-    "obras", "oeste", "oms", "ong", "ongs", "onu", "parabens", "parelheiros", "passe", "pirajussara", "pirituba",
-    "programa", "prouni", "rede", "regiao", "resumo", "rio de janeiro", "tiete", "sampape", "sapopemba", "simtetaxis",
-    "sinalisa", "sintetaxis", "smdhc", "smdu","sindimotosp", "smt", "sp", "sptrans", "spurbanuss", "sul", "sumare",
-    "tarifa", "tatuape", "taxi", "taxis","tecnico", "tiete", "trem", "tremembe", "unico", "usp", "vamos", "vai",
-    "verde", "vermelha", "vida", "zona"
+    "abc", "abd", "abraciclo", "absurdo", "acompanho", "alega", "ambiente", "antp", "aricanduva", "artesp",
+    "audiencia", "bairro", "berrini", "biogas", "brasil", "butanta", "cades", "camara", "capelinha", "centro",
+    "cet", "ciclocidade", "cid", "cmpu", "cmtt", "cnpu", "coab", "cocaia", "cohab", "companhia",
+    "consumidor", "contran", "cptm", "crc", "cupece", "dados", "decoro", "denatran", "detran", "dtp",
+    "emtt", "emtu", "escola", "esporte", "faculdade", "fazenda", "financas", "forum", "frota", "fundacao",
+    "gabinete", "gigantesca", "gratuidade", "grupo", "guaianases", "hospital", "ibirapuera", "idec", "idosos", "iguatemi",
+    "iii", "imirim", "infraestrutura", "instituto", "ipiranga", "itaquera", "jabaquara", "jacana", "justica", "justo",
+    "lapa", "lazer", "legenda", "lei", "leste", "local", "logica", "logistica", "logradouro", "marginal",
+    "marketing", "meio", "metro", "microonibus", "norte", "obras", "oeste", "oms", "ong", "ongs",
+    "onu", "parabens", "parelheiros", "passe", "pirajussara", "pirituba", "programa", "prouni", "rede", "regiao",
+    "resumo", "rio de janeiro", "sampape", "sapopemba", "simtetaxis", "sinalisa", "sindimotosp", "sintetaxis", "smdhc", "smdu",
+    "smt", "sp", "sptrans", "spurbanuss", "sul", "sumare", "tarifa", "tatuape", "taxi", "taxis",
+    "tecnico", "tiete", "trem", "tremembe", "unico", "usp", "vai", "vamos", "verde", "vermelha",
+    "vida", "zona"
 ])
 
 PALAVRAS_BLOQUEIO = set([
-    "agora", "algo", "alguem", "ali", "amanha", "ante", "apenas", "apos", "aqui", "aquilo", "assim",
-    "ate", "bacana", "bastante", "beleza", "boa", "bola", "bom", "cada", "capa", "cara", "caso", "cedo",
-    "chat", "cita", "claro", "comecei", "como", "conforme", "consoante", "contra", "cop", "def", "deficiencia", "dersa",
-    "desde", "dia", "digo", "disse", "diz", "doc", "duvida", "ela", "elas", "ele", "eles", "elogio", "embora",
-    "emo", "encaro", "enem", "entao", "entre", "epi", "essa", "esse", "esta", "este", "exato", "fala", "falei",
-    "falo", "falou", "fato", "favor", "fies", "fim", "fip", "foi", "folha", "fora", "forma", "fui", "gente", "govern",
-    "gt", "hoje", "ideia", "idoso", "inclusive", "isso", "jeito", "joia", "lado", "legal", "licenca", "logo", "mac",
-    "mais","maneira", "mano", "mas", "menos", "meu", "minha", "mobilidade", "moca", "moco", "modo", "muito", "nada", "nao", "ninguem",
-    "noite", "nossa", "nosso", "nox", "oab", "obs", "oct", "ods", "oi", "ola", "onde", "ontem", "opa", "opiniao", "osc",
-    "oso", "para", "parte", "pec", "perante", "perdao", "pmi", "pois", "ponto", "por", "porque", "portanto",
-    "pouco", "poxa", "puc", "qual", "quando", "quanto", "que", "quem", "questao", "racial", "sa", "salvo", "segundo",
-    "sel", "sem", "seu", "show", "sim", "sinto", "sob", "sobre", "somente", "sua", "tac", "tacs", "talvez",
-    "tarde", "tchau", "teg", "tipo", "tudo", "umes", "umps", "usb", "valeu", "varios", "velho", "vista",
-    "voce", "voces", "vou", "wni", "wri", "youtube", "zap", "zero",
-    "pessoa", "pedestre", "ciclista"
+    "agora", "algo", "alemanha", "alguem", "ali", "amanha", "amarelo", "americana", "americano", "ante",
+    "apenas", "apos", "aqui", "aquilo", "art", "assim", "ate", "bacana", "bastante", "beleza",
+    "boa", "bola", "bom", "bone", "cada", "capa", "cara", "caso", "cedo", "chat",
+    "ciclista", "cita", "claro", "comecei", "como", "conforme", "consoante", "contra", "cop", "def",
+    "deficiencia", "dersa", "desde", "dia", "digo", "disse", "diz", "doc", "duvida", "ela",
+    "elas", "ele", "eles", "elogio", "embora", "emo", "encaro", "enem", "entao", "entre",
+    "epi", "essa", "esse", "esta", "este", "exato", "fala", "falei", "falo", "falou",
+    "fato", "favor", "fies", "fim", "fip", "foi", "folha", "fora", "forma", "fui",
+    "gente", "govern", "gt", "hoje", "ideia", "idoso", "inclusive", "isso", "jeito", "joia",
+    "lado", "legal", "licenca", "logo", "mac", "mais", "maneira", "mano", "mas", "menos",
+    "meu", "minha", "mobilidade", "moca", "moco", "modo", "muito", "nada", "nao", "ninguem",
+    "noite", "nossa", "nosso", "nox", "oab", "obs", "oct", "ods", "oi", "ola",
+    "onde", "ontem", "opa", "opiniao", "osc", "oso", "para", "parte", "pec", "pedestre",
+    "perante", "perdao", "pessoa", "pmi", "pois", "ponto", "por", "porque", "portanto", "pouco",
+    "poxa", "puc", "qual", "quando", "quanto", "que", "quem", "questao", "racial", "sa",
+    "salvo", "segundo", "sel", "sem", "seu", "show", "sim", "sinto", "sob", "sobre",
+    "somente", "sua", "tac", "tacs", "talvez", "tarde", "tchau", "teg", "tipo", "tudo",
+    "umes", "umps", "usb", "valeu", "varios", "velho", "vista", "voce", "voces", "vou",
+    "wni", "wri", "youtube", "zap", "zero"
 ])
 
 TITULOS_REMOVER = set([
@@ -118,6 +126,11 @@ def limpar_sujeira_basica(texto):
 
 
 def eh_sigla_ou_lixo(texto):
+    # Se a palavra inteira estiver em MAIÚSCULO e tiver mais de 2 letras, bloqueia (Ex: ABNT, APABESP)
+    # Exceção: Se for nome curtinho estilo sigla (ex: ADA, EVA) que pode ser conselheira
+    if texto.isupper() and len(texto) > 3:
+        return True
+
     tem_vogal = bool(re.search(r'[aeiouyà-ú]', texto, re.IGNORECASE))
     if not tem_vogal: return True
     if re.search(r'[bcdfghjklmnpqrstvwxzç]{4,}', texto, re.IGNORECASE): return True
@@ -214,16 +227,34 @@ def linha_contem_oficial(linha_pdf, nome_oficial):
             best_idx = -1
 
             for i, lt in enumerate(linha_tokens):
-                # 🛑 REGRA 2: ANTI-ALUCINAÇÃO DE PALAVRAS CURTAS ("anos" não pode virar "anjos")
-                if len(lt) <= 4 and len(bt) >= 5:
-                    continue
+                # 🛑 REGRA 2 TURBINADA: ANTI-ALUCINAÇÃO MATEMÁTICA
+                # Se as palavras têm tamanhos diferentes, o fuzzy_ratio falha muito (ex: Regina x Regional).
+                # Vamos exigir que elas comecem iguais ou tenham match perfeito!
+                diferenca_tamanho = abs(len(bt) - len(lt))
 
-                score = fuzz.ratio(bt, lt)
+                score = 0
+                if bt == lt:
+                    score = 100
+                elif len(bt) > 3 and lt.startswith(bt):
+                    # Permite plural/feminino (ex: conselheiro -> conselheiros)
+                    score = 100
+                elif diferenca_tamanho <= 1:
+                    # Só usa a matemática (fuzz) se as palavras tiverem quase o mesmo tamanho (ex: Faria x Maria)
+                    score = fuzz.ratio(bt, lt)
+                else:
+                    score = 0  # Mata a comparação entre palavras muito diferentes!
+
                 if score > best_score:
                     best_score = score
                     best_idx = i
 
-            if best_score >= limite_fuzz:
+            # No caso "Maria" (5) x "Faria" (5), o score bate 80%.
+            # Mas se a palavra for muito comum (tipo Maria), o limite tem que subir!
+            limite_atual = limite_fuzz
+            if len(bt) <= 5:
+                limite_atual = max(limite_fuzz, 85)  # Palavras curtas precisam de 85% no mínimo
+
+            if best_score >= limite_atual:
                 indices_encontrados.append(best_idx)
 
         # Se não achou todos do bloco, falha imediatamente

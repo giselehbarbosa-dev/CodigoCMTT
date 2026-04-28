@@ -2,7 +2,7 @@
 =============================================================================
 🏛️ Projeto CMTT - Mineração e Análise de Dados
 Script: motores/motor_tematico.py
-Objetivo: Fase 4 - Mineração Temática e Extração de OSCs usando o Cache JSON
+Objetivo: Fase 4 - Mineração Temática com Frequência Relativa (Termômetro)
 =============================================================================
 """
 
@@ -18,81 +18,36 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from core import config_ambiente
 from utils.config_filtros import normalizar
-from utils.ferramentas_matcher import PREFIXOS_BLOQUEIO, TERMOS_EXATOS
 
-# Carregamento seguro do spaCy para extração de entidades (NER)
-try:
-    import spacy
-    nlp = spacy.load("pt_core_news_sm")
-except (ImportError, OSError):
-    print("⚠️ ERRO: Execute 'pip install spacy' e 'python -m spacy download pt_core_news_sm'")
-    sys.exit()
-
-# ==========================================
-# 1. FUNÇÕES DE BLINDAGEM E EXTRAÇÃO
-# ==========================================
-
-def criar_escudo_de_nomes():
-    """Cria lista de exclusão baseada nas presenças confirmadas da Fase 1."""
-    escudo = set()
-    for caminho in [config_ambiente.CAMINHO_CSV_PRESENCA, config_ambiente.CAMINHO_CSV_VISITANTES]:
-        if os.path.exists(caminho):
-            df = pd.read_csv(caminho, sep=';', encoding='utf-8-sig')
-            coluna = 'Nome' if 'presenca' in caminho else 'Nome_na_Ata'
-            for n in df[coluna].dropna().unique():
-                if str(n).upper() != "VAGO": escudo.add(normalizar(str(n)))
-    return escudo
-
-def extrair_entidades_e_temas(texto_frase, escudo):
-    """Aplica o dicionário temático e identifica OSCs ignorando o escudo de pessoas."""
+def extrair_temas_fidelidade(texto_frase):
+    """Aplica o dicionário temático com amarras rígidas de borda de palavra."""
     texto_norm = normalizar(texto_frase)
     temas_encontrados = []
 
-    # 1. Busca Temática Dinâmica (Lê do config_ambiente)
     for categoria, regex_lista in config_ambiente.DICIONARIO_TEMAS.items():
         for padrao in regex_lista:
-            if re.search(padrao, texto_norm, re.IGNORECASE):
+            # \b garante que o match ocorra apenas no INÍCIO de uma palavra.
+            padrao_rigido = rf"\b{padrao}"
+            if re.search(padrao_rigido, texto_norm, re.IGNORECASE):
                 temas_encontrados.append(categoria)
-                break # Achou um termo da categoria, pula para a próxima categoria
+                break
 
-    # 2. Extração de OSCs (IA) com Filtros Rigorosos
-    oscs_encontradas = []
-    doc = nlp(texto_frase)
-    for ent in doc.ents:
-        if ent.label_ in ["ORG", "LOC"]:
-            ent_norm = normalizar(ent.text)
-
-            # Filtro de tamanho e Extração Inversa (O Escudo)
-            if len(ent_norm) < 3 or ent_norm in escudo: continue
-
-            # Bloqueio de termos institucionais comuns (Evita capturar "Prefeitura")
-            if any(ent_norm.startswith(p) for p in PREFIXOS_BLOQUEIO) or ent_norm in TERMOS_EXATOS:
-                continue
-
-            oscs_encontradas.append(ent.text.strip(" ,.;:-\"\'"))
-
-    return list(set(temas_encontrados)), list(set(oscs_encontradas))
-
-# ==========================================
-# 2. O MAESTRO DA EXECUÇÃO
-# ==========================================
+    return list(set(temas_encontrados))
 
 def executar_tematico():
-    print("🛡️ MOTOR TEMÁTICO E OSC V51 (DESACOPLADO E PARTICIONADO) 🛡️")
+    print("🛡️ MOTOR TEMÁTICO V61 (TERMÔMETRO DE RELEVÂNCIA) 🛡️")
 
-    # Valida se o cache existe
     if not os.path.exists(config_ambiente.CAMINHO_CACHE_BUSCADOR):
-        print("❌ Cache não encontrado! Rode o construtor_cache.py ou o app_buscador.py primeiro.")
+        print("❌ Cache não encontrado! Rode o construtor_cache.py primeiro.")
         return
 
     print("⏳ Carregando cérebro de textos...")
     with open(config_ambiente.CAMINHO_CACHE_BUSCADOR, 'r', encoding='utf-8') as f:
         corpus_cache = json.load(f)
 
-    escudo = criar_escudo_de_nomes()
-    res_temas, res_oscs = [], []
+    res_temas = []
 
-    # 🆕 NOVA LÓGICA: Achata as prateleiras do cache para uma única lista
+    # Achata as prateleiras do cache para uma única lista de documentos
     documentos_para_processar = []
     if isinstance(corpus_cache, dict):
         for lista_docs in corpus_cache.values():
@@ -100,51 +55,87 @@ def executar_tematico():
     else:
         documentos_para_processar = corpus_cache
 
-    for documento in tqdm(documentos_para_processar, desc="Aplicando Inteligência (Temas e OSCs)"):
+    # ==========================================
+    # LÓGICA DE DOCUMENTO (E não mais de linha)
+    # ==========================================
+    for documento in tqdm(documentos_para_processar, desc="Analisando Relevância de Pautas"):
         pdf_nome = documento.get("Fonte", "Desconhecido")
         reuniao = documento.get("Reunião", "N/A")
         data_bruta = documento.get("Data", "N/A")
 
-        # Formata a data para AAAA/MM para facilitar dashboards
         try:
             data_ref = pd.to_datetime(data_bruta, format="%d/%m/%Y").strftime("%Y/%m")
         except:
             data_ref = data_bruta
 
-        # Pega as linhas prontas do cache e junta para a IA ler
         texto_ata = " ".join(documento.get("Linhas", []))
         frases = re.split(r'(?<=[.!?]) +', texto_ata)
 
+        # Cria um placar vazio para esta Ata específica
+        placar_ata = {cat: {"ocorrencias": 0, "exemplos": []} for cat in config_ambiente.DICIONARIO_TEMAS.keys()}
+        total_hits_ata = 0
+
+        # Varrer as frases e alimentar o placar da ata
         for frase in frases:
-            if len(frase) < 25: continue # Pula lixo visual curto
+            if len(frase) < 40:
+                continue
 
-            temas, oscs = extrair_entidades_e_temas(frase, escudo)
+            temas_na_frase = extrair_temas_fidelidade(frase)
 
-            for t in temas:
-                res_temas.append({
-                    "Reuniao": reuniao, "Data (AAAA/MM)": data_ref,
-                    "Arquivo": pdf_nome, "Trecho_na_Ata": frase.strip(), "Tema_Classificado": t
-                })
-            for o in oscs:
-                res_oscs.append({
-                    "Reuniao": reuniao, "Data (AAAA/MM)": data_ref,
-                    "Arquivo": pdf_nome, "OSC_Encontrada": o, "Contexto": frase.strip()
-                })
+            for t in temas_na_frase:
+                placar_ata[t]["ocorrencias"] += 1
+                total_hits_ata += 1
+                # Guarda apenas as 2 primeiras frases como prova documental (XAI)
+                if len(placar_ata[t]["exemplos"]) < 2:
+                    placar_ata[t]["exemplos"].append(frase.strip())
+
+        # ==========================================
+        # FILTRO DE RUÍDO E SALVAMENTO
+        # ==========================================
+        # Se a ata não teve nenhum tema do nosso dicionário, pula.
+        if total_hits_ata == 0:
+            continue
+
+        for tema, dados in placar_ata.items():
+            ocorrencias = dados["ocorrencias"]
+
+            if ocorrencias > 0:
+                relevancia_percentual = (ocorrencias / total_hits_ata) * 100
+
+                # 🛑 O SARRAFO DE QUALIDADE:
+                # Só considera "Pauta da Reunião" se representou pelo menos 5% do debate
+                # E se a palavra apareceu pelo menos 2 vezes (evita palavras soltas acidentais)
+                if relevancia_percentual >= 5.0 and ocorrencias >= 2:
+
+                    # Junta as frases de exemplo bonitinhas para a coluna de auditoria
+                    contexto_prova = " [...] ".join(dados["exemplos"])
+
+                    res_temas.append({
+                        "Arquivo": pdf_nome,
+                        "Reuniao": reuniao,
+                        "Data (AAAA/MM)": data_ref,
+                        "Tema_Classificado": tema,
+                        "Ocorrencias": ocorrencias,
+                        "Relevancia_(%)": round(relevancia_percentual, 1),
+                        "Trecho_Prova_(Auditoria)": contexto_prova
+                    })
 
     # ==========================================
-    # 3. EXPORTAÇÃO DOS PRODUTOS
+    # EXPORTAÇÃO DOS PRODUTOS
     # ==========================================
     print("\n💾 Consolidando arquivos...")
     os.makedirs(config_ambiente.CAMINHO_PROCESSADOS, exist_ok=True)
 
-    for dados, nome_arq in [(res_temas, "temas_debatidos.csv"), (res_oscs, "oscs_identificadas.csv")]:
-        if dados:
-            df = pd.DataFrame(dados).drop_duplicates()
-            caminho = os.path.join(config_ambiente.CAMINHO_PROCESSADOS, nome_arq)
-            df.to_csv(caminho, index=False, sep=';', encoding='utf-8-sig')
-            print(f"✅ {len(df)} registros salvos em {nome_arq}")
-        else:
-            print(f"⚠️ Nenhum dado encontrado para gerar {nome_arq}")
+    if res_temas:
+        # Ordena para ficar bonito no CSV (Por ata e depois por relevância do tema)
+        df = pd.DataFrame(res_temas)
+        df = df.sort_values(by=["Arquivo", "Relevancia_(%)"], ascending=[True, False])
+
+        caminho = os.path.join(config_ambiente.CAMINHO_PROCESSADOS, "temas_debatidos.csv")
+        df.to_csv(caminho, index=False, sep=';', encoding='utf-8-sig')
+        print(f"✅ Arquivo salvo com sucesso! {len(df)} pautas principais identificadas no acervo.")
+    else:
+        print(f"⚠️ Nenhum tema principal alcançou o sarrafo de qualidade.")
 
 if __name__ == "__main__":
     executar_tematico()
