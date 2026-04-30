@@ -48,6 +48,7 @@ def atualizar_bases_com_auditoria():
     col_assoc_vis = 'Nome_Oficial_Associado' if 'Nome_Oficial_Associado' in df_vis.columns else 'Nome_Associado'
     alteracoes_presente = 0
     alteracoes_visitante = 0
+    alteracoes_descarte = 0
 
     for _, row in df_preenchido.iterrows():
         resposta = str(row[coluna_humana]).strip().upper()
@@ -71,6 +72,11 @@ def atualizar_bases_com_auditoria():
         elif resposta == 'V':
             alteracoes_visitante += 1
 
+        elif resposta == '-':
+            mascara_vis = (df_vis['Data'] == data_ata) & (df_vis[col_assoc_vis].str.strip() == nome)
+            df_vis = df_vis[~mascara_vis]
+            alteracoes_descarte += 1
+
     caminho_pres_conferido = caminho_presenca.replace('.csv', '_conferido.csv')
     caminho_vis_conferido = caminho_visitantes.replace('.csv', '_conferido.csv')
 
@@ -81,6 +87,7 @@ def atualizar_bases_com_auditoria():
     print("📊 RELATÓRIO DA AUDITORIA APLICADA:")
     print(f" 🟩 Faltas corrigidas para PRESENÇA: {alteracoes_presente}")
     print(f" 🟦 Suspeitas confirmadas como VISITANTE: {alteracoes_visitante}")
+    print(f" 🗑️ Fragmentos apagados (DESCARTE): {alteracoes_descarte}")
     print("==========================================================")
     print(f"💾 Base Prata salva com sucesso!")
 
