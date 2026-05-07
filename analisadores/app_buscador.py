@@ -51,7 +51,7 @@ estilo_customizado = """
         position: sticky !important;
         top: 45px !important; 
         z-index: 999 !important;
-        background-color: transparent !important; /* CORREÇÃO: Fundo transparente conforme pedido */
+        background-color: transparent !important; /* CORREÇÃO: Fundo transparente */
         padding-top: 15px;
         padding-bottom: 10px;
         border-bottom: 2px solid #f0f2f6;
@@ -242,6 +242,8 @@ with tab_busca:
 # ABA 2: PAINEL TEMÁTICO
 # ==============================================================================
 with tab_temas:
+    # CORREÇÃO: O Try/Except agora cobre apenas a leitura de arquivos (Bloqueia erros de Syntax)
+    dados_carregados = False
     try:
         df_evolucao = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_evolucao_anual.csv"),
                                   sep=';', encoding='utf-8-sig')
@@ -250,10 +252,10 @@ with tab_temas:
         df_palavras = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_nuvem_palavras.csv"),
                                   sep=';', encoding='utf-8-sig')
         dados_carregados = True
-    except Exception:
-        st.warning("⚠️ Dados não encontrados. Rode os motores de análise primeiro.")
-        dados_carregados = False
+    except Exception as e:
+        st.warning(f"⚠️ Dados não encontrados. Rode os motores de análise primeiro. Detalhe: {e}")
 
+    # Se os dados carregaram com sucesso, montamos o dashboard!
     if dados_carregados:
         df_evolucao['Tema'] = df_evolucao['Tema_Classificado'].apply(encurtar_nomes_temas)
         df_debatidos['Tema'] = df_debatidos['Tema_Classificado'].apply(encurtar_nomes_temas)
@@ -263,7 +265,8 @@ with tab_temas:
         temas_todos = sorted(df_evolucao['Tema'].unique())
         paleta = px.colors.qualitative.Alphabet + px.colors.qualitative.Vivid
         mapa_cores = {t: paleta[i % len(paleta)] for i, t in enumerate(temas_todos)}
-        if "Segurança Viária" in mapa_cores: mapa_cores["Segurança Viária"] = "#D4AF37"
+        if "Segurança Viária" in mapa_cores:
+            mapa_cores["Segurança Viária"] = "#D4AF37"
 
         col_f1, col_f2 = st.columns([2, 1])
         with col_f1:
@@ -274,38 +277,59 @@ with tab_temas:
 
         if temas_sel and anos_sel:
             st.write("---")
-            df_evo = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
+            df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
+            df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
 
+            # --- GRÁFICO 1: EVOLUÇÃO ---
             st.subheader("📈 Evolução da Relevância Média Anual (Série Completa)")
-            fig_evo = px.line(df_evo, x='Ano', y='Relevancia_Media_Anual', color='Tema', markers=True,
-                              color_discrete_map=mapa_cores, template="plotly_white")
-            fig_evo.update_xaxes(type='category')
-            fig_evo.update_layout(legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=-0.15),
-                                  legend_title_text="", margin=dict(l=200))
+            fig_evo = px.line(
+                df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
+                markers=True, color_discrete_map=mapa_cores,
+                labels={'Relevancia_Media_Anual': 'Relevância (%)', 'Ano': 'Ano', 'Tema': 'Assunto'},
+                template="plotly_white"
+            )
+            fig_evo.update_xaxes(type='category', tickmode='linear')
+            fig_evo.update_layout(
+                legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=-0.15),
+                legend_title_text="", margin=dict(l=200)
+            )
             st.plotly_chart(fig_evo, use_container_width=True, config={'locale': 'pt-BR'})
 
+            st.write("---")
             col_g2, col_g3 = st.columns(2)
 
+            # --- GRÁFICO 2: BARRAS ---
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
-                df_deb_f = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
-                contagem = df_deb_f.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values('Qtd')
+                contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
+                    'Qtd')
                 contagem['Cor'] = contagem['Tema'].apply(lambda t: mapa_cores.get(t) if t in temas_sel else '#EAEAEA')
-                fig_bar = px.bar(contagem, x='Qtd', y='Tema', orientation='h', text='Qtd', template="plotly_white")
+                fig_bar = px.bar(
+                    contagem, x='Qtd', y='Tema', orientation='h', text='Qtd',
+                    labels={'Qtd': 'Reuniões', 'Tema': ''}, template="plotly_white"
+                )
                 fig_bar.update_traces(marker_color=contagem['Cor'])
-                fig_bar.update_layout(height=450, showlegend=False, margin=dict(l=0, r=10, t=30, b=0))
+                fig_bar.update_layout(
+                    showlegend=False,
+                    height=450,
+                    margin=dict(l=0, r=10, t=20, b=0),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
+                )
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
+            # --- GRÁFICO 3: NUVEM DE PALAVRAS LIMPA ---
             with col_g3:
                 st.subheader("☁️ Nuvem de Palavras")
-                stopwords = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante', 'representantes']
-                df_p_f = df_palavras[~df_palavras['Palavra'].str.lower().isin(stopwords)]
-                top_p = df_p_f.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
+                stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
+                                'representantes']
+                df_pal_limpo = df_palavras[~df_palavras['Palavra'].str.lower().isin(stopwords_bi)]
+                top_p = df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
 
                 if not top_p.empty:
                     freq_dict = dict(zip(top_p['Palavra'], top_p['Vezes_Ativada']))
-                    idx_max = df_p_f.groupby('Palavra')['Vezes_Ativada'].idxmax()
-                    tema_pal = df_p_f.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')['Tema'].to_dict()
+                    idx_max = df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].idxmax()
+                    tema_pal = df_pal_limpo.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')['Tema'].to_dict()
 
 
                     def cor_func(word, **kwargs):
@@ -313,25 +337,26 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_sel else "#EAEAEA"
 
 
-                    # CORREÇÃO: Sem máscara distorcida, fonte limpa e legível, com margem respirável
+                    # CORREÇÃO: Sem máscara e com min_font_size maior para garantir a leitura perfeita
                     wc = WordCloud(
                         width=800, height=450,
                         background_color=None, mode="RGBA",
                         margin=5,
                         prefer_horizontal=0.9,
                         max_words=120,
-                        min_font_size=14,  # Garante que nada fique microscópico
+                        min_font_size=14,
                         max_font_size=85,
                         color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
 
                     fig, ax = plt.subplots(figsize=(8, 4.5), facecolor='none')
-                    ax.imshow(wc, interpolation='bilinear');
+                    ax.imshow(wc, interpolation='bilinear')
                     ax.axis('off')
                     st.pyplot(fig, clear_figure=True, transparent=True)
+                else:
+                    st.info("Nenhuma palavra encontrada.")
+        else:
+            st.info("👆 Selecione os filtros acima.")
 
-    except Exception as e:
-    st.error(f"Erro ao carregar dados: {e}")
-
-with tab_frequencia: st.info("🚧 Em construção: Absenteísmo e Interesse por Segmento.")
-with tab_catalogo: st.info("🚧 Em construção: Evolução de Secretarias e Histórico de Conselheiros.")
+with tab_frequencia: st.info("🚧 Em construção.")
+with tab_catalogo: st.info("🚧 Em construção.")
