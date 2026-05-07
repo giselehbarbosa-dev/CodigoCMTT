@@ -112,16 +112,10 @@ if senha_admin == config_ambiente.SENHA_ADMIN:
     st.sidebar.warning("Modo Administrador Ativo")
     if st.sidebar.button("🔄 Reconstruir Cache (Geral)"):
         st.cache_data.clear()
-        with st.spinner("Lendo PDFs e reconstruindo cérebro de buscas... Isso pode demorar alguns minutos."):
+        with st.spinner("Lendo PDFs e reconstruindo cérebro de buscas..."):
             if construir_cache_novo():
                 st.sidebar.success("Cache atualizado!")
                 st.rerun()
-else:
-    if os.path.exists(CAMINHO_CACHE):
-        st.sidebar.success("✅ Sistema Pronto")
-    else:
-        st.sidebar.error("⚠️ Cache não encontrado. Contate o administrador.")
-st.sidebar.markdown("---")
 
 # --- Cabeçalho e Logos ---
 caminho_logo1 = config_ambiente.CAMINHO_LOGO1
@@ -148,14 +142,12 @@ tab_busca, tab_temas, tab_frequencia, tab_catalogo = st.tabs([
     "🔍 Buscador de Atas", "📊 Painel Temático", "👥 Frequência e Interesse", "📚 Catálogo Histórico"
 ])
 
-# ==============================================================================
 # ABA 1: BUSCADOR
-# ==============================================================================
 with tab_busca:
     _, col_miolo, _ = st.columns([1, 6, 1])
     with col_miolo:
         st.markdown(
-            f"<h3 style='text-align: center; color: #2C3E50; margin-bottom: 25px;'>🔍 Digite para buscar nas bases do {sigla_conselho}</h3>",
+            f"<h3 style='text-align: center; color: #2C3E50; margin-bottom: 25px;'>🔍 Pesquise nas bases do {sigla_conselho}</h3>",
             unsafe_allow_html=True)
         carimbo_cache, carimbo_mandatos, carimbo_index = get_carimbo_tempo(CAMINHO_CACHE), get_carimbo_tempo(
             CAMINHO_BASE_MANDATOS), get_carimbo_tempo(CAMINHO_INDEX_EXCEL)
@@ -163,28 +155,27 @@ with tab_busca:
                                                                                           carimbo_index)
 
         if corpus_completo:
-            termo = st.text_input("Busca Oculta", label_visibility="collapsed", placeholder="O que você procura?")
+            termo = st.text_input("Digite sua busca", label_visibility="collapsed", placeholder="O que você procura?")
             col_f_ano, col_f_ata = st.columns(2)
             with col_f_ano:
                 anos_unicos = sorted(list(set(str(doc.get("Data", "N/A")) for doc in corpus_completo)), reverse=True)
                 anos_selecionados = st.multiselect("📅 Filtrar por Ano:", options=anos_unicos, default=[],
-                                                   placeholder="Selecione ou deixe vazio para todos")
+                                                   placeholder="Todos os anos")
             with col_f_ata:
                 lista_atas_bruta = list(set(str(doc.get("Reunião", "N/A")) for doc in corpus_completo if
                                             doc.get("Reunião") != "Dados Estruturados"))
                 atas_unicas = sorted(lista_atas_bruta, key=ordenacao_natural)
-                atas_selecionadas = st.multiselect("📌 Filtrar por Reunião/Ata:", options=atas_unicas, default=[],
-                                                   placeholder="Selecione ou deixe vazio para todas")
+                atas_selecionadas = st.multiselect("📌 Filtrar por Ata:", options=atas_unicas, default=[],
+                                                   placeholder="Todas as atas")
 
             st.markdown(
-                "<p style='text-align: center; color: #6c757d; font-size: 16px; margin-top: 12px;'>💡 Dica: Use termos entre aspas para buscas específicas.</p>",
+                "<p style='text-align: center; color: #6c757d; font-size: 16px; margin-top: 12px;'>💡 Dica: Use termos entre aspas para buscas exatas.</p>",
                 unsafe_allow_html=True)
             _, col_btn, _ = st.columns([2, 1, 2])
             with col_btn:
-                st.button("PESQUISAR", width='stretch')
+                st.button("PESQUISAR", use_container_width=True)
         else:
-            termo = ""
-            st.warning("⚠️ Base de dados vazia. Reconstrua o cache na barra lateral.")
+            st.warning("⚠️ Base de dados vazia.")
 
     if termo and corpus_completo:
         st.write("---")
@@ -194,7 +185,7 @@ with tab_busca:
             data_doc, nome_ata = str(doc.get("Data", "N/A")), str(doc.get("Reunião", "N/A"))
             if anos_selecionados and data_doc not in anos_selecionados: continue
             if atas_selecionadas and nome_ata not in atas_selecionadas: continue
-            for linha in doc["Linhas"]:
+            for linha in doc["Lines" if "Lines" in doc else "Linhas"]:
                 if regex.search(linha):
                     resultados.append({"Fonte": doc.get("Fonte", "N/A"), "Data": data_doc, "Reunião/Origem": nome_ata,
                                        "Contexto": linha.strip()})
@@ -230,15 +221,12 @@ with tab_busca:
             st.write("---")
             csv_bytes = df_csv.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
             st.download_button("📊 Baixar Tabela (CSV)", data=csv_bytes,
-                               file_name=f"busca_CMTT_{termo.replace(' ', '_')}.csv", mime="text/csv", width='stretch')
-        else:
-            st.warning(f"∅ Nada encontrado para o termo '{termo}'.")
+                               file_name=f"busca_CMTT_{termo.replace(' ', '_')}.csv", mime="text/csv",
+                               use_container_width=True)
 
-# ==============================================================================
 # ABA 2: PAINEL TEMÁTICO
-# ==============================================================================
 with tab_temas:
-    st.markdown("## 📊 Análise Temática e Histórica das Pautas (Atualizado)")
+    st.markdown("## 📊 Análise Temática e Histórica")
     try:
         df_evolucao = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_evolucao_anual.csv"),
                                   sep=';', encoding='utf-8-sig')
@@ -248,7 +236,7 @@ with tab_temas:
                                   sep=';', encoding='utf-8-sig')
         dados_carregados = True
     except Exception:
-        st.warning("⚠️ Os dados não foram gerados. Rode o `relatorio_tematico.py` primeiro.")
+        st.warning("⚠️ Dados não encontrados. Rode os motores de análise primeiro.")
         dados_carregados = False
 
     if dados_carregados:
@@ -257,35 +245,41 @@ with tab_temas:
         df_debatidos['Ano'] = df_debatidos['Data (AAAA/MM)'].astype(str).str[:4]
         df_palavras['Tema'] = df_palavras['Tema'].apply(encurtar_nomes_temas)
 
+        # Paleta de Cores Estática
         temas_todos = sorted(df_evolucao['Tema'].unique())
         paleta = px.colors.qualitative.Alphabet + px.colors.qualitative.Vivid
         mapa_cores = {t: paleta[i % len(paleta)] for i, t in enumerate(temas_todos)}
 
+        # CORREÇÃO: Segurança Viária agora é Amarelo Escuro/Ouro para não sumir no cinza
+        if "Segurança Viária" in mapa_cores:
+            mapa_cores["Segurança Viária"] = "#D4AF37"
+
         col_t1, col_t2 = st.columns([2, 1])
         with col_t1:
-            temas_selecionados = st.multiselect("🎯 Selecione os Temas (Para Destacar):", options=temas_todos,
-                                                default=temas_todos, placeholder="Escolha os temas...")
+            temas_selecionados = st.multiselect("🎯 Temas para Destacar:", options=temas_todos, default=temas_todos,
+                                                placeholder="Selecione os temas...")
         with col_t2:
             anos_disp = sorted(df_evolucao['Ano'].astype(str).unique(), reverse=True)
-            anos_selecionados = st.multiselect("📅 Selecione os Anos:", options=anos_disp, default=anos_disp,
-                                               placeholder="Escolha os anos...")
+            anos_selecionados = st.multiselect("📅 Anos de Análise:", options=anos_disp, default=anos_disp,
+                                               placeholder="Selecione os anos...")
 
         if temas_selecionados and anos_selecionados:
             st.write("---")
-            # Ignora o filtro de ano para a linha evolutiva (para mostrar toda a história sempre)
-            df_evo_filtrado = df_evolucao[df_evolucao['Tema'].isin(temas_selecionados)].sort_values('Ano')
+            # Gráfico de linhas ignora o filtro de ano para mostrar o contexto completo
+            df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_selecionados)].sort_values('Ano')
 
-            df_deb_ano = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
-            df_pal_ano = df_palavras.copy()
+            df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
 
-            # --- GRÁFICO 1: EVOLUÇÃO TEMPORAL (HISTÓRICO COMPLETO) ---
+            # --- GRÁFICO 1: EVOLUÇÃO ---
             st.subheader("📈 Evolução da Relevância Média Anual (Série Completa)")
             fig_evo = px.line(
-                df_evo_filtrado, x='Ano', y='Relevancia_Media_Anual', color='Tema',
+                df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
                 markers=True, color_discrete_map=mapa_cores,
-                labels={'Relevancia_Media_Anual': 'Relevância Média (%)', 'Ano': 'Ano', 'Tema': 'Assunto'},
+                labels={'Relevancia_Media_Anual': 'Relevância (%)', 'Ano': 'Ano', 'Tema': 'Assunto'},
                 template="plotly_white"
             )
+            # CORREÇÃO: Força todos os anos no eixo X
+            fig_evo.update_xaxes(type='category', tickmode='linear')
             fig_evo.update_layout(
                 legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=-0.15),
                 legend_title_text="", margin=dict(l=200)
@@ -295,58 +289,53 @@ with tab_temas:
             st.write("---")
             col_g2, col_g3 = st.columns(2)
 
-            # --- GRÁFICO 2: CONTAGEM COM DESTAQUE ---
+            # --- GRÁFICO 2: BARRAS ---
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
-                st.caption("Frequência dos temas nas reuniões dos anos selecionados.")
-                contagem = df_deb_ano.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd_Reunioes').sort_values(
-                    'Qtd_Reunioes')
-                contagem['Cor_Destaque'] = contagem['Tema'].apply(
+                contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
+                    'Qtd')
+                contagem['Cor'] = contagem['Tema'].apply(
                     lambda t: mapa_cores.get(t) if t in temas_selecionados else '#EAEAEA')
-
                 fig_bar = px.bar(
-                    contagem, x='Qtd_Reunioes', y='Tema', orientation='h', text='Qtd_Reunioes',
-                    labels={'Qtd_Reunioes': 'Total de Reuniões', 'Tema': ''}, template="plotly_white"
+                    contagem, x='Qtd', y='Tema', orientation='h', text='Qtd',
+                    labels={'Qtd': 'Reuniões', 'Tema': ''}, template="plotly_white"
                 )
-                # Força o tamanho fixo de 550px de altura para bater com a Nuvem
-                fig_bar.update_traces(marker_color=contagem['Cor_Destaque'])
+                fig_bar.update_traces(marker_color=contagem['Cor'])
+                # CORREÇÃO: Alinhamento de altura com a Nuvem
                 fig_bar.update_layout(showlegend=False, height=550)
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
-            # --- GRÁFICO 3: NUVEM DE PALAVRAS ---
+            # --- GRÁFICO 3: NUVEM ---
             with col_g3:
                 st.subheader("☁️ Nuvem de Palavras (Gatilhos)")
-                st.caption("Termos que ativaram os temas; em cinza os não selecionados.")
                 stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
                                 'representantes']
-                df_pal_ano = df_pal_ano[~df_pal_ano['Palavra'].str.lower().isin(stopwords_bi)]
-                top_palavras = df_pal_ano.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
+                df_pal_limpo = df_palavras[~df_palavras['Palavra'].str.lower().isin(stopwords_bi)]
+                top_p = df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
 
-                if not top_palavras.empty:
-                    freq_dict = dict(zip(top_palavras['Palavra'], top_palavras['Vezes_Ativada']))
-                    idx_max = df_pal_ano.groupby('Palavra')['Vezes_Ativada'].idxmax()
-                    tema_das_palavras = df_pal_ano.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')[
-                        'Tema'].to_dict()
-
-
-                    def cor_por_tema(word, **kwargs):
-                        tema_alvo = tema_das_palavras.get(word)
-                        return mapa_cores.get(tema_alvo, "#333333") if tema_alvo in temas_selecionados else "#EAEAEA"
+                if not top_p.empty:
+                    freq_dict = dict(zip(top_p['Palavra'], top_p['Vezes_Ativada']))
+                    idx_max = df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].idxmax()
+                    tema_pal = df_pal_limpo.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')['Tema'].to_dict()
 
 
+                    def cor_func(word, **kwargs):
+                        t = tema_pal.get(word)
+                        return mapa_cores.get(t, "#333333") if t in temas_selecionados else "#EAEAEA"
+
+
+                    # CORREÇÃO: Alinhamento de altura com o Gráfico de Barras
                     wordcloud = WordCloud(
                         width=800, height=550, background_color='white', max_words=150,
-                        relative_scaling=0.3, max_font_size=70, min_font_size=10, color_func=cor_por_tema
+                        relative_scaling=0.3, max_font_size=70, color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
 
                     fig, ax = plt.subplots(figsize=(8, 5.5))
                     ax.imshow(wordcloud, interpolation='bilinear');
                     ax.axis('off')
                     st.pyplot(fig, clear_figure=True)
-                else:
-                    st.info("Nenhuma palavra encontrada.")
         else:
-            st.info("👆 Selecione Temas e Anos para visualizar.")
+            st.info("👆 Selecione os filtros acima.")
 
-with tab_frequencia: st.info("🚧 Em construção: Absenteísmo e Interesse por Segmento.")
-with tab_catalogo: st.info("🚧 Em construção: Evolução de Secretarias e Histórico de Conselheiros.")
+with tab_frequencia: st.info("🚧 Em construção.")
+with tab_catalogo: st.info("🚧 Em construção.")
