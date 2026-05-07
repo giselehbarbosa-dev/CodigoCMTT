@@ -281,8 +281,7 @@ with tab_temas:
                 df_evolucao['Ano'].astype(str).isin(anos_selecionados))]
             df_deb_filtrado = df_debatidos[(df_debatidos['Tema'].isin(temas_selecionados)) & (
                 df_debatidos['Ano'].astype(str).isin(anos_selecionados))]
-            df_pal_filtrado = df_palavras[(df_palavras['Tema'].isin(temas_selecionados)) & (
-                df_palavras['Ano'].astype(str).isin(anos_selecionados))]
+            df_pal_filtrado = df_palavras[df_palavras['Tema'].isin(temas_selecionados)]
 
             # --- GRÁFICO 1: EVOLUÇÃO TEMPORAL ---
             st.subheader("📈 Evolução da Relevância Média Anual")
