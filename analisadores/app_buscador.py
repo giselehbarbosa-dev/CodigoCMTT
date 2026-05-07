@@ -148,7 +148,9 @@ tab_busca, tab_temas, tab_frequencia, tab_catalogo = st.tabs([
     "🔍 Buscador de Atas", "📊 Painel Temático", "👥 Frequência e Interesse", "📚 Catálogo Histórico"
 ])
 
+# ==============================================================================
 # ABA 1: BUSCADOR
+# ==============================================================================
 with tab_busca:
     _, col_miolo, _ = st.columns([1, 6, 1])
     with col_miolo:
@@ -232,9 +234,11 @@ with tab_busca:
         else:
             st.warning(f"∅ Nada encontrado para o termo '{termo}'.")
 
+# ==============================================================================
 # ABA 2: PAINEL TEMÁTICO
+# ==============================================================================
 with tab_temas:
-    st.markdown("## 📊 Análise Temática e Histórica das Pautas")
+    st.markdown("## 📊 Análise Temática e Histórica das Pautas (Atualizado)")
     try:
         df_evolucao = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_evolucao_anual.csv"),
                                   sep=';', encoding='utf-8-sig')
@@ -268,7 +272,7 @@ with tab_temas:
 
         if temas_selecionados and anos_selecionados:
             st.write("---")
-            # 🆕 MELHORIA: Gráfico de linhas agora mostra todos os anos (ignora anos_selecionados)
+            # Ignora o filtro de ano para a linha evolutiva (para mostrar toda a história sempre)
             df_evo_filtrado = df_evolucao[df_evolucao['Tema'].isin(temas_selecionados)].sort_values('Ano')
 
             df_deb_ano = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
@@ -299,12 +303,14 @@ with tab_temas:
                     'Qtd_Reunioes')
                 contagem['Cor_Destaque'] = contagem['Tema'].apply(
                     lambda t: mapa_cores.get(t) if t in temas_selecionados else '#EAEAEA')
+
                 fig_bar = px.bar(
                     contagem, x='Qtd_Reunioes', y='Tema', orientation='h', text='Qtd_Reunioes',
                     labels={'Qtd_Reunioes': 'Total de Reuniões', 'Tema': ''}, template="plotly_white"
                 )
+                # Força o tamanho fixo de 550px de altura para bater com a Nuvem
                 fig_bar.update_traces(marker_color=contagem['Cor_Destaque'])
-                fig_bar.update_layout(showlegend=False)
+                fig_bar.update_layout(showlegend=False, height=550)
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
             # --- GRÁFICO 3: NUVEM DE PALAVRAS ---
@@ -315,6 +321,7 @@ with tab_temas:
                                 'representantes']
                 df_pal_ano = df_pal_ano[~df_pal_ano['Palavra'].str.lower().isin(stopwords_bi)]
                 top_palavras = df_pal_ano.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
+
                 if not top_palavras.empty:
                     freq_dict = dict(zip(top_palavras['Palavra'], top_palavras['Vezes_Ativada']))
                     idx_max = df_pal_ano.groupby('Palavra')['Vezes_Ativada'].idxmax()
@@ -331,6 +338,7 @@ with tab_temas:
                         width=800, height=550, background_color='white', max_words=150,
                         relative_scaling=0.3, max_font_size=70, min_font_size=10, color_func=cor_por_tema
                     ).generate_from_frequencies(freq_dict)
+
                     fig, ax = plt.subplots(figsize=(8, 5.5))
                     ax.imshow(wordcloud, interpolation='bilinear');
                     ax.axis('off')
