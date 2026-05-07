@@ -10,3 +10,5 @@ networkx
 kaleido
 requests
 beautifulsoup4
+plotly
+wordcloud
