@@ -31,7 +31,7 @@ def gerar_indice_interesse():
     if not os.path.exists(caminho_temas):
         print(f"❌ Base temática não encontrada em: {caminho_temas}")
         return
-    
+
     # 2. CARREGAMENTO DOS DADOS
     df_presenca = pd.read_csv(caminho_presenca, sep=';', encoding='utf-8-sig')
     df_temas = pd.read_csv(caminho_temas, sep=';', encoding='utf-8-sig')
