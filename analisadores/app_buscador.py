@@ -9,7 +9,6 @@ import streamlit as st
 import plotly.express as px
 import plotly.io as pio
 import matplotlib.pyplot as plt
-import numpy as np
 from wordcloud import WordCloud
 
 # Configura o Plotly para Português (Brasil)
@@ -47,12 +46,12 @@ estilo_customizado = """
     div[data-testid="stMultiSelect"] ul[role="listbox"] li#bui11 { display: none !important; }
     div[data-baseweb="select"] ul li:first-child { display: none !important; }
 
-    /* CORREÇÃO: FIXAR ABAS NO TOPO (Sticky em vez de Fixed) */
+    /* FIXAR ABAS NO TOPO (Sticky) SEM FUNDO BRANCO */
     .stTabs [data-baseweb="tab-list"] {
         position: sticky !important;
-        top: 45px !important; /* Fica logo abaixo da barra nativa do Streamlit */
+        top: 45px !important; 
         z-index: 999 !important;
-        background-color: #ffffff !important; /* Fundo branco para não misturar texto ao rolar */
+        background-color: transparent !important; /* CORREÇÃO: Fundo transparente conforme pedido */
         padding-top: 15px;
         padding-bottom: 10px;
         border-bottom: 2px solid #f0f2f6;
@@ -121,7 +120,7 @@ def carregar_fontes_extras(carimbo_mandatos, carimbo_index):
     return extras
 
 
-# --- Cabeçalho Lateralizado (Logo + Texto) ---
+# --- Cabeçalho Lateralizado (Logos na Caixa Branca + Texto) ---
 caminho_logo1 = config_ambiente.CAMINHO_LOGO1
 caminho_logo2 = config_ambiente.CAMINHO_LOGO2
 
@@ -132,7 +131,7 @@ try:
 
         html_header = f"""
         <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 20px; padding: 10px;">
-            <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px;">
                 <img src="data:image/png;base64,{b64_logo1}" style="height: 120px; width: auto;">
                 <img src="data:image/jpeg;base64,{b64_logo2}" style="height: 80px; width: auto;">
             </div>
@@ -314,17 +313,25 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_sel else "#EAEAEA"
 
 
-                    x, y = np.ogrid[:450, :800]
-                    mask = ((x - 225) ** 2 / (200 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
+                    # CORREÇÃO: Sem máscara distorcida, fonte limpa e legível, com margem respirável
+                    wc = WordCloud(
+                        width=800, height=450,
+                        background_color=None, mode="RGBA",
+                        margin=5,
+                        prefer_horizontal=0.9,
+                        max_words=120,
+                        min_font_size=14,  # Garante que nada fique microscópico
+                        max_font_size=85,
+                        color_func=cor_func
+                    ).generate_from_frequencies(freq_dict)
 
-                    wc = WordCloud(width=800, height=450, background_color=None, mode="RGBA", mask=mask, margin=10,
-                                   prefer_horizontal=0.85, color_func=cor_func).generate_from_frequencies(freq_dict)
                     fig, ax = plt.subplots(figsize=(8, 4.5), facecolor='none')
                     ax.imshow(wc, interpolation='bilinear');
                     ax.axis('off')
                     st.pyplot(fig, clear_figure=True, transparent=True)
-        else:
-            st.info("👆 Selecione os filtros acima.")
+
+    except Exception as e:
+    st.error(f"Erro ao carregar dados: {e}")
 
 with tab_frequencia: st.info("🚧 Em construção: Absenteísmo e Interesse por Segmento.")
 with tab_catalogo: st.info("🚧 Em construção: Evolução de Secretarias e Histórico de Conselheiros.")
