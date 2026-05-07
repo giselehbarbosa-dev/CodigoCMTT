@@ -52,6 +52,11 @@ def criar_padrao_flexivel(termo_busca):
     return re.compile(padrao, re.IGNORECASE)
 
 
+# 🆕 NOVA FUNÇÃO: Ordenação Natural (Conserta o bug do 1, 10, 2)
+def ordenacao_natural(texto):
+    return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', str(texto))]
+
+
 def get_carimbo_tempo(caminho):
     return os.path.getmtime(caminho) if os.path.exists(caminho) else 0
 
@@ -88,10 +93,13 @@ def carregar_fontes_extras(carimbo_mandatos, carimbo_index):
     return extras
 
 
+# 🆕 MELHORIA: Substituições exatas e precisas
 def encurtar_nomes_temas(tema):
     if not isinstance(tema, str): return tema
-    remocoes = ["Mobilidade Ativa: ", "Mobilidade Urbana: ", "Transporte Individual: ", "Transporte Público "]
-    for r in remocoes: tema = tema.replace(r, "")
+    tema = tema.replace("Mobilidade Ativa: ", "")
+    tema = tema.replace("Mobilidade Urbana: ", "")
+    tema = tema.replace("Transporte Individual: ", "")
+    tema = tema.replace("Transporte Público Coletivo", "Transporte Coletivo")
     return tema
 
 
@@ -158,7 +166,6 @@ with tab_busca:
         if corpus_completo:
             termo = st.text_input("Busca Oculta", label_visibility="collapsed", placeholder="O que você procura?")
 
-            # 🆕 MELHORIA 1: Dois filtros Lado a Lado (Ano e Ata)
             col_f_ano, col_f_ata = st.columns(2)
             with col_f_ano:
                 anos_unicos = sorted(list(set(str(doc.get("Data", "N/A")) for doc in corpus_completo)), reverse=True)
@@ -166,8 +173,10 @@ with tab_busca:
                                                    placeholder="Selecione ou deixe vazio para todos")
 
             with col_f_ata:
-                atas_unicas = sorted(list(set(str(doc.get("Reunião", "N/A")) for doc in corpus_completo if
-                                              doc.get("Reunião") != "Dados Estruturados")))
+                # 🆕 MELHORIA: Aplicando a Ordenação Natural na lista de atas do buscador!
+                lista_atas_bruta = list(set(str(doc.get("Reunião", "N/A")) for doc in corpus_completo if
+                                            doc.get("Reunião") != "Dados Estruturados"))
+                atas_unicas = sorted(lista_atas_bruta, key=ordenacao_natural)
                 atas_selecionadas = st.multiselect("📌 Filtrar por Reunião/Ata:", options=atas_unicas, default=[],
                                                    placeholder="Selecione ou deixe vazio para todas")
 
@@ -254,22 +263,20 @@ with tab_temas:
         dados_carregados = False
 
     if dados_carregados:
-        # 🆕 MELHORIA 8: Encurtar Títulos de Temas
         df_evolucao['Tema'] = df_evolucao['Tema_Classificado'].apply(encurtar_nomes_temas)
         df_debatidos['Tema'] = df_debatidos['Tema_Classificado'].apply(encurtar_nomes_temas)
         df_debatidos['Ano'] = df_debatidos['Data (AAAA/MM)'].astype(str).str[:4]
         df_palavras['Tema'] = df_palavras['Tema'].apply(encurtar_nomes_temas)
 
-        # 🆕 MELHORIA 4: Paleta de Cores Estática (Amarrando Gráficos e Nuvem)
+        # Paleta estática vinculada aos temas
         temas_todos = sorted(df_evolucao['Tema'].unique())
         paleta = px.colors.qualitative.Alphabet + px.colors.qualitative.Vivid
         mapa_cores = {t: paleta[i % len(paleta)] for i, t in enumerate(temas_todos)}
 
-        # 🆕 MELHORIAS 2 e 6: Filtros Lado a Lado, Todos Abertos por Padrão e Traduzidos
         col_t1, col_t2 = st.columns([2, 1])
         with col_t1:
-            temas_selecionados = st.multiselect("🎯 Selecione os Temas:", options=temas_todos, default=temas_todos,
-                                                placeholder="Escolha os temas...")
+            temas_selecionados = st.multiselect("🎯 Selecione os Temas (Para Destacar):", options=temas_todos,
+                                                default=temas_todos, placeholder="Escolha os temas...")
         with col_t2:
             anos_disp = sorted(df_evolucao['Ano'].astype(str).unique(), reverse=True)
             anos_selecionados = st.multiselect("📅 Selecione os Anos:", options=anos_disp, default=anos_disp,
@@ -277,11 +284,13 @@ with tab_temas:
 
         if temas_selecionados and anos_selecionados:
             st.write("---")
+            # Para a Evolução, mostramos apenas os selecionados para não virar um espaguete de 12 linhas
             df_evo_filtrado = df_evolucao[(df_evolucao['Tema'].isin(temas_selecionados)) & (
                 df_evolucao['Ano'].astype(str).isin(anos_selecionados))]
-            df_deb_filtrado = df_debatidos[(df_debatidos['Tema'].isin(temas_selecionados)) & (
-                df_debatidos['Ano'].astype(str).isin(anos_selecionados))]
-            df_pal_filtrado = df_palavras[df_palavras['Tema'].isin(temas_selecionados)]
+
+            # Para os Gráficos 2 e 3, filtramos APENAS por Ano. O "Filtro de Tema" apenas muda a COR (Destaque vs Cinza)
+            df_deb_ano = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
+            df_pal_ano = df_palavras[df_palavras['Ano'].astype(str).isin(anos_selecionados)]
 
             # --- GRÁFICO 1: EVOLUÇÃO TEMPORAL ---
             st.subheader("📈 Evolução da Relevância Média Anual")
@@ -290,59 +299,74 @@ with tab_temas:
                 markers=True, color_discrete_map=mapa_cores,
                 labels={'Relevancia_Media_Anual': 'Relevância Média (%)'}, template="plotly_white"
             )
-            fig_evo.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                                  legend_title_text="")
+            # 🆕 MELHORIA: Legenda movida para o lado esquerdo
+            fig_evo.update_layout(
+                legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=-0.1),
+                legend_title_text="",
+                margin=dict(l=150)  # Dá espaço para a legenda caber na tela
+            )
             st.plotly_chart(fig_evo, use_container_width=True)
 
             st.write("---")
             col_g2, col_g3 = st.columns(2)
 
-            # --- GRÁFICO 2: CONTAGEM DE OCORRÊNCIAS HISTÓRICA (🆕 MELHORIA 5) ---
+            # --- GRÁFICO 2: CONTAGEM DE OCORRÊNCIAS COM DESTAQUE ---
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
                 st.caption("Em quantas reuniões o tema foi classificado como relevante.")
 
-                # Agrupa por arquivo único (Reunião)
-                contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd_Reunioes')
+                contagem = df_deb_ano.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd_Reunioes')
                 contagem = contagem.sort_values(by='Qtd_Reunioes', ascending=True)
+
+                # 🆕 MELHORIA: Lógica de cor (Se não estiver selecionado, vira cinza)
+                contagem['Cor_Destaque'] = contagem['Tema'].apply(
+                    lambda t: mapa_cores.get(t) if t in temas_selecionados else '#EAEAEA')
 
                 fig_bar = px.bar(
                     contagem, x='Qtd_Reunioes', y='Tema', orientation='h',
-                    color='Tema', color_discrete_map=mapa_cores, text='Qtd_Reunioes',
+                    text='Qtd_Reunioes',
                     labels={'Qtd_Reunioes': 'Total de Reuniões', 'Tema': ''}, template="plotly_white"
                 )
+                fig_bar.update_traces(marker_color=contagem['Cor_Destaque'])
                 fig_bar.update_layout(showlegend=False)
                 st.plotly_chart(fig_bar, use_container_width=True)
 
-            # --- GRÁFICO 3: NUVEM DE PALAVRAS COLORIDA ---
+            # --- GRÁFICO 3: NUVEM DE PALAVRAS COM DESTAQUE E ESCALA ---
             with col_g3:
                 st.subheader("☁️ Nuvem de Palavras (Gatilhos)")
-                st.caption("O tamanho da palavra reflete sua frequência no acervo.")
+                st.caption("A escala reflete a frequência; os termos em cinza não estão no seu foco de filtro.")
 
-                # 🆕 MELHORIA 7: Limpeza de Stopwords do BI
+                # Remoção aprimorada de Stopwords
                 stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
                                 'representantes']
-                df_pal_filtrado = df_pal_filtrado[~df_pal_filtrado['Palavra'].str.lower().isin(stopwords_bi)]
+                df_pal_ano = df_pal_ano[~df_pal_ano['Palavra'].str.lower().isin(stopwords_bi)]
 
-                top_palavras = df_pal_filtrado.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
+                top_palavras = df_pal_ano.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
 
                 if not top_palavras.empty:
                     freq_dict = dict(zip(top_palavras['Palavra'], top_palavras['Vezes_Ativada']))
 
-                    # Identifica qual é o "Tema Dono" de cada palavra para pintar com a cor correta
-                    idx_max = df_pal_filtrado.groupby('Palavra')['Vezes_Ativada'].idxmax()
-                    tema_das_palavras = df_pal_filtrado.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')[
+                    idx_max = df_pal_ano.groupby('Palavra')['Vezes_Ativada'].idxmax()
+                    tema_das_palavras = df_pal_ano.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')[
                         'Tema'].to_dict()
 
 
+                    # 🆕 MELHORIA: Função de cor reage ao filtro
                     def cor_por_tema(word, **kwargs):
                         tema_alvo = tema_das_palavras.get(word)
-                        return mapa_cores.get(tema_alvo, "#333333")  # Usa o mesmo mapa do gráfico de barras!
+                        if tema_alvo in temas_selecionados:
+                            return mapa_cores.get(tema_alvo, "#333333")
+                        return "#EAEAEA"  # Cinza claro
 
 
+                    # 🆕 MELHORIA: Escalas balanceadas (relative_scaling e tamanhos de fonte)
                     wordcloud = WordCloud(
                         width=800, height=550, background_color='white',
-                        max_words=100, color_func=cor_por_tema
+                        max_words=150,
+                        relative_scaling=0.3,
+                        max_font_size=70,
+                        min_font_size=10,
+                        color_func=cor_por_tema
                     ).generate_from_frequencies(freq_dict)
 
                     fig, ax = plt.subplots(figsize=(8, 5.5))
