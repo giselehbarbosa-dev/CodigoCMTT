@@ -246,7 +246,7 @@
             ],
             "suplentes": [
                 {
-                    "nome": "Roberta Uliani Joaquim",
+                    "nome": "Roberta Uliani Joaquim Quinze",
                     "genero": "F",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
@@ -276,7 +276,7 @@
             ],
             "suplentes": [
                 {
-                    "nome": "Gilberto Braz da Silva",
+                    "nome": "Gilberto Bráz da Silva",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
@@ -611,7 +611,7 @@
             "cadeira_padronizada": "PLANEJAMENTO E GESTÃO",
             "titulares": [
                 {
-                    "nome": "Felipe Teixeira  Gonçalves",
+                    "nome": "Felipe Teixeira Gonçalves",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"

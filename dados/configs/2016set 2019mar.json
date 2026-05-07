@@ -120,7 +120,7 @@
                     "funcao_original": "SUPLENTE"
                 },
                 {
-                    "nome": "Nancy Schneider",
+                    "nome": "Nancy Reis Schneider",
                     "genero": "F",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
@@ -250,7 +250,7 @@
             "cadeira_padronizada": "EDUCAÇÃO",
             "titulares": [
                 {
-                    "nome": "Fátima Critina Abrão",
+                    "nome": "Fátima Cristina Abrão",
                     "genero": "F",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"
@@ -390,7 +390,7 @@
                     "funcao_original": "TITULAR"
                 },
                 {
-                    "nome": "Roberta Uliani Joaquim",
+                    "nome": "Roberta Uliani Joaquim Quinze",
                     "genero": "F",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"
@@ -620,7 +620,7 @@
             "cadeira_padronizada": "MOTOFRETE - AUTÔNOMOS",
             "titulares": [
                 {
-                    "nome": "Gerson Silva",
+                    "nome": "Gerson Silva Cunha",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"
@@ -1729,7 +1729,7 @@
             ],
             "suplentes": [
                 {
-                    "nome": "Rafael Calabria",
+                    "nome": "Rafael Gândara Calabria",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
@@ -1753,7 +1753,7 @@
             ],
             "suplentes": [
                 {
-                    "nome": "Lucia Emilia Vieria Guedes",
+                    "nome": "Lúcia Emília Vieira Guedes",
                     "genero": "F",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
@@ -1908,7 +1908,7 @@
             "cadeira_padronizada": "URBANISMO",
             "titulares": [
                 {
-                    "nome": "André Luis Gonçalves Pina",
+                    "nome": "André Luís Gonçalves Pina",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"

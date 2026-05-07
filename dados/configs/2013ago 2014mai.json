@@ -283,7 +283,7 @@
             "cadeira_padronizada": "ÔNIBUS - AUTÔNOMOS",
             "titulares": [
                 {
-                    "nome": "Willanys da Silva Bezerra",
+                    "nome": "Willamys da Silva Bezerra",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"
@@ -505,7 +505,7 @@
             "cadeira_padronizada": "CET 2",
             "titulares": [
                 {
-                    "nome": "Tadeu Leite",
+                    "nome": "Tadeu Leite Duarte",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"
@@ -729,7 +729,7 @@
             ],
             "suplentes": [
                 {
-                    "nome": "Eduardo Faccini",
+                    "nome": "Eduardo Facchini",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"

@@ -2,7 +2,7 @@
 =============================================================================
 🏛️ Projeto CMTT - Mineração e Análise de Dados
 Script: motores/motor_tematico.py
-Objetivo: Fase 4 - Mineração Temática com Frequência Relativa (Termômetro)
+Objetivo: Fase 4 - Mineração Temática com Frequência e Auditoria XAI (Palavras)
 =============================================================================
 """
 
@@ -19,23 +19,30 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from core import config_ambiente
 from utils.config_filtros import normalizar
 
-def extrair_temas_fidelidade(texto_frase):
-    """Aplica o dicionário temático com amarras rígidas de borda de palavra."""
+def extrair_temas_e_palavras(texto_frase):
+    """
+    Aplica o dicionário temático e retorna não só o tema,
+    mas a palavra exata que ativou a regra.
+    """
     texto_norm = normalizar(texto_frase)
-    temas_encontrados = []
+    temas_encontrados = {}
 
     for categoria, regex_lista in config_ambiente.DICIONARIO_TEMAS.items():
         for padrao in regex_lista:
             # \b garante que o match ocorra apenas no INÍCIO de uma palavra.
             padrao_rigido = rf"\b{padrao}"
-            if re.search(padrao_rigido, texto_norm, re.IGNORECASE):
-                temas_encontrados.append(categoria)
-                break
+            match = re.search(padrao_rigido, texto_norm, re.IGNORECASE)
 
-    return list(set(temas_encontrados))
+            if match:
+                # Se achou, pega a palavra exata que o robô leu no texto
+                palavra_gatilho = match.group(0).lower()
+                temas_encontrados[categoria] = palavra_gatilho
+                break # Para a contagem desta categoria nesta frase (mantém a estatística)
+
+    return temas_encontrados
 
 def executar_tematico():
-    print("🛡️ MOTOR TEMÁTICO V61 (TERMÔMETRO DE RELEVÂNCIA) 🛡️")
+    print("🛡️ MOTOR TEMÁTICO V62 (TERMÔMETRO + AUDITORIA DE PALAVRAS) 🛡️")
 
     if not os.path.exists(config_ambiente.CAMINHO_CACHE_BUSCADOR):
         print("❌ Cache não encontrado! Rode o construtor_cache.py primeiro.")
@@ -56,7 +63,7 @@ def executar_tematico():
         documentos_para_processar = corpus_cache
 
     # ==========================================
-    # LÓGICA DE DOCUMENTO (E não mais de linha)
+    # LÓGICA DE DOCUMENTO (Com rastreio de palavras)
     # ==========================================
     for documento in tqdm(documentos_para_processar, desc="Analisando Relevância de Pautas"):
         pdf_nome = documento.get("Fonte", "Desconhecido")
@@ -71,8 +78,8 @@ def executar_tematico():
         texto_ata = " ".join(documento.get("Linhas", []))
         frases = re.split(r'(?<=[.!?]) +', texto_ata)
 
-        # Cria um placar vazio para esta Ata específica
-        placar_ata = {cat: {"ocorrencias": 0, "exemplos": []} for cat in config_ambiente.DICIONARIO_TEMAS.keys()}
+        # O placar agora tem uma 'cestinha' (set) para guardar as palavras que encontrou
+        placar_ata = {cat: {"ocorrencias": 0, "exemplos": [], "palavras_encontradas": set()} for cat in config_ambiente.DICIONARIO_TEMAS.keys()}
         total_hits_ata = 0
 
         # Varrer as frases e alimentar o placar da ata
@@ -80,19 +87,22 @@ def executar_tematico():
             if len(frase) < 40:
                 continue
 
-            temas_na_frase = extrair_temas_fidelidade(frase)
+            temas_na_frase = extrair_temas_e_palavras(frase)
 
-            for t in temas_na_frase:
-                placar_ata[t]["ocorrencias"] += 1
+            for tema, palavra in temas_na_frase.items():
+                placar_ata[tema]["ocorrencias"] += 1
                 total_hits_ata += 1
-                # Guarda apenas as 2 primeiras frases como prova documental (XAI)
-                if len(placar_ata[t]["exemplos"]) < 2:
-                    placar_ata[t]["exemplos"].append(frase.strip())
+
+                # Guarda a palavra que serviu de gatilho
+                placar_ata[tema]["palavras_encontradas"].add(palavra)
+
+                # Guarda apenas as 2 primeiras frases como prova documental
+                if len(placar_ata[tema]["exemplos"]) < 2:
+                    placar_ata[tema]["exemplos"].append(frase.strip())
 
         # ==========================================
         # FILTRO DE RUÍDO E SALVAMENTO
         # ==========================================
-        # Se a ata não teve nenhum tema do nosso dicionário, pula.
         if total_hits_ata == 0:
             continue
 
@@ -102,13 +112,14 @@ def executar_tematico():
             if ocorrencias > 0:
                 relevancia_percentual = (ocorrencias / total_hits_ata) * 100
 
-                # 🛑 O SARRAFO DE QUALIDADE:
                 # Só considera "Pauta da Reunião" se representou pelo menos 5% do debate
-                # E se a palavra apareceu pelo menos 2 vezes (evita palavras soltas acidentais)
+                # E se a palavra apareceu pelo menos 2 vezes
                 if relevancia_percentual >= 5.0 and ocorrencias >= 2:
 
-                    # Junta as frases de exemplo bonitinhas para a coluna de auditoria
                     contexto_prova = " [...] ".join(dados["exemplos"])
+
+                    # Junta as palavras-chave encontradas numa string bonitinha
+                    palavras_str = ", ".join(sorted(list(dados["palavras_encontradas"])))
 
                     res_temas.append({
                         "Arquivo": pdf_nome,
@@ -117,6 +128,7 @@ def executar_tematico():
                         "Tema_Classificado": tema,
                         "Ocorrencias": ocorrencias,
                         "Relevancia_(%)": round(relevancia_percentual, 1),
+                        "Palavras_Chave_Ativadas": palavras_str, # <--- A NOVA COLUNA AQUI!
                         "Trecho_Prova_(Auditoria)": contexto_prova
                     })
 
@@ -127,7 +139,6 @@ def executar_tematico():
     os.makedirs(config_ambiente.CAMINHO_PROCESSADOS, exist_ok=True)
 
     if res_temas:
-        # Ordena para ficar bonito no CSV (Por ata e depois por relevância do tema)
         df = pd.DataFrame(res_temas)
         df = df.sort_values(by=["Arquivo", "Relevancia_(%)"], ascending=[True, False])
 
