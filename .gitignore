@@ -26,6 +26,10 @@ dados/configs/.cache_corpus_atas.json
 !outputs/relatorios/bi_temas_nuvem_palavras.csv
 !outputs/relatorios/bi_indice_interesse_segmento.csv
 
+# Exceções para gráficos do Streamlit
+!outputs/relatorios/Relatorio_Cadeiras_Absenteismo.xlsx
+!outputs/relatorios/Catálogo_de_Metadados_CMTT.xlsx
+
 # --- Segurança do Streamlit e Cofre ---
 .streamlit/secrets.toml
 .env
