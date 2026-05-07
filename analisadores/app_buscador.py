@@ -9,7 +9,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.io as pio
 import matplotlib.pyplot as plt
-import numpy as np  # 🆕 Necessário para criar a máscara orgânica
+import numpy as np
 from wordcloud import WordCloud
 
 # Configura o Plotly para Português (Brasil)
@@ -48,6 +48,21 @@ esconder_estilo = """
     /* TRUQUE CSS: Ocultar o "Select All" chumbado em inglês do Streamlit */
     div[data-testid="stMultiSelect"] ul[role="listbox"] li#bui11 { display: none !important; }
     div[data-baseweb="select"] ul li:first-child { display: none !important; }
+
+    /* TRUQUE CSS: Abas Maiores e Congeladas (Sticky) */
+    .stTabs [data-baseweb="tab-list"] {
+        position: sticky;
+        top: 40px; /* Evita sobreposição com a barra nativa superior do Streamlit */
+        z-index: 990;
+        background-color: #ffffff;
+        padding-top: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e1e4e8;
+    }
+    .stTabs button[role="tab"] p {
+        font-size: 20px !important; /* Aumenta a fonte das abas */
+        font-weight: 600 !important;
+    }
     </style>
 """
 st.markdown(esconder_estilo, unsafe_allow_html=True)
@@ -122,24 +137,39 @@ if senha_admin == config_ambiente.SENHA_ADMIN:
                 st.sidebar.success("Cache atualizado!")
                 st.rerun()
 
-# --- Cabeçalho e Logos ---
+# --- Cabeçalho e Logos Global ---
 caminho_logo1 = config_ambiente.CAMINHO_LOGO1
 caminho_logo2 = config_ambiente.CAMINHO_LOGO2
 try:
     with open(caminho_logo1, "rb") as img1, open(caminho_logo2, "rb") as img2:
         b64_logo1 = base64.b64encode(img1.read()).decode()
         b64_logo2 = base64.b64encode(img2.read()).decode()
+
+        # 🆕 Logos muito maiores no topo
         html_cabecalho = f"""
-        <div style="display: flex; justify-content: center; margin-bottom: 2rem; margin-top: 1rem;">
-            <div style="background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; max-width: 95%;">
-                <img src="data:image/png;base64,{b64_logo1}" style="height: 100px; width: auto; max-width: 100%; object-fit: contain;">
-                <img src="data:image/jpeg;base64,{b64_logo2}" style="height: 70px; width: auto; max-width: 100%; object-fit: contain;">
+        <div style="display: flex; justify-content: center; margin-bottom: 10px; margin-top: 1rem;">
+            <div style="background-color: white; padding: 20px 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px; max-width: 95%;">
+                <img src="data:image/png;base64,{b64_logo1}" style="height: 140px; width: auto; max-width: 100%; object-fit: contain;">
+                <img src="data:image/jpeg;base64,{b64_logo2}" style="height: 100px; width: auto; max-width: 100%; object-fit: contain;">
             </div>
         </div>
         """
         st.markdown(html_cabecalho, unsafe_allow_html=True)
 except Exception:
     st.warning("⚠️ Logos não carregados.")
+
+# 🆕 Títulos Oficiais do Dashboard (Globais para todas as abas)
+st.markdown("""
+<div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #2C3E50; margin-bottom: 0px; font-weight: 800;">ANÁLISE CMTT</h1>
+    <h3 style="color: #7f8c8d; font-weight: 400; margin-top: 5px;">Protótipo elaborado em código aberto</h3>
+    <p style="color: #34495e; font-size: 16px; line-height: 1.4; margin-top: 15px;">
+        <strong>Núcleo de Participação em Mobilidade Urbana - Assessoria Técnica</strong><br>
+        Secretaria Municipal de Mobilidade Urbana e Transporte
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
 st.write("---")
 
 # --- Área Principal ---
@@ -147,7 +177,9 @@ tab_busca, tab_temas, tab_frequencia, tab_catalogo = st.tabs([
     "🔍 Buscador de Atas", "📊 Painel Temático", "👥 Frequência e Interesse", "📚 Catálogo Histórico"
 ])
 
+# ==============================================================================
 # ABA 1: BUSCADOR
+# ==============================================================================
 with tab_busca:
     _, col_miolo, _ = st.columns([1, 6, 1])
     with col_miolo:
@@ -229,9 +261,10 @@ with tab_busca:
                                file_name=f"busca_CMTT_{termo.replace(' ', '_')}.csv", mime="text/csv",
                                use_container_width=True)
 
+# ==============================================================================
 # ABA 2: PAINEL TEMÁTICO
+# ==============================================================================
 with tab_temas:
-    st.markdown("## 📊 Análise Temática e Histórica")
     try:
         df_evolucao = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_evolucao_anual.csv"),
                                   sep=';', encoding='utf-8-sig')
@@ -250,7 +283,6 @@ with tab_temas:
         df_debatidos['Ano'] = df_debatidos['Data (AAAA/MM)'].astype(str).str[:4]
         df_palavras['Tema'] = df_palavras['Tema'].apply(encurtar_nomes_temas)
 
-        # Paleta de Cores Estática
         temas_todos = sorted(df_evolucao['Tema'].unique())
         paleta = px.colors.qualitative.Alphabet + px.colors.qualitative.Vivid
         mapa_cores = {t: paleta[i % len(paleta)] for i, t in enumerate(temas_todos)}
@@ -272,7 +304,7 @@ with tab_temas:
             df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
 
             # --- GRÁFICO 1: EVOLUÇÃO ---
-            st.subheader("📈 Evolução da Relevância Média Anual (Série Completa)")
+            st.subheader("📈 Evolução da Relevância Média Anual")
             fig_evo = px.line(
                 df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
                 markers=True, color_discrete_map=mapa_cores,
@@ -289,7 +321,7 @@ with tab_temas:
             st.write("---")
             col_g2, col_g3 = st.columns(2)
 
-            # --- GRÁFICO 2: BARRAS (Altura travada em 450) ---
+            # --- GRÁFICO 2: BARRAS ---
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
                 contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
@@ -303,16 +335,17 @@ with tab_temas:
                 fig_bar.update_traces(marker_color=contagem['Cor'])
                 fig_bar.update_layout(
                     showlegend=False,
-                    height=450,  # 🆕 Trava a altura para alinhar com a nuvem
+                    height=450,
                     margin=dict(l=0, r=10, t=20, b=0),
                     paper_bgcolor='rgba(0,0,0,0)',
                     plot_bgcolor='rgba(0,0,0,0)'
                 )
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
-            # --- GRÁFICO 3: NUVEM DE PALAVRAS ORGÂNICA ---
+            # --- GRÁFICO 3: NUVEM ---
             with col_g3:
-                st.subheader("☁️ Nuvem de Palavras (Gatilhos)")
+                # 🆕 Título limpo
+                st.subheader("☁️ Nuvem de Palavras")
                 stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
                                 'representantes']
                 df_pal_limpo = df_palavras[~df_palavras['Palavra'].str.lower().isin(stopwords_bi)]
@@ -329,18 +362,16 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_selecionados else "#EAEAEA"
 
 
-                    # 🆕 MELHORIA 1: Criando uma Máscara Orgânica Elíptica matematicamente
                     x, y = np.ogrid[:450, :800]
                     mask = ((x - 225) ** 2 / (200 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
 
-                    # 🆕 MELHORIAS 2, 3 e 4: Fonte, Espaçamento e Rotação
+                    # 🆕 CORREÇÃO: Removido o font_path (Usa a fonte padrão do sistema Linux/Windows)
                     wordcloud = WordCloud(
                         width=800, height=450,
-                        background_color=None, mode="RGBA",  # Mantém transparência
-                        mask=mask,  # 🆕 Aplica a máscara orgânica
-                        font_path="bahnschrift",  # 🆕 Tenta usar Bahnschrift (fonte fluida/arredondada)
-                        margin=10,  # 🆕 Aumenta o espaçamento entre as palavras
-                        prefer_horizontal=0.85,  # 🆕 Permite algumas palavras na vertical (orgânico)
+                        background_color=None, mode="RGBA",
+                        mask=mask,
+                        margin=10,
+                        prefer_horizontal=0.85,
                         max_words=150, relative_scaling=0.3, max_font_size=70,
                         color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
@@ -350,8 +381,6 @@ with tab_temas:
                     ax.imshow(wordcloud, interpolation='bilinear');
                     ax.axis('off')
                     st.pyplot(fig, clear_figure=True, transparent=True)
-                else:
-                    st.info("Nenhuma palavra encontrada.")
         else:
             st.info("👆 Selecione os filtros acima.")
 
