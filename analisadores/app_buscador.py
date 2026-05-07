@@ -30,75 +30,52 @@ CAMINHO_INDEX_EXCEL = config_ambiente.CAMINHO_EXCEL_INDEX
 sigla_conselho = config_ambiente.REGRAS_CONSELHO.get("sigla", "Conselho")
 st.set_page_config(page_title=f"Análise {sigla_conselho}", layout="wide", initial_sidebar_state="collapsed")
 
-# --- CSS AVANÇADO: Responsividade, Cabeçalho e Abas ---
+# --- CSS AVANÇADO REVISADO (Foco em Mobile e Texto) ---
 estilo_customizado = """
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
 
-    /* Inputs e Busca */
-    div[data-baseweb="input"] { background-color: #e1effe !important; border: 1px solid #b3d7ff !important; border-radius: 8px !important; }
+    /* Layout Geral */
+    .main .block-container { padding-top: 2rem; }
+
+    /* Cabeçalho Compacto e Responsivo */
+    .cabecalho-container { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; padding: 10px; flex-wrap: nowrap; }
+    .cabecalho-logos { background-color: white; padding: 10px 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
+    .logo-pref { height: 70px; width: auto; }
+    .logo-cmtt { height: 50px; width: auto; }
+    .cabecalho-textos { text-align: left; border-left: 2px solid #ddd; padding-left: 20px; flex-grow: 1; min-width: 0; }
+    .cabecalho-titulo { margin: 0; color: #2C3E50; font-size: 24px; font-weight: 800; line-height: 1.1; }
+    .cabecalho-sub { margin: 2px 0; color: #7f8c8d; font-size: 14px; font-weight: 600; }
+    .cabecalho-desc { margin: 5px 0 0 0; color: #34495e; font-size: 11px; line-height: 1.2; }
 
     /* Tabela de Resultados */
     .tabela-resultados { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 14px; }
     .tabela-resultados th { background-color: #f0f2f6; padding: 12px; text-align: left; border-bottom: 2px solid #ccc; }
     .tabela-resultados td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
 
+    /* Estilo das Abas */
+    .stTabs [data-baseweb="tab-list"] { position: sticky; top: 0; z-index: 999; background-color: white; border-bottom: 2px solid #f0f2f6; }
+    .stTabs button[role="tab"] p { font-size: 18px !important; font-weight: 700 !important; }
+
+    /* Inputs e Busca */
+    div[data-baseweb="input"] { background-color: #f8fbff !important; border-radius: 8px !important; }
+
     /* TRUQUE: Ocultar o "Select All" em inglês */
     div[data-testid="stMultiSelect"] ul[role="listbox"] li#bui11 { display: none !important; }
     div[data-baseweb="select"] ul li:first-child { display: none !important; }
 
-    /* ABAS FIXAS (Sticky) NO DESKTOP */
-    .stTabs [data-baseweb="tab-list"] {
-        position: sticky !important;
-        top: 45px !important; 
-        z-index: 999 !important;
-        background-color: transparent !important; 
-        padding-top: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #f0f2f6;
-    }
-
-    .stTabs button[role="tab"] p {
-        font-size: 22px !important;
-        font-weight: 700 !important;
-    }
-
-    /* ---------------------------------------------------
-       REGRAS DO CABEÇALHO (Desktop Padrão)
-       --------------------------------------------------- */
-    .cabecalho-container { display: flex; align-items: center; gap: 40px; margin-bottom: 20px; padding: 10px; }
-    .cabecalho-logos { background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; }
-    .logo-pref { height: 120px; width: auto; }
-    .logo-cmtt { height: 80px; width: auto; }
-    .cabecalho-textos { text-align: left; border-left: 2px solid #ddd; padding-left: 30px; }
-    .cabecalho-titulo { margin: 0; color: #2C3E50; font-size: 32px; font-weight: 800; }
-    .cabecalho-sub { margin: 0; color: #7f8c8d; font-size: 18px; }
-    .cabecalho-desc { margin: 10px 0 0 0; color: #34495e; font-size: 14px; line-height: 1.2; }
-
-    /* ---------------------------------------------------
-       DESIGN RESPONSIVO (Celulares e Tablets)
-       --------------------------------------------------- */
+    /* Responsividade Celular */
     @media (max-width: 800px) {
-        .cabecalho-container { flex-direction: column; gap: 15px; align-items: stretch; }
-        .cabecalho-logos { justify-content: center; padding: 10px 15px; }
-        .logo-pref { height: 80px; }  
-        .logo-cmtt { height: 50px; }  
-        .cabecalho-textos { border-left: none; border-top: 2px solid #ddd; padding-left: 0; padding-top: 15px; text-align: center; }
-        .cabecalho-titulo { font-size: 24px; }
-        .cabecalho-sub { font-size: 14px; }
-        .cabecalho-desc { font-size: 12px; }
-
-        /* ABAS EMPILHADAS E SOLTAS NO CELULAR */
-        .stTabs [data-baseweb="tab-list"] { 
-            position: relative !important; 
-            top: 0 !important;
-            flex-direction: column !important; 
-            align-items: stretch !important;
-            gap: 5px !important;
-        }
-        .stTabs button[role="tab"] { width: 100% !important; text-align: left !important; }
-        .stTabs button[role="tab"] p { font-size: 18px !important; }
+        .cabecalho-container { flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+        .cabecalho-logos { padding: 8px 12px; }
+        .logo-pref { height: 55px; }
+        .logo-cmtt { height: 35px; }
+        .cabecalho-textos { border-left: none; border-top: 1px solid #ddd; padding-left: 0; padding-top: 10px; width: 100%; }
+        .cabecalho-titulo { font-size: 20px; }
+        .cabecalho-sub { font-size: 13px; }
+        .cabecalho-desc { font-size: 10px; }
+        .stTabs button[role="tab"] p { font-size: 16px !important; }
     }
     </style>
 """
@@ -175,10 +152,10 @@ try:
             </div>
             <div class="cabecalho-textos">
                 <h1 class="cabecalho-titulo">ANÁLISE CMTT</h1>
-                <p class="cabecalho-sub">Protótipo elaborado em código aberto</p>
+                <p class="cabecalho-sub">Conselho Municipal de Trânsito e Transporte</p>
                 <p class="cabecalho-desc">
-                    <strong>Núcleo de Participação em Mobilidade Urbana - Assessoria Técnica</strong><br>
-                    Secretaria Municipal de Mobilidade Urbana e Transporte
+                    Assessoria Técnica / Núcleo de Participação em Mobilidade Urbana<br>
+                    Secretaria Municipal de Mobilidade e Trânsito - SMT
                 </p>
             </div>
         </div>
@@ -188,7 +165,6 @@ except Exception:
     st.warning("⚠️ Erro ao carregar cabeçalho.")
 
 # --- Abas ---
-# Catálogo removido do menu superior
 tab_busca, tab_temas, tab_frequencia = st.tabs([
     "🔍 Buscador", "📊 Temas", "👥 Frequência"
 ])
@@ -317,7 +293,6 @@ with tab_temas:
             df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
             df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
 
-            # Alteração do título para exibir (%)
             st.subheader("📈 Evolução da Relevância Média Anual (%)")
             fig_evo = px.line(
                 df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
@@ -325,8 +300,6 @@ with tab_temas:
                 labels={'Relevancia_Media_Anual': 'Relevância (%)', 'Ano': 'Ano', 'Tema': ''}, template="plotly_white"
             )
             fig_evo.update_xaxes(type='category', tickmode='linear', tickangle=-45)
-
-            # Alteração do layout da legenda para evitar que corte a imagem
             fig_evo.update_layout(
                 legend=dict(
                     orientation="h",
@@ -410,111 +383,115 @@ with tab_temas:
 with tab_frequencia:
     st.markdown("## 👥 Frequência e Engajamento Histórico")
 
-    # Caminhos para leitura dos arquivos na nuvem/local
     caminho_relatorio = os.path.join(config_ambiente.CAMINHO_RELATORIOS, "Relatorio_Cadeiras_Absenteismo.xlsx")
     caminho_catalogo = os.path.join(config_ambiente.CAMINHO_RELATORIOS, "Catálogo_de_Metadados_CMTT.xlsx")
 
     try:
-        # 1. Lê a matriz de presenças
+        # --- 1. Carregamento e Pré-Processamento ---
         df_cadeiras = pd.read_excel(caminho_relatorio)
 
-        # 🧠 Calcula a % de Presença dinamicamente (Presenças / Total) e evita divisão por zero
-        df_cadeiras['Presenca_Perc'] = (df_cadeiras['Pres'] / df_cadeiras['Total'] * 100).round(1)
-        df_cadeiras['Presenca_Perc'] = df_cadeiras['Presenca_Perc'].fillna(0)
+        # Filtro de Governança: Excluir Secretaria Executiva dos cálculos estatísticos
+        df_cadeiras = df_cadeiras[df_cadeiras['Segmento'] != 'SECRETARIA EXECUTIVA']
+
+        # Calcula a % de Presença dinamicamente
+        df_cadeiras['Presenca_Perc'] = (df_cadeiras['Pres'] / df_cadeiras['Total'] * 100).round(1).fillna(0)
 
         COL_CADEIRA = 'Cadeira'
         COL_SEGMENTO = 'Segmento'
         COL_PRESENCA = 'Presenca_Perc'
 
-        # 2. Lê o Catálogo de Metadados para o Histórico (Tooltips)
-        try:
-            # Puxa a aba Evolução_das_Secretarias para gerar os balões de histórico
-            df_catalogo = pd.read_excel(caminho_catalogo, sheet_name=None)
-            aba_alvo = 'Evolução_das_Secretarias' if 'Evolução_das_Secretarias' in df_catalogo else \
-            list(df_catalogo.keys())[0]
-            df_cat = df_catalogo[aba_alvo]
+        # --- 2. O CATÁLOGO NO TOPO (Para Contexto) ---
+        with st.expander("📚 CONTEXTO: Catálogo de Nomenclaturas e Mandatos", expanded=True):
+            st.markdown(
+                "Utilize a tabela abaixo para entender como as cadeiras mudaram de nome ao longo dos anos. A busca nos gráficos utiliza o nome **Padronizado**.")
+            try:
+                df_catalogo = pd.read_excel(caminho_catalogo, sheet_name=None)
+                aba_alvo = 'Evolução_das_Secretarias' if 'Evolução_das_Secretarias' in df_catalogo else \
+                list(df_catalogo.keys())[0]
+                df_cat_full = df_catalogo[aba_alvo]
 
-            # Constrói um dicionário com a linha do tempo de cada cadeira padronizada
-            dict_historico = {}
-            for _, row in df_cat.iterrows():
-                cadeira_padrao = str(row.get('Cadeira Padronizada', ''))
-                if not cadeira_padrao or cadeira_padrao == 'nan': continue
+                # Remove a secretaria executiva do catálogo exibido também
+                df_cat_full = df_cat_full[df_cat_full['Segmento'] != 'SECRETARIA EXECUTIVA']
 
-                linha_tempo = []
-                ultimo_nome = ""
-                # Varre as colunas de anos
-                for col in df_cat.columns[2:]:
-                    valor = str(row[col]).strip()
-                    if valor not in ['-', 'nan', 'NaN', 'None', '']:
-                        if valor != ultimo_nome:
-                            ano_ref = str(col).split('_')[0][:4]
-                            linha_tempo.append(f"<b>{ano_ref}:</b> {valor}")
-                            ultimo_nome = valor
+                # Exibe a tabela adaptável para celular (sem cortes)
+                st.dataframe(df_cat_full, use_container_width=True, hide_index=True)
 
-                dict_historico[cadeira_padrao] = "<br>".join(
-                    linha_tempo) if linha_tempo else "Sem mudanças registradas."
-        except Exception as e_cat:
-            dict_historico = {}
-            df_cat = pd.DataFrame()
-            st.toast(f"Aviso: Catálogo não carregado para tooltips.")
+                # Criação do dicionário para as Tooltips
+                dict_historico = {}
+                for _, row in df_cat_full.iterrows():
+                    cadeira_padrao = str(row.get('Cadeira Padronizada', ''))
+                    if not cadeira_padrao or cadeira_padrao == 'nan': continue
 
-        # 3. Cálculo Dinâmico das 4 Métricas de Balanço
+                    linha_tempo = []
+                    ultimo_nome = ""
+                    for col in df_cat_full.columns[2:]:
+                        valor = str(row[col]).strip()
+                        if valor not in ['-', 'nan', 'NaN', 'None', '']:
+                            if valor != ultimo_nome:
+                                ano_ref = str(col).split('_')[0][:4]
+                                linha_tempo.append(f"<b>{ano_ref}:</b> {valor}")
+                                ultimo_nome = valor
+
+                    dict_historico[cadeira_padrao] = "<br>".join(
+                        linha_tempo) if linha_tempo else "Sem mudanças registradas."
+            except Exception as e_cat:
+                dict_historico = {}
+                st.info("Catálogo indisponível no momento.")
+
+        st.write("---")
+
+        # --- 3. Balanço dos Dados (Métricas Reais) ---
         seg_media = df_cadeiras.groupby(COL_SEGMENTO)[COL_PRESENCA].mean()
-        seg_maior = f"{seg_media.idxmax()} ({seg_media.max():.1f}%)"
-        seg_menor = f"{seg_media.idxmin()} ({seg_media.min():.1f}%)"
 
         cad_maior_idx = df_cadeiras[COL_PRESENCA].idxmax()
         cad_menor_idx = df_cadeiras[COL_PRESENCA].idxmin()
-        cad_maior = f"{df_cadeiras.loc[cad_maior_idx, COL_CADEIRA]} ({df_cadeiras.loc[cad_maior_idx, COL_PRESENCA]:.1f}%)"
-        cad_menor = f"{df_cadeiras.loc[cad_menor_idx, COL_CADEIRA]} ({df_cadeiras.loc[cad_menor_idx, COL_PRESENCA]:.1f}%)"
+
+        # Encurtar o nome da cadeira caso seja muito longo para a caixa da métrica
+        nome_cad_maior = str(df_cadeiras.loc[cad_maior_idx, COL_CADEIRA])
+        nome_cad_menor = str(df_cadeiras.loc[cad_menor_idx, COL_CADEIRA])
+        if len(nome_cad_maior) > 18: nome_cad_maior = nome_cad_maior[:18] + "..."
+        if len(nome_cad_menor) > 18: nome_cad_menor = nome_cad_menor[:18] + "..."
 
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Segmento Maior Frequência", seg_maior)
-        m2.metric("Segmento Menor Frequência", seg_menor)
-        m3.metric("Cadeira Mais Presente", cad_maior)
-        m4.metric("Cadeira Menos Presente", cad_menor)
+        m1.metric("Segmento Mais Ativo", f"{seg_media.idxmax()}", f"{seg_media.max():.1f}%")
+        m2.metric("Menor Frequência", f"{seg_media.idxmin()}", f"{seg_media.min():.1f}%")
+        m3.metric("Cadeira Top Presença", f"{nome_cad_maior}", f"{df_cadeiras.loc[cad_maior_idx, COL_PRESENCA]:.1f}%")
+        m4.metric("Cadeira Mais Ausente", f"{nome_cad_menor}", f"{df_cadeiras.loc[cad_menor_idx, COL_PRESENCA]:.1f}%")
 
-        st.write("---")
+        # --- 4. Evolução Temporal ---
+        st.subheader("📈 Assiduidade nas Reuniões Plenárias")
+        anos_f = [str(a) for a in range(2014, 2026)]
+        pres_f = [68, 72, 80, 78, 75, 82, 85, 88, 84, 82, 80, 81]  # Exemplo temporário para a série temporal
+        fig_at = go.Figure(go.Scatter(x=anos_f, y=pres_f, fill='tozeroy', line_color='#005088'))
+        fig_at.update_layout(xaxis=dict(type='category', title="Ano"), yaxis=dict(range=[0, 100]), height=300,
+                             margin=dict(l=10, r=10, t=10, b=10))
+        st.plotly_chart(fig_at, use_container_width=True)
 
-        # 4. Gráfico de Assiduidade Geral (Evolução Temporal)
-        st.subheader("📈 Evolução da Assiduidade nas Reuniões Plenárias")
-        datas_f = [str(ano) for ano in range(2014, 2026)]
-        presenca_f = [65, 68, 72, 80, 78, 75, 82, 85, 88, 84, 82,
-                      80]  # Substituir futuramente pela série real processada
-        fig_freq = go.Figure(go.Scatter(x=datas_f, y=presenca_f, fill='tozeroy', line_color='#005088'))
-        fig_freq.update_layout(xaxis=dict(type='category', title="Ano"), yaxis_title="Presença %", height=350)
-        st.plotly_chart(fig_freq, use_container_width=True)
-
-        st.write("---")
-
-        # 5. Gráficos por Segmento com Tooltips Históricas
-        st.subheader("🏛️ Participação por Cadeira e Segmento")
-        tab_pub, tab_soc, tab_op, tab_conv = st.tabs(["Poder Público", "Sociedade Civil", "Operadores", "Convidados"])
+        # --- 5. Detalhamento por Segmento (Sub-abas) ---
+        st.subheader("🏛️ Participação por Cadeira")
+        t_pub, t_soc, t_op, t_conv = st.tabs(["Poder Público", "Sociedade Civil", "Operadores", "Convidados"])
 
 
-        def plotar_grafico_segmento(df, filtro_segmento, cor_barra):
-            # Filtra o DataFrame usando .str.contains para lidar com variações (ex: SOCIEDADE CIVIL - TEMÁTICOS / REGIONAIS)
-            df_filtrado = df[df[COL_SEGMENTO].str.contains(filtro_segmento, case=False, na=False)].copy()
-            df_filtrado = df_filtrado.sort_values(COL_PRESENCA, ascending=True)
+        def plot_bar(df, segmento, cor):
+            dff = df[df[COL_SEGMENTO].str.contains(segmento, case=False, na=False)].copy()
+            dff = dff.sort_values(COL_PRESENCA, ascending=True)
 
-            if df_filtrado.empty:
-                st.info(f"Não há dados disponíveis para: {filtro_segmento}")
+            if dff.empty:
+                st.info("Não há dados.")
                 return
 
-            # Injeta o histórico mapeado do dicionário para a coluna customizada do Plotly
-            df_filtrado['Historico_Tooltip'] = df_filtrado[COL_CADEIRA].map(dict_historico).fillna(
-                "Informação histórica não mapeada.")
+            # Adiciona o histórico
+            dff['Historico_Tooltip'] = dff[COL_CADEIRA].map(dict_historico).fillna("Informação histórica não mapeada.")
 
             fig = px.bar(
-                df_filtrado,
+                dff,
                 x=COL_PRESENCA,
                 y=COL_CADEIRA,
                 orientation='h',
                 text=COL_PRESENCA,
-                custom_data=['Historico_Tooltip']  # Passa os dados extras para o balão
+                custom_data=['Historico_Tooltip']
             )
 
-            # Criação do balão flutuante estilizado
             hovertemplate_personalizado = (
                 "<b>%{y}</b><br>"
                 "Assiduidade: %{x}%<br><br>"
@@ -523,40 +500,29 @@ with tab_frequencia:
             )
 
             fig.update_traces(
-                marker_color=cor_barra,
+                marker_color=cor,
                 texttemplate='%{text}%',
                 textposition='outside',
-                hovertemplate=hovertemplate_personalizado  # Aplica o balão
+                hovertemplate=hovertemplate_personalizado
             )
 
             fig.update_layout(
-                xaxis_title="Presença (%)", yaxis_title="",
-                xaxis=dict(range=[0, max(100, df_filtrado[COL_PRESENCA].max() + 15)]),  # +15 de espaço pro texto
-                height=max(250, len(df_filtrado) * 45),
-                margin=dict(l=10, r=30, t=20, b=20)
+                xaxis=dict(range=[0, max(100, dff[COL_PRESENCA].max() + 15)], title="Presença (%)"),
+                yaxis_title="",
+                height=max(300, len(dff) * 45),
+                margin=dict(l=0, r=20, t=10, b=20)
             )
             st.plotly_chart(fig, use_container_width=True)
 
 
-        # Plotagem inteligente baseada nos nomes reais dos segmentos mapeados nos seus CSVs
-        with tab_pub:
-            plotar_grafico_segmento(df_cadeiras, 'ÓRGÃOS MUNICIPAIS', '#2E4D68')
-        with tab_soc:
-            plotar_grafico_segmento(df_cadeiras, 'SOCIEDADE CIVIL', '#11caa0')
-        with tab_op:
-            plotar_grafico_segmento(df_cadeiras, 'OPERADORES DO SERVIÇO DE TRANSPORTE', '#D4AF37')
-        with tab_conv:
-            plotar_grafico_segmento(df_cadeiras, 'CONVIDADOS', '#888888')
-
-        # --- A "Gaveta" do Catálogo (Expander) ---
-        st.write("")
-        with st.expander("📚 Ver Catálogo Completo de Nomenclaturas e Mandatos"):
-            st.markdown(
-                "Essa tabela mapeia a evolução das entidades ao longo dos mandatos do conselho, garantindo a rastreabilidade (Data Lineage) das mudanças de secretarias e sindicatos ao longo do tempo.")
-            if not df_cat.empty:
-                st.dataframe(df_cat, use_container_width=True, hide_index=True)
-            else:
-                st.info("Catálogo indisponível no momento.")
+        with t_pub:
+            plot_bar(df_cadeiras, 'ÓRGÃOS MUNICIPAIS', '#2E4D68')
+        with t_soc:
+            plot_bar(df_cadeiras, 'SOCIEDADE CIVIL', '#11caa0')
+        with t_op:
+            plot_bar(df_cadeiras, 'OPERADORES', '#D4AF37')
+        with t_conv:
+            plot_bar(df_cadeiras, 'CONVIDADOS', '#888888')
 
     except Exception as e:
-        st.error(f"⚠️ Erro ao ler a planilha de Cadeiras. Verifique os arquivos. Detalhe: {e}")
+        st.error(f"Erro ao processar frequência: {e}")
