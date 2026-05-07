@@ -43,6 +43,10 @@ esconder_estilo = """
     .tabela-resultados th { background-color: #f0f2f6; padding: 12px; text-align: left; border-bottom: 2px solid #ccc; color: #31333F; }
     .tabela-resultados td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; color: #31333F; }
     .tabela-resultados tr:hover { background-color: #f8f9fa; }
+
+    /* TRUQUE CSS: Ocultar o "Select All" chumbado em inglês do Streamlit */
+    div[data-testid="stMultiSelect"] ul[role="listbox"] li#bui11 { display: none !important; }
+    div[data-baseweb="select"] ul li:first-child { display: none !important; }
     </style>
 """
 st.markdown(esconder_estilo, unsafe_allow_html=True)
@@ -249,8 +253,6 @@ with tab_temas:
         temas_todos = sorted(df_evolucao['Tema'].unique())
         paleta = px.colors.qualitative.Alphabet + px.colors.qualitative.Vivid
         mapa_cores = {t: paleta[i % len(paleta)] for i, t in enumerate(temas_todos)}
-
-        # CORREÇÃO: Segurança Viária agora é Amarelo Escuro/Ouro para não sumir no cinza
         if "Segurança Viária" in mapa_cores:
             mapa_cores["Segurança Viária"] = "#D4AF37"
 
@@ -265,9 +267,7 @@ with tab_temas:
 
         if temas_selecionados and anos_selecionados:
             st.write("---")
-            # Gráfico de linhas ignora o filtro de ano para mostrar o contexto completo
             df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_selecionados)].sort_values('Ano')
-
             df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
 
             # --- GRÁFICO 1: EVOLUÇÃO ---
@@ -278,7 +278,6 @@ with tab_temas:
                 labels={'Relevancia_Media_Anual': 'Relevância (%)', 'Ano': 'Ano', 'Tema': 'Assunto'},
                 template="plotly_white"
             )
-            # CORREÇÃO: Força todos os anos no eixo X
             fig_evo.update_xaxes(type='category', tickmode='linear')
             fig_evo.update_layout(
                 legend=dict(orientation="v", yanchor="top", y=1, xanchor="right", x=-0.15),
@@ -301,8 +300,15 @@ with tab_temas:
                     labels={'Qtd': 'Reuniões', 'Tema': ''}, template="plotly_white"
                 )
                 fig_bar.update_traces(marker_color=contagem['Cor'])
-                # CORREÇÃO: Alinhamento de altura com a Nuvem
-                fig_bar.update_layout(showlegend=False, height=550)
+
+                # CORREÇÃO DEFINITIVA: Remoção de margens internas do Plotly e altura travada em 450
+                fig_bar.update_layout(
+                    showlegend=False,
+                    height=450,
+                    margin=dict(l=0, r=10, t=20, b=0),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
+                )
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
             # --- GRÁFICO 3: NUVEM ---
@@ -324,16 +330,21 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_selecionados else "#EAEAEA"
 
 
-                    # CORREÇÃO: Alinhamento de altura com o Gráfico de Barras
+                    # CORREÇÃO DEFINITIVA: Fundo RGBA Transparente e Proporção idêntica
                     wordcloud = WordCloud(
-                        width=800, height=550, background_color='white', max_words=150,
-                        relative_scaling=0.3, max_font_size=70, color_func=cor_func
+                        width=800, height=450,
+                        background_color=None, mode="RGBA",  # Habilita transparência
+                        max_words=150, relative_scaling=0.3, max_font_size=70,
+                        color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
 
-                    fig, ax = plt.subplots(figsize=(8, 5.5))
-                    ax.imshow(wordcloud, interpolation='bilinear');
+                    # Remoção das bordas e margens do Matplotlib
+                    fig, ax = plt.subplots(figsize=(8, 4.5), facecolor='none')
+                    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+                    ax.imshow(wordcloud, interpolation='bilinear')
                     ax.axis('off')
-                    st.pyplot(fig, clear_figure=True)
+
+                    st.pyplot(fig, clear_figure=True, transparent=True)  # Renderiza transparente no site
         else:
             st.info("👆 Selecione os filtros acima.")
 
