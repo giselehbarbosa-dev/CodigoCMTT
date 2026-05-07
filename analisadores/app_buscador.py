@@ -9,6 +9,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.io as pio
 import matplotlib.pyplot as plt
+import numpy as np  # 🆕 Necessário para criar a máscara orgânica
 from wordcloud import WordCloud
 
 # Configura o Plotly para Português (Brasil)
@@ -288,7 +289,7 @@ with tab_temas:
             st.write("---")
             col_g2, col_g3 = st.columns(2)
 
-            # --- GRÁFICO 2: BARRAS ---
+            # --- GRÁFICO 2: BARRAS (Altura travada em 450) ---
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
                 contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
@@ -300,18 +301,16 @@ with tab_temas:
                     labels={'Qtd': 'Reuniões', 'Tema': ''}, template="plotly_white"
                 )
                 fig_bar.update_traces(marker_color=contagem['Cor'])
-
-                # CORREÇÃO DEFINITIVA: Remoção de margens internas do Plotly e altura travada em 450
                 fig_bar.update_layout(
                     showlegend=False,
-                    height=450,
+                    height=450,  # 🆕 Trava a altura para alinhar com a nuvem
                     margin=dict(l=0, r=10, t=20, b=0),
                     paper_bgcolor='rgba(0,0,0,0)',
                     plot_bgcolor='rgba(0,0,0,0)'
                 )
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
-            # --- GRÁFICO 3: NUVEM ---
+            # --- GRÁFICO 3: NUVEM DE PALAVRAS ORGÂNICA ---
             with col_g3:
                 st.subheader("☁️ Nuvem de Palavras (Gatilhos)")
                 stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
@@ -330,21 +329,29 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_selecionados else "#EAEAEA"
 
 
-                    # CORREÇÃO DEFINITIVA: Fundo RGBA Transparente e Proporção idêntica
+                    # 🆕 MELHORIA 1: Criando uma Máscara Orgânica Elíptica matematicamente
+                    x, y = np.ogrid[:450, :800]
+                    mask = ((x - 225) ** 2 / (200 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
+
+                    # 🆕 MELHORIAS 2, 3 e 4: Fonte, Espaçamento e Rotação
                     wordcloud = WordCloud(
                         width=800, height=450,
-                        background_color=None, mode="RGBA",  # Habilita transparência
+                        background_color=None, mode="RGBA",  # Mantém transparência
+                        mask=mask,  # 🆕 Aplica a máscara orgânica
+                        font_path="bahnschrift",  # 🆕 Tenta usar Bahnschrift (fonte fluida/arredondada)
+                        margin=10,  # 🆕 Aumenta o espaçamento entre as palavras
+                        prefer_horizontal=0.85,  # 🆕 Permite algumas palavras na vertical (orgânico)
                         max_words=150, relative_scaling=0.3, max_font_size=70,
                         color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
 
-                    # Remoção das bordas e margens do Matplotlib
                     fig, ax = plt.subplots(figsize=(8, 4.5), facecolor='none')
                     plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
-                    ax.imshow(wordcloud, interpolation='bilinear')
+                    ax.imshow(wordcloud, interpolation='bilinear');
                     ax.axis('off')
-
-                    st.pyplot(fig, clear_figure=True, transparent=True)  # Renderiza transparente no site
+                    st.pyplot(fig, clear_figure=True, transparent=True)
+                else:
+                    st.info("Nenhuma palavra encontrada.")
         else:
             st.info("👆 Selecione os filtros acima.")
 
