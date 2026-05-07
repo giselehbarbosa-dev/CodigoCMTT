@@ -29,7 +29,7 @@ CAMINHO_INDEX_EXCEL = config_ambiente.CAMINHO_EXCEL_INDEX
 sigla_conselho = config_ambiente.REGRAS_CONSELHO.get("sigla", "Conselho")
 st.set_page_config(page_title=f"Análise {sigla_conselho}", layout="wide", initial_sidebar_state="collapsed")
 
-# --- CSS AVANÇADO: Cabeçalho, Abas Gigantes e Fixas ---
+# --- CSS AVANÇADO: Responsividade, Cabeçalho e Abas ---
 estilo_customizado = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -47,7 +47,7 @@ estilo_customizado = """
     div[data-testid="stMultiSelect"] ul[role="listbox"] li#bui11 { display: none !important; }
     div[data-baseweb="select"] ul li:first-child { display: none !important; }
 
-    /* FIXAR ABAS NO TOPO (Sticky) SEM FUNDO BRANCO */
+    /* ABAS FIXAS (Sticky) */
     .stTabs [data-baseweb="tab-list"] {
         position: sticky !important;
         top: 45px !important; 
@@ -58,10 +58,39 @@ estilo_customizado = """
         border-bottom: 2px solid #f0f2f6;
     }
 
-    /* Aumentar fonte das abas */
     .stTabs button[role="tab"] p {
         font-size: 22px !important;
         font-weight: 700 !important;
+    }
+
+    /* ---------------------------------------------------
+       REGRAS DO CABEÇALHO (Desktop Padrão)
+       --------------------------------------------------- */
+    .cabecalho-container { display: flex; align-items: center; gap: 40px; margin-bottom: 20px; padding: 10px; }
+    .cabecalho-logos { background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px; }
+    .logo-pref { height: 120px; width: auto; }
+    .logo-cmtt { height: 80px; width: auto; }
+    .cabecalho-textos { text-align: left; border-left: 2px solid #ddd; padding-left: 30px; }
+    .cabecalho-titulo { margin: 0; color: #2C3E50; font-size: 32px; font-weight: 800; }
+    .cabecalho-sub { margin: 0; color: #7f8c8d; font-size: 18px; }
+    .cabecalho-desc { margin: 10px 0 0 0; color: #34495e; font-size: 14px; line-height: 1.2; }
+
+    /* ---------------------------------------------------
+       DESIGN RESPONSIVO (Celulares e Tablets menores)
+       --------------------------------------------------- */
+    @media (max-width: 800px) {
+        .cabecalho-container { flex-direction: column; gap: 15px; align-items: stretch; }
+        .cabecalho-logos { justify-content: center; padding: 10px 15px; }
+        .logo-pref { height: 80px; }  /* Reduz no celular */
+        .logo-cmtt { height: 50px; }  /* Reduz no celular */
+        .cabecalho-textos { border-left: none; border-top: 2px solid #ddd; padding-left: 0; padding-top: 15px; text-align: center; }
+        .cabecalho-titulo { font-size: 24px; }
+        .cabecalho-sub { font-size: 14px; }
+        .cabecalho-desc { font-size: 12px; }
+
+        /* Reduz fonte das abas para não quebrarem a tela do celular */
+        .stTabs button[role="tab"] p { font-size: 16px !important; }
+        .stTabs [data-baseweb="tab-list"] { top: 3rem !important; }
     }
     </style>
 """
@@ -121,7 +150,7 @@ def carregar_fontes_extras(carimbo_mandatos, carimbo_index):
     return extras
 
 
-# --- Cabeçalho Lateralizado (Logos na Caixa Branca + Texto) ---
+# --- Cabeçalho Limpo (Aplica as classes CSS responsivas) ---
 caminho_logo1 = config_ambiente.CAMINHO_LOGO1
 caminho_logo2 = config_ambiente.CAMINHO_LOGO2
 
@@ -131,15 +160,15 @@ try:
         b64_logo2 = base64.b64encode(img2.read()).decode()
 
         html_header = f"""
-        <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 20px; padding: 10px;">
-            <div style="background-color: white; padding: 15px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 20px;">
-                <img src="data:image/png;base64,{b64_logo1}" style="height: 120px; width: auto;">
-                <img src="data:image/jpeg;base64,{b64_logo2}" style="height: 80px; width: auto;">
+        <div class="cabecalho-container">
+            <div class="cabecalho-logos">
+                <img class="logo-pref" src="data:image/png;base64,{b64_logo1}">
+                <img class="logo-cmtt" src="data:image/jpeg;base64,{b64_logo2}">
             </div>
-            <div style="text-align: left; border-left: 2px solid #ddd; padding-left: 30px;">
-                <h1 style="margin: 0; color: #2C3E50; font-size: 32px; font-weight: 800;">ANÁLISE CMTT</h1>
-                <p style="margin: 0; color: #7f8c8d; font-size: 18px;">Protótipo elaborado em código aberto</p>
-                <p style="margin: 10px 0 0 0; color: #34495e; font-size: 14px; line-height: 1.2;">
+            <div class="cabecalho-textos">
+                <h1 class="cabecalho-titulo">ANÁLISE CMTT</h1>
+                <p class="cabecalho-sub">Protótipo elaborado em código aberto</p>
+                <p class="cabecalho-desc">
                     <strong>Núcleo de Participação em Mobilidade Urbana - Assessoria Técnica</strong><br>
                     Secretaria Municipal de Mobilidade Urbana e Transporte
                 </p>
@@ -333,20 +362,17 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_sel else "#EAEAEA"
 
 
-                    # ------------------------------------------------------------------
-                    # CORREÇÃO DA NUVEM: Máscara elíptica, formato orgânico e bom respiro!
-                    # ------------------------------------------------------------------
                     x, y = np.ogrid[:450, :800]
                     mask = ((x - 225) ** 2 / (210 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
 
                     wc = WordCloud(
                         width=800, height=450,
                         background_color=None, mode="RGBA",
-                        mask=mask,  # Devolve o formato arredondado
-                        margin=10,  # Aumenta o espaçamento entre as palavras
-                        prefer_horizontal=0.85,  # Deixa o fluxo mais natural
+                        mask=mask,
+                        margin=10,
+                        prefer_horizontal=0.85,
                         max_words=120,
-                        min_font_size=12,  # Garante que as palavras não sumam
+                        min_font_size=12,
                         max_font_size=80,
                         color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
