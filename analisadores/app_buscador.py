@@ -288,9 +288,10 @@ with tab_temas:
             df_evo_filtrado = df_evolucao[(df_evolucao['Tema'].isin(temas_selecionados)) & (
                 df_evolucao['Ano'].astype(str).isin(anos_selecionados))]
 
-            # Para os Gráficos 2 e 3, filtramos APENAS por Ano. O "Filtro de Tema" apenas muda a COR (Destaque vs Cinza)
+            # Para o Gráfico 2, filtramos APENAS por Ano. O "Filtro de Tema" apenas muda a COR (Destaque vs Cinza)
             df_deb_ano = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_selecionados)]
-            df_pal_ano = df_palavras[df_palavras['Ano'].astype(str).isin(anos_selecionados)]
+            # CORREÇÃO: A Nuvem não tem filtro de ano, ela sempre olha o agregado histórico!
+            df_pal_ano = df_palavras.copy()
 
             # --- GRÁFICO 1: EVOLUÇÃO TEMPORAL ---
             st.subheader("📈 Evolução da Relevância Média Anual")
