@@ -251,6 +251,7 @@ with tab_busca:
 # ABA 2: PAINEL TEMÁTICO
 # ==============================================================================
 with tab_temas:
+    dados_carregados = False
     try:
         df_evolucao = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_evolucao_anual.csv"),
                                   sep=';', encoding='utf-8-sig')
@@ -258,7 +259,11 @@ with tab_temas:
                                    encoding='utf-8-sig')
         df_palavras = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_nuvem_palavras.csv"),
                                   sep=';', encoding='utf-8-sig')
+        dados_carregados = True
+    except Exception as e:
+        st.warning(f"⚠️ Dados não encontrados. Rode os motores de análise primeiro. Detalhe: {e}")
 
+    if dados_carregados:
         df_evolucao['Tema'] = df_evolucao['Tema_Classificado'].apply(encurtar_nomes_temas)
         df_debatidos['Tema'] = df_debatidos['Tema_Classificado'].apply(encurtar_nomes_temas)
         df_debatidos['Ano'] = df_debatidos['Data (AAAA/MM)'].astype(str).str[:4]
@@ -267,7 +272,8 @@ with tab_temas:
         temas_todos = sorted(df_evolucao['Tema'].unique())
         paleta = px.colors.qualitative.Alphabet + px.colors.qualitative.Vivid
         mapa_cores = {t: paleta[i % len(paleta)] for i, t in enumerate(temas_todos)}
-        if "Segurança Viária" in mapa_cores: mapa_cores["Segurança Viária"] = "#D4AF37"
+        if "Segurança Viária" in mapa_cores:
+            mapa_cores["Segurança Viária"] = "#D4AF37"
 
         col_f1, col_f2 = st.columns([2, 1])
         with col_f1:
@@ -278,48 +284,90 @@ with tab_temas:
 
         if temas_sel and anos_sel:
             st.write("---")
-            df_evo_comp = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
-            df_deb_filt = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
+            df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
+            df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
 
             st.subheader("📈 Evolução da Relevância Média Anual (%)")
-            fig_evo = px.line(df_evo_comp, x='Ano', y='Relevancia_Media_Anual', color='Tema', markers=True,
-                              color_discrete_map=mapa_cores, template="plotly_white")
+            fig_evo = px.line(
+                df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
+                markers=True, color_discrete_map=mapa_cores,
+                labels={'Relevancia_Media_Anual': 'Relevância (%)', 'Ano': 'Ano', 'Tema': ''}, template="plotly_white"
+            )
             fig_evo.update_xaxes(type='category', tickmode='linear', tickangle=-45)
             fig_evo.update_layout(
                 legend=dict(orientation="h", yanchor="top", y=-0.3, xanchor="center", x=0.5, font=dict(size=13)),
-                margin=dict(l=20, r=20, t=30, b=100))
-            st.plotly_chart(fig_evo, use_container_width=True)
+                margin=dict(l=20, r=20, t=30, b=100)
+            )
+            st.plotly_chart(fig_evo, use_container_width=True, config={'locale': 'pt-BR'})
 
             st.write("---")
             col_g2, col_g3 = st.columns(2)
+
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
-                contagem = df_deb_filt.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values('Qtd')
-                fig_bar = px.bar(contagem, x='Qtd', y='Tema', orientation='h', text='Qtd', template="plotly_white")
-                fig_bar.update_traces(marker_color=[mapa_cores.get(t, '#EAEAEA') for t in contagem['Tema']])
-                fig_bar.update_layout(showlegend=False, height=450, margin=dict(l=0, r=10, t=20, b=0))
-                st.plotly_chart(fig_bar, use_container_width=True)
+                contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
+                    'Qtd')
+
+                # Restaurada a lógica original do gráfico cinza
+                contagem['Cor'] = contagem['Tema'].apply(lambda t: mapa_cores.get(t) if t in temas_sel else '#EAEAEA')
+
+                fig_bar = px.bar(
+                    contagem, x='Qtd', y='Tema', orientation='h', text='Qtd',
+                    labels={'Qtd': 'Reuniões', 'Tema': ''}, template="plotly_white"
+                )
+                fig_bar.update_traces(marker_color=contagem['Cor'])
+                fig_bar.update_layout(
+                    showlegend=False,
+                    height=450,
+                    margin=dict(l=0, r=10, t=20, b=0),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
+                )
+                st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
             with col_g3:
                 st.subheader("☁️ Nuvem de Palavras")
-                df_pal_limpo = df_palavras[
-                    ~df_palavras['Palavra'].str.lower().isin(['conselheiro', 'conselho', 'representante'])]
+                stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
+                                'representantes']
+                df_pal_limpo = df_palavras[~df_palavras['Palavra'].str.lower().isin(stopwords_bi)]
                 top_p = df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].sum().reset_index()
+
                 if not top_p.empty:
                     freq_dict = dict(zip(top_p['Palavra'], top_p['Vezes_Ativada']))
-                    tema_pal = df_pal_limpo.loc[
-                        df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].idxmax(), ['Palavra', 'Tema']].set_index(
-                        'Palavra')['Tema'].to_dict()
-                    wc = WordCloud(width=800, height=450, background_color=None, mode="RGBA", margin=10, max_words=120,
-                                   color_func=lambda word, **kwargs: mapa_cores.get(tema_pal.get(word),
-                                                                                    "#333333")).generate_from_frequencies(
-                        freq_dict)
+                    idx_max = df_pal_limpo.groupby('Palavra')['Vezes_Ativada'].idxmax()
+                    tema_pal = df_pal_limpo.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')['Tema'].to_dict()
+
+
+                    # Restaurada a inteligência de cor original
+                    def cor_func(word, **kwargs):
+                        t = tema_pal.get(word)
+                        return mapa_cores.get(t, "#333333") if t in temas_sel else "#EAEAEA"
+
+
+                    # Restaurada a máscara oval
+                    x, y = np.ogrid[:450, :800]
+                    mask = ((x - 225) ** 2 / (210 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
+
+                    wc = WordCloud(
+                        width=800, height=450,
+                        background_color=None, mode="RGBA",
+                        mask=mask,
+                        margin=10,
+                        prefer_horizontal=0.85,
+                        max_words=120,
+                        min_font_size=10,
+                        max_font_size=60,  # Fonte reduzida de 80 para 60
+                        color_func=cor_func
+                    ).generate_from_frequencies(freq_dict)
+
                     fig, ax = plt.subplots(figsize=(8, 4.5), facecolor='none')
                     ax.imshow(wc, interpolation='bilinear')
                     ax.axis('off')
                     st.pyplot(fig, clear_figure=True, transparent=True)
-    except:
-        st.warning("Dados temáticos indisponíveis.")
+                else:
+                    st.info("Nenhuma palavra encontrada.")
+        else:
+            st.info("👆 Selecione os filtros acima.")
 
 # ==============================================================================
 # ABA 3: FREQUÊNCIA E ENGAJAMENTO HISTÓRICO
