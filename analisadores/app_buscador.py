@@ -188,7 +188,7 @@ except Exception:
     st.warning("⚠️ Erro ao carregar cabeçalho.")
 
 # --- Abas ---
-# ALTERAÇÃO: Removida a aba Catálogo
+# Catálogo removido do menu superior
 tab_busca, tab_temas, tab_frequencia = st.tabs([
     "🔍 Buscador", "📊 Temas", "👥 Frequência"
 ])
@@ -317,7 +317,7 @@ with tab_temas:
             df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
             df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
 
-            # ALTERAÇÃO: Título com (%)
+            # Alteração do título para exibir (%)
             st.subheader("📈 Evolução da Relevância Média Anual (%)")
             fig_evo = px.line(
                 df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
@@ -325,10 +325,18 @@ with tab_temas:
                 labels={'Relevancia_Media_Anual': 'Relevância (%)', 'Ano': 'Ano', 'Tema': ''}, template="plotly_white"
             )
             fig_evo.update_xaxes(type='category', tickmode='linear', tickangle=-45)
+
+            # Alteração do layout da legenda para evitar que corte a imagem
             fig_evo.update_layout(
-                # ALTERAÇÃO: Fonte da legenda aumentada para 14
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5, font=dict(size=14)),
-                margin=dict(l=20, r=20, t=50, b=20)
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.3,
+                    xanchor="center",
+                    x=0.5,
+                    font=dict(size=14)
+                ),
+                margin=dict(l=20, r=20, t=30, b=100)
             )
             st.plotly_chart(fig_evo, use_container_width=True, config={'locale': 'pt-BR'})
 
@@ -397,52 +405,158 @@ with tab_temas:
             st.info("👆 Selecione os filtros acima.")
 
 # ==============================================================================
-# ABA 3: FREQUÊNCIA E INTERESSE
+# ABA 3: FREQUÊNCIA E ENGAJAMENTO HISTÓRICO
 # ==============================================================================
 with tab_frequencia:
     st.markdown("## 👥 Frequência e Engajamento Histórico")
 
-    # ALTERAÇÃO: 4 métricas específicas
-    m1, m2, m3, m4 = st.columns(4)
-    # Substitua as strings abaixo pelas variáveis quando ligar aos seus dados reais
-    m1.metric("Segmento com maior frequência (%)", "Poder Público (92%)")
-    m2.metric("Segmento com menor frequência (%)", "Operadores (68%)")
-    m3.metric("Cadeira mais presente (%)", "SMT (98%)")
-    m4.metric("Cadeira menos presente (%)", "Sindicato X (45%)")
+    # Caminhos para leitura dos arquivos na nuvem/local
+    caminho_relatorio = os.path.join(config_ambiente.CAMINHO_RELATORIOS, "Relatorio_Cadeiras_Absenteismo.xlsx")
+    caminho_catalogo = os.path.join(config_ambiente.CAMINHO_RELATORIOS, "Catálogo_de_Metadados_CMTT.xlsx")
 
-    st.write("---")
+    try:
+        # 1. Lê a matriz de presenças
+        df_cadeiras = pd.read_excel(caminho_relatorio)
 
-    st.subheader("📈 Evolução da Assiduidade nas Reuniões Plenárias")
+        # 🧠 Calcula a % de Presença dinamicamente (Presenças / Total) e evita divisão por zero
+        df_cadeiras['Presenca_Perc'] = (df_cadeiras['Pres'] / df_cadeiras['Total'] * 100).round(1)
+        df_cadeiras['Presenca_Perc'] = df_cadeiras['Presenca_Perc'].fillna(0)
 
-    # ALTERAÇÃO: Forçando os anos no eixo X tratando-os como string
-    datas_f = [str(ano) for ano in range(2014, 2026)]
-    presenca_f = [65, 68, 72, 80, 78, 75, 82, 85, 88, 84, 82, 80]  # Substitua por seus dados reais
+        COL_CADEIRA = 'Cadeira'
+        COL_SEGMENTO = 'Segmento'
+        COL_PRESENCA = 'Presenca_Perc'
 
-    fig_freq = go.Figure()
-    fig_freq.add_trace(go.Scatter(x=datas_f, y=presenca_f, fill='tozeroy', name='Presença (%)', line_color='#005088'))
+        # 2. Lê o Catálogo de Metadados para o Histórico (Tooltips)
+        try:
+            # Puxa a aba Evolução_das_Secretarias para gerar os balões de histórico
+            df_catalogo = pd.read_excel(caminho_catalogo, sheet_name=None)
+            aba_alvo = 'Evolução_das_Secretarias' if 'Evolução_das_Secretarias' in df_catalogo else \
+            list(df_catalogo.keys())[0]
+            df_cat = df_catalogo[aba_alvo]
 
-    fig_freq.update_layout(
-        height=400,
-        margin=dict(l=20, r=20, t=20, b=20),
-        yaxis_title="Presença %",
-        xaxis=dict(
-            type='category',  # Isto força a exibição de todos os itens do eixo X
-            title="Ano"
-        )
-    )
-    st.plotly_chart(fig_freq, use_container_width=True)
+            # Constrói um dicionário com a linha do tempo de cada cadeira padronizada
+            dict_historico = {}
+            for _, row in df_cat.iterrows():
+                cadeira_padrao = str(row.get('Cadeira Padronizada', ''))
+                if not cadeira_padrao or cadeira_padrao == 'nan': continue
 
-    st.write("---")
+                linha_tempo = []
+                ultimo_nome = ""
+                # Varre as colunas de anos
+                for col in df_cat.columns[2:]:
+                    valor = str(row[col]).strip()
+                    if valor not in ['-', 'nan', 'NaN', 'None', '']:
+                        if valor != ultimo_nome:
+                            ano_ref = str(col).split('_')[0][:4]
+                            linha_tempo.append(f"<b>{ano_ref}:</b> {valor}")
+                            ultimo_nome = valor
 
-    # ALTERAÇÃO: 4 gráficos usando sub-abas
-    st.subheader("🏛️ Participação por Cadeira e Segmento")
-    tab_pub, tab_soc, tab_op, tab_conv = st.tabs(["Poder Público", "Sociedade Civil", "Operadores", "Convidados"])
+                dict_historico[cadeira_padrao] = "<br>".join(
+                    linha_tempo) if linha_tempo else "Sem mudanças registradas."
+        except Exception as e_cat:
+            dict_historico = {}
+            df_cat = pd.DataFrame()
+            st.toast(f"Aviso: Catálogo não carregado para tooltips.")
 
-    with tab_pub:
-        st.info("💡 Insira aqui o gráfico de barras do Poder Público filtrando sua base de dados.")
-    with tab_soc:
-        st.info("💡 Insira aqui o gráfico de barras da Sociedade Civil filtrando sua base de dados.")
-    with tab_op:
-        st.info("💡 Insira aqui o gráfico de barras dos Operadores filtrando sua base de dados.")
-    with tab_conv:
-        st.info("💡 Insira aqui o gráfico de Convidados (Visitantes) filtrando sua base de dados.")
+        # 3. Cálculo Dinâmico das 4 Métricas de Balanço
+        seg_media = df_cadeiras.groupby(COL_SEGMENTO)[COL_PRESENCA].mean()
+        seg_maior = f"{seg_media.idxmax()} ({seg_media.max():.1f}%)"
+        seg_menor = f"{seg_media.idxmin()} ({seg_media.min():.1f}%)"
+
+        cad_maior_idx = df_cadeiras[COL_PRESENCA].idxmax()
+        cad_menor_idx = df_cadeiras[COL_PRESENCA].idxmin()
+        cad_maior = f"{df_cadeiras.loc[cad_maior_idx, COL_CADEIRA]} ({df_cadeiras.loc[cad_maior_idx, COL_PRESENCA]:.1f}%)"
+        cad_menor = f"{df_cadeiras.loc[cad_menor_idx, COL_CADEIRA]} ({df_cadeiras.loc[cad_menor_idx, COL_PRESENCA]:.1f}%)"
+
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Segmento Maior Frequência", seg_maior)
+        m2.metric("Segmento Menor Frequência", seg_menor)
+        m3.metric("Cadeira Mais Presente", cad_maior)
+        m4.metric("Cadeira Menos Presente", cad_menor)
+
+        st.write("---")
+
+        # 4. Gráfico de Assiduidade Geral (Evolução Temporal)
+        st.subheader("📈 Evolução da Assiduidade nas Reuniões Plenárias")
+        datas_f = [str(ano) for ano in range(2014, 2026)]
+        presenca_f = [65, 68, 72, 80, 78, 75, 82, 85, 88, 84, 82,
+                      80]  # Substituir futuramente pela série real processada
+        fig_freq = go.Figure(go.Scatter(x=datas_f, y=presenca_f, fill='tozeroy', line_color='#005088'))
+        fig_freq.update_layout(xaxis=dict(type='category', title="Ano"), yaxis_title="Presença %", height=350)
+        st.plotly_chart(fig_freq, use_container_width=True)
+
+        st.write("---")
+
+        # 5. Gráficos por Segmento com Tooltips Históricas
+        st.subheader("🏛️ Participação por Cadeira e Segmento")
+        tab_pub, tab_soc, tab_op, tab_conv = st.tabs(["Poder Público", "Sociedade Civil", "Operadores", "Convidados"])
+
+
+        def plotar_grafico_segmento(df, filtro_segmento, cor_barra):
+            # Filtra o DataFrame usando .str.contains para lidar com variações (ex: SOCIEDADE CIVIL - TEMÁTICOS / REGIONAIS)
+            df_filtrado = df[df[COL_SEGMENTO].str.contains(filtro_segmento, case=False, na=False)].copy()
+            df_filtrado = df_filtrado.sort_values(COL_PRESENCA, ascending=True)
+
+            if df_filtrado.empty:
+                st.info(f"Não há dados disponíveis para: {filtro_segmento}")
+                return
+
+            # Injeta o histórico mapeado do dicionário para a coluna customizada do Plotly
+            df_filtrado['Historico_Tooltip'] = df_filtrado[COL_CADEIRA].map(dict_historico).fillna(
+                "Informação histórica não mapeada.")
+
+            fig = px.bar(
+                df_filtrado,
+                x=COL_PRESENCA,
+                y=COL_CADEIRA,
+                orientation='h',
+                text=COL_PRESENCA,
+                custom_data=['Historico_Tooltip']  # Passa os dados extras para o balão
+            )
+
+            # Criação do balão flutuante estilizado
+            hovertemplate_personalizado = (
+                "<b>%{y}</b><br>"
+                "Assiduidade: %{x}%<br><br>"
+                "<b>Histórico de Nomenclaturas:</b><br>"
+                "%{customdata[0]}<extra></extra>"
+            )
+
+            fig.update_traces(
+                marker_color=cor_barra,
+                texttemplate='%{text}%',
+                textposition='outside',
+                hovertemplate=hovertemplate_personalizado  # Aplica o balão
+            )
+
+            fig.update_layout(
+                xaxis_title="Presença (%)", yaxis_title="",
+                xaxis=dict(range=[0, max(100, df_filtrado[COL_PRESENCA].max() + 15)]),  # +15 de espaço pro texto
+                height=max(250, len(df_filtrado) * 45),
+                margin=dict(l=10, r=30, t=20, b=20)
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+
+        # Plotagem inteligente baseada nos nomes reais dos segmentos mapeados nos seus CSVs
+        with tab_pub:
+            plotar_grafico_segmento(df_cadeiras, 'ÓRGÃOS MUNICIPAIS', '#2E4D68')
+        with tab_soc:
+            plotar_grafico_segmento(df_cadeiras, 'SOCIEDADE CIVIL', '#11caa0')
+        with tab_op:
+            plotar_grafico_segmento(df_cadeiras, 'OPERADORES DO SERVIÇO DE TRANSPORTE', '#D4AF37')
+        with tab_conv:
+            plotar_grafico_segmento(df_cadeiras, 'CONVIDADOS', '#888888')
+
+        # --- A "Gaveta" do Catálogo (Expander) ---
+        st.write("")
+        with st.expander("📚 Ver Catálogo Completo de Nomenclaturas e Mandatos"):
+            st.markdown(
+                "Essa tabela mapeia a evolução das entidades ao longo dos mandatos do conselho, garantindo a rastreabilidade (Data Lineage) das mudanças de secretarias e sindicatos ao longo do tempo.")
+            if not df_cat.empty:
+                st.dataframe(df_cat, use_container_width=True, hide_index=True)
+            else:
+                st.info("Catálogo indisponível no momento.")
+
+    except Exception as e:
+        st.error(f"⚠️ Erro ao ler a planilha de Cadeiras. Verifique os arquivos. Detalhe: {e}")
