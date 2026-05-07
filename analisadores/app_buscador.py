@@ -9,6 +9,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.io as pio
 import matplotlib.pyplot as plt
+import numpy as np
 from wordcloud import WordCloud
 
 # Configura o Plotly para Português (Brasil)
@@ -51,7 +52,7 @@ estilo_customizado = """
         position: sticky !important;
         top: 45px !important; 
         z-index: 999 !important;
-        background-color: transparent !important; /* CORREÇÃO: Fundo transparente */
+        background-color: transparent !important; 
         padding-top: 15px;
         padding-bottom: 10px;
         border-bottom: 2px solid #f0f2f6;
@@ -242,7 +243,6 @@ with tab_busca:
 # ABA 2: PAINEL TEMÁTICO
 # ==============================================================================
 with tab_temas:
-    # CORREÇÃO: O Try/Except agora cobre apenas a leitura de arquivos (Bloqueia erros de Syntax)
     dados_carregados = False
     try:
         df_evolucao = pd.read_csv(os.path.join(config_ambiente.CAMINHO_RELATORIOS, "bi_temas_evolucao_anual.csv"),
@@ -255,7 +255,6 @@ with tab_temas:
     except Exception as e:
         st.warning(f"⚠️ Dados não encontrados. Rode os motores de análise primeiro. Detalhe: {e}")
 
-    # Se os dados carregaram com sucesso, montamos o dashboard!
     if dados_carregados:
         df_evolucao['Tema'] = df_evolucao['Tema_Classificado'].apply(encurtar_nomes_temas)
         df_debatidos['Tema'] = df_debatidos['Tema_Classificado'].apply(encurtar_nomes_temas)
@@ -280,7 +279,6 @@ with tab_temas:
             df_evo_completo = df_evolucao[df_evolucao['Tema'].isin(temas_sel)].sort_values('Ano')
             df_deb_filtrado = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)]
 
-            # --- GRÁFICO 1: EVOLUÇÃO ---
             st.subheader("📈 Evolução da Relevância Média Anual (Série Completa)")
             fig_evo = px.line(
                 df_evo_completo, x='Ano', y='Relevancia_Media_Anual', color='Tema',
@@ -298,7 +296,6 @@ with tab_temas:
             st.write("---")
             col_g2, col_g3 = st.columns(2)
 
-            # --- GRÁFICO 2: BARRAS ---
             with col_g2:
                 st.subheader("📋 Contagem de Reuniões por Tema")
                 contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
@@ -318,7 +315,6 @@ with tab_temas:
                 )
                 st.plotly_chart(fig_bar, use_container_width=True, config={'locale': 'pt-BR'})
 
-            # --- GRÁFICO 3: NUVEM DE PALAVRAS LIMPA ---
             with col_g3:
                 st.subheader("☁️ Nuvem de Palavras")
                 stopwords_bi = ['conselheiro', 'conselheiros', 'conselho', 'conselhos', 'representante',
@@ -337,15 +333,21 @@ with tab_temas:
                         return mapa_cores.get(t, "#333333") if t in temas_sel else "#EAEAEA"
 
 
-                    # CORREÇÃO: Sem máscara e com min_font_size maior para garantir a leitura perfeita
+                    # ------------------------------------------------------------------
+                    # CORREÇÃO DA NUVEM: Máscara elíptica, formato orgânico e bom respiro!
+                    # ------------------------------------------------------------------
+                    x, y = np.ogrid[:450, :800]
+                    mask = ((x - 225) ** 2 / (210 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
+
                     wc = WordCloud(
                         width=800, height=450,
                         background_color=None, mode="RGBA",
-                        margin=5,
-                        prefer_horizontal=0.9,
+                        mask=mask,  # Devolve o formato arredondado
+                        margin=10,  # Aumenta o espaçamento entre as palavras
+                        prefer_horizontal=0.85,  # Deixa o fluxo mais natural
                         max_words=120,
-                        min_font_size=14,
-                        max_font_size=85,
+                        min_font_size=12,  # Garante que as palavras não sumam
+                        max_font_size=80,
                         color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
 
