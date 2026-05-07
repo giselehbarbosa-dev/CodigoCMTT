@@ -5,18 +5,26 @@ __pycache__/
 .idea/
 
 # --- Escudo LGPD e Risco Político (Outputs) ---
-dados/processados/
-outputs/relatorios/
-outputs/graficos/
+# Usamos /* para ignorar o conteúdo das pastas, mas permitir exceções pontuais
+dados/processados/*
+outputs/relatorios/*
+outputs/graficos/*
 *.csv
 *.xlsx
 
 # --- Arquivos de Cache Temporários ---
 dados/configs/.cache_corpus_atas.json
 
-# --- Exceções Seguras (O que o app precisa para rodar) ---
+# --- Exceções Seguras (O que o app precisa para rodar online) ---
+# 1. Planilhas Base de Indexação
 !dados/base_dados/base_mandatosCMTT.xlsx
 !dados/base_dados/index_atasCMTT.xlsx
+
+# 2. Bases do BI e Dashboards (Sem Dados Pessoais Sensíveis)
+!dados/processados/temas_debatidos.csv
+!outputs/relatorios/bi_temas_evolucao_anual.csv
+!outputs/relatorios/bi_temas_nuvem_palavras.csv
+!outputs/relatorios/bi_indice_interesse_segmento.csv
 
 # --- Segurança do Streamlit e Cofre ---
 .streamlit/secrets.toml
