@@ -169,25 +169,35 @@ with tab_busca:
             get_carimbo_tempo(CAMINHO_BASE_MANDATOS), get_carimbo_tempo(CAMINHO_INDEX_EXCEL))
 
         if corpus_completo:
-            # Removemos os exemplos do placeholder para não enviesar o usuário
-            termo = st.text_input("Digite sua busca", label_visibility="collapsed",
-                                  placeholder="O que você deseja buscar?")
-            col_f_ano, col_f_ata = st.columns(2)
-            with col_f_ano:
-                anos_unicos = sorted(list(set(str(doc.get("Data", "N/A")) for doc in corpus_completo)), reverse=True)
-                anos_selecionados = st.multiselect("📅 Filtrar por Ano:", options=anos_unicos, default=[],
-                                                   placeholder="Todos os anos")
-            with col_f_ata:
-                lista_atas_bruta = list(set(str(doc.get("Reunião", "N/A")) for doc in corpus_completo if
-                                            doc.get("Reunião") != "Dados Estruturados"))
-                atas_unicas = sorted(lista_atas_bruta, key=ordenacao_natural)
-                atas_selecionadas = st.multiselect("📌 Filtrar por Ata:", options=atas_unicas, default=[],
-                                                   placeholder="Todas as atas")
+            # 1. Abre o formulário
+            with st.form(key="form_busca"):
+                termo = st.text_input("Digite sua busca", label_visibility="collapsed",
+                                      placeholder="O que você deseja buscar?")
 
-            st.markdown(
-                "<p style='text-align: center; color: #6c757d; font-size: 14px; margin-top: 12px;'>💡 Dica: Use termos entre aspas para buscas exatas.</p>",
-                unsafe_allow_html=True)
-            if st.button("PESQUISAR", use_container_width=True) and termo:
+                col_f_ano, col_f_ata = st.columns(2)
+                with col_f_ano:
+                    anos_unicos = sorted(list(set(str(doc.get("Data", "N/A")) for doc in corpus_completo)),
+                                         reverse=True)
+                    anos_selecionados = st.multiselect("📅 Filtrar por Ano:", options=anos_unicos, default=[],
+                                                       placeholder="Todos os anos")
+                with col_f_ata:
+                    lista_atas_bruta = list(set(str(doc.get("Reunião", "N/A")) for doc in corpus_completo if
+                                                doc.get("Reunião") != "Dados Estruturados"))
+                    atas_unicas = sorted(lista_atas_bruta, key=ordenacao_natural)
+                    atas_selecionadas = st.multiselect("📌 Filtrar por Ata:", options=atas_unicas, default=[],
+                                                       placeholder="Todas as atas")
+
+                st.markdown(
+                    "<p style='text-align: center; color: #6c757d; font-size: 14px; margin-top: 12px;'>💡 Dica: Use termos entre aspas para buscas exatas.</p>",
+                    unsafe_allow_html=True)
+
+                _, col_btn, _ = st.columns([2, 1, 2])
+                with col_btn:
+                    # 2. O botão agora fica salvo em uma variável
+                    clicou_pesquisar = st.form_submit_button("PESQUISAR", use_container_width=True)
+
+            # 3. A SUA LÓGICA ORIGINAL COMEÇA AQUI! (Apenas troque a linha do 'if st.button...' por esta:)
+            if clicou_pesquisar and termo:
                 st.write("---")
                 regex = criar_padrao_flexivel(termo)
                 resultados = []
