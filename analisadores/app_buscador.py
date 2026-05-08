@@ -449,13 +449,16 @@ with tab_frequencia:
                                                  'Operadores': '#D4AF37'}, custom_data=['Hist', 'Seg_Amigo', 'Vida'])
             fig_bar.update_traces(texttemplate='%{text}%', textposition='outside',
                                   hovertemplate="<b>%{y}</b> (%{customdata[1]})<br>Assiduidade Histórica Global: %{x}%<br><b>Período:</b> %{customdata[2]}<br><br><b>Histórico (ver Catálogo de Nomenclaturas e Mandatos):</b><br>%{customdata[0]}<extra></extra>")
+            # --- Ativação do Balão e Correção do Balão Torto ---
             fig_bar.update_layout(
-                hovermode='y',  # ESSA LINHA: Habilita o balão ao passar o mouse na direção da cadeira, mesmo sem barra
+                hovermode='closest',  # <--- Volta para o padrão seguro que não gira o balão
+                hoverlabel=dict(align="left"),  # <--- Força o texto dentro do balão a ficar retinho
                 showlegend=False,
-                xaxis=dict(range=[0, 115], title="Presença (%)"),
+                xaxis=dict(range=[-2, 115], title="Presença (%)"),
+                # <--- O TRUQUE: -2 cria a "área invisível" para o mouse achar o 0%
                 yaxis_title="",
                 height=max(300, len(df_bar) * 45),
-                margin=dict(l=0, r=20, t=10, b=20)
+                margin=dict(l=0, r=40, t=10, b=20)
             )
             st.plotly_chart(fig_bar, use_container_width=True)
         else:
