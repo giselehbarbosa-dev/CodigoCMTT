@@ -308,7 +308,6 @@ with tab_temas:
                 contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(name='Qtd').sort_values(
                     'Qtd')
 
-                # Restaurada a lógica original do gráfico cinza
                 contagem['Cor'] = contagem['Tema'].apply(lambda t: mapa_cores.get(t) if t in temas_sel else '#EAEAEA')
 
                 fig_bar = px.bar(
@@ -338,13 +337,11 @@ with tab_temas:
                     tema_pal = df_pal_limpo.loc[idx_max, ['Palavra', 'Tema']].set_index('Palavra')['Tema'].to_dict()
 
 
-                    # Restaurada a inteligência de cor original
                     def cor_func(word, **kwargs):
                         t = tema_pal.get(word)
                         return mapa_cores.get(t, "#333333") if t in temas_sel else "#EAEAEA"
 
 
-                    # Restaurada a máscara oval
                     x, y = np.ogrid[:450, :800]
                     mask = ((x - 225) ** 2 / (210 ** 2) + (y - 400) ** 2 / (380 ** 2) > 1).astype(int) * 255
 
@@ -356,7 +353,7 @@ with tab_temas:
                         prefer_horizontal=0.85,
                         max_words=120,
                         min_font_size=10,
-                        max_font_size=60,  # Fonte reduzida de 80 para 60
+                        max_font_size=60,
                         color_func=cor_func
                     ).generate_from_frequencies(freq_dict)
 
@@ -370,7 +367,7 @@ with tab_temas:
             st.info("👆 Selecione os filtros acima.")
 
 # ==============================================================================
-# ABA 3: FREQUÊNCIA E ENGAJAMENTO HISTÓRICO
+# ABA 3: FREQUÊNCIA E ENGAJAMENTO HISTÓRICO (Com Inteligência Temporal)
 # ==============================================================================
 with tab_frequencia:
     st.markdown("## 👥 Frequência e Engajamento Histórico")
@@ -381,12 +378,29 @@ with tab_frequencia:
     try:
         # 1. Carregamento e Filtro de Governança
         df_cadeiras = pd.read_excel(caminho_relatorio)
-        df_cadeiras = df_cadeiras[df_cadeiras['Segmento'] != 'SECRETARIA EXECUTIVA']
+
+        # Filtro de Exclusão (Remove Secretaria Executiva e Convidados)
+        df_cadeiras = df_cadeiras[
+            ~df_cadeiras['Segmento'].str.contains('SECRETARIA EXECUTIVA|CONVIDADO', case=False, na=False)]
         df_cadeiras['Presenca_Perc'] = (df_cadeiras['Pres'] / df_cadeiras['Total'] * 100).round(1).fillna(0)
 
-        COL_CADEIRA, COL_SEGMENTO, COL_PRESENCA = 'Cadeira', 'Segmento', 'Presenca_Perc'
 
-        # 2. Catálogo (Fechado por padrão e com Download)
+        # Mapeamento para nomes amigáveis nos filtros
+        def mapear_segmento(seg):
+            s = str(seg).upper()
+            if 'ÓRGÃOS MUNICIPAIS' in s: return 'Poder Público'
+            if 'SOCIEDADE CIVIL' in s: return 'Sociedade Civil'
+            if 'OPERADORES' in s: return 'Operadores'
+            return 'Outros'
+
+
+        df_cadeiras['Segmento_Amigavel'] = df_cadeiras['Segmento'].apply(mapear_segmento)
+
+        COL_CADEIRA = 'Cadeira'
+        COL_SEGMENTO = 'Segmento_Amigavel'
+        COL_PRESENCA = 'Presenca_Perc'
+
+        # 2. Catálogo de Contexto
         col_c1, col_c2 = st.columns([3, 1])
         with col_c1:
             with st.expander("📚 CONTEXTO: Catálogo de Nomenclaturas e Mandatos", expanded=False):
@@ -396,7 +410,9 @@ with tab_frequencia:
                     aba_alvo = 'Evolução_das_Secretarias' if 'Evolução_das_Secretarias' in df_catalogo_bruto else \
                     list(df_catalogo_bruto.keys())[0]
                     df_cat_full = df_catalogo_bruto[aba_alvo]
-                    df_cat_full = df_cat_full[df_cat_full['Segmento'] != 'SECRETARIA EXECUTIVA']
+
+                    df_cat_full = df_cat_full[
+                        ~df_cat_full['Segmento'].str.contains('SECRETARIA EXECUTIVA|CONVIDADO', case=False, na=False)]
                     st.dataframe(df_cat_full, use_container_width=True, hide_index=True)
 
                     dict_historico = {}
@@ -410,59 +426,134 @@ with tab_frequencia:
                             if val not in ['-', 'nan', 'NaN', 'None', ''] and val != ult_nome:
                                 linha_tempo.append(f"<b>{str(col).split('_')[0][:4]}:</b> {val}")
                                 ult_nome = val
-                        dict_historico[cad_pad] = "<br>".join(linha_tempo) if linha_tempo else "Sem mudanças."
+                        dict_historico[cad_pad] = "<br>".join(
+                            linha_tempo) if linha_tempo else "Sem mudanças registradas."
                 except:
-                    dict_historico = {}; st.info("Catálogo indisponível.")
+                    dict_historico = {}
+                    st.info("Catálogo indisponível.")
 
         with col_c2:
             try:
                 with open(caminho_catalogo, "rb") as file_cat:
-                    st.download_button(label="💾 Baixar Catálogo (Excel)", data=file_cat,
-                                       file_name="Catalogo_Metadados_CMTT.xlsx",
-                                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                       use_container_width=True)
+                    st.download_button(
+                        label="💾 Baixar Catálogo (Excel)",
+                        data=file_cat,
+                        file_name="Catalogo_Metadados_CMTT.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        use_container_width=True
+                    )
             except:
                 st.button("Catálogo Indisponível", disabled=True)
 
         st.write("---")
 
-        # 3. Evolução Temporal
-        st.subheader("📈 Assiduidade nas Reuniões Plenárias")
-        anos_f = [str(a) for a in range(2014, 2026)]
-        pres_f = [68, 72, 80, 78, 75, 82, 85, 88, 84, 82, 80, 81]  # Exemplo temporário
-        fig_at = go.Figure(go.Scatter(x=anos_f, y=pres_f, fill='tozeroy', line_color='#005088'))
-        fig_at.update_layout(xaxis=dict(type='category', title="Ano"), yaxis=dict(range=[0, 100], title="Presença %"),
-                             height=300, margin=dict(l=10, r=10, t=20, b=10))
-        st.plotly_chart(fig_at, use_container_width=True)
+        # 3. Lógica Computacional Temporal (Extraindo Anos das Colunas)
+        # Pega todas as colunas que têm formato de data (ex: 01ª - 2013-08-02)
+        reuniao_cols = [c for c in df_cadeiras.columns if re.search(r'\d{4}-\d{2}-\d{2}', str(c))]
 
-        st.write("---")
+        # Derrete a planilha (Melt) para transformar colunas em linhas e extrair os anos
+        df_long = df_cadeiras.melt(id_vars=[COL_CADEIRA, COL_SEGMENTO], value_vars=reuniao_cols, var_name='Reuniao',
+                                   value_name='Status')
+        df_long = df_long[df_long['Status'].isin(['Presente', 'Falta'])]
+        df_long['Presenca_Num'] = df_long['Status'].apply(lambda x: 1 if x == 'Presente' else 0)
+        df_long['Ano'] = df_long['Reuniao'].str.extract(r'(\d{4})')
 
-        # 4. Detalhamento por Segmento (Sub-abas)
-        st.subheader("🏛️ Participação por Cadeira")
-        t_pub, t_soc, t_op, t_conv = st.tabs(["Poder Público", "Sociedade Civil", "Operadores", "Convidados"])
+        # Agrupamento da Linha Geral (Soma das presenças / Total de assentos na reunião)
+        df_geral = df_long.groupby('Ano')['Presenca_Num'].agg(['sum', 'count']).reset_index()
+        df_geral['Presenca_Perc'] = (df_geral['sum'] / df_geral['count'] * 100).round(1)
+        df_geral[COL_SEGMENTO] = 'Assiduidade Geral'
 
+        # Agrupamento por Segmento
+        df_seg = df_long.groupby(['Ano', COL_SEGMENTO])['Presenca_Num'].agg(['sum', 'count']).reset_index()
+        df_seg['Presenca_Perc'] = (df_seg['sum'] / df_seg['count'] * 100).round(1)
 
-        def plot_bar(df, filtro, cor):
-            dff = df[df[COL_SEGMENTO].str.contains(filtro, case=False, na=False)].copy().sort_values(COL_PRESENCA,
-                                                                                                     ascending=True)
-            if dff.empty: return st.info("Sem dados.")
-            dff['Hist'] = dff[COL_CADEIRA].map(dict_historico).fillna("Sem histórico.")
-            fig = px.bar(dff, x=COL_PRESENCA, y=COL_CADEIRA, orientation='h', text=COL_PRESENCA, custom_data=['Hist'])
-            fig.update_traces(marker_color=cor, texttemplate='%{text}%', textposition='outside',
-                              hovertemplate="<b>%{y}</b><br>Assiduidade: %{x}%<br><br><b>Histórico:</b><br>%{customdata[0]}<extra></extra>")
-            fig.update_layout(xaxis=dict(range=[0, 115], title="Presença (%)"), yaxis_title="",
-                              height=max(300, len(dff) * 45), margin=dict(l=0, r=20, t=10, b=20))
-            st.plotly_chart(fig, use_container_width=True)
+        # Unificando o Dataset para o Gráfico de Linhas
+        df_temporal = pd.concat(
+            [df_geral[['Ano', COL_SEGMENTO, 'Presenca_Perc']], df_seg[['Ano', COL_SEGMENTO, 'Presenca_Perc']]])
+        anos_unicos_temp = sorted(df_temporal['Ano'].unique())
 
+        # 4. Interface Dinâmica (Filtros interligados, igual à aba Temas)
+        segmentos_unicos = sorted(df_cadeiras[COL_SEGMENTO].unique())
+        cores_segmentos = {'Assiduidade Geral': '#2C3E50', 'Poder Público': '#2E4D68', 'Sociedade Civil': '#11caa0',
+                           'Operadores': '#D4AF37'}
 
-        with t_pub:
-            plot_bar(df_cadeiras, 'ÓRGÃOS MUNICIPAIS', '#2E4D68')
-        with t_soc:
-            plot_bar(df_cadeiras, 'SOCIEDADE CIVIL', '#11caa0')
-        with t_op:
-            plot_bar(df_cadeiras, 'OPERADORES', '#D4AF37')
-        with t_conv:
-            plot_bar(df_cadeiras, 'CONVIDADOS', '#888888')
+        col_f1, col_f2 = st.columns([1, 2])
+        with col_f1:
+            seg_selecionados = st.multiselect("🎯 Segmentos:", options=segmentos_unicos, default=segmentos_unicos)
+
+        with col_f2:
+            cadeiras_disp = sorted(df_cadeiras[df_cadeiras[COL_SEGMENTO].isin(seg_selecionados)][COL_CADEIRA].unique())
+            cad_selecionadas = st.multiselect("🪑 Cadeiras Específicas (Opcional):", options=cadeiras_disp, default=[],
+                                              placeholder="Todas do segmento escolhido")
+
+        if seg_selecionados:
+            st.subheader("📈 Assiduidade Histórica nas Reuniões Plenárias")
+            segs_plot = ['Assiduidade Geral'] + seg_selecionados
+            df_temp_plot = df_temporal[df_temporal[COL_SEGMENTO].isin(segs_plot)].sort_values('Ano')
+
+            fig_at = px.line(df_temp_plot, x='Ano', y='Presenca_Perc', color=COL_SEGMENTO, markers=True,
+                             color_discrete_map=cores_segmentos)
+            # Força o Plotly a mostrar todos os anos no eixo X sem pular
+            fig_at.update_xaxes(type='category', categoryorder='array', categoryarray=anos_unicos_temp)
+            fig_at.update_layout(
+                legend=dict(orientation="h", yanchor="top", y=-0.25, xanchor="center", x=0.5, font=dict(size=13),
+                            title=""),
+                yaxis=dict(range=[0, 105], title="Presença %"),
+                height=350, margin=dict(l=10, r=10, t=10, b=80)
+            )
+            st.plotly_chart(fig_at, use_container_width=True)
+
+            st.write("---")
+
+            # 5. Gráfico de Barras com Ordenação Alfabética
+            st.subheader("🏛️ Participação por Cadeira (Ordem Alfabética)")
+
+            df_bar = df_cadeiras[df_cadeiras[COL_SEGMENTO].isin(seg_selecionados)].copy()
+            if cad_selecionadas:
+                df_bar = df_bar[df_bar[COL_CADEIRA].isin(cad_selecionadas)]
+
+            if df_bar.empty:
+                st.info("Nenhuma cadeira encontrada para os filtros selecionados.")
+            else:
+                # Ordenação Alfabética (Invertida para o Plotly renderizar de A a Z de cima para baixo)
+                df_bar = df_bar.sort_values(COL_CADEIRA, ascending=False)
+
+                df_bar['Hist'] = df_bar[COL_CADEIRA].map(dict_historico).fillna("Sem histórico mapeado.")
+
+                fig_bar = px.bar(
+                    df_bar,
+                    x=COL_PRESENCA,
+                    y=COL_CADEIRA,
+                    orientation='h',
+                    text=COL_PRESENCA,
+                    color=COL_SEGMENTO,
+                    color_discrete_map=cores_segmentos,
+                    custom_data=['Hist', COL_SEGMENTO]
+                )
+
+                hovertemplate_personalizado = (
+                    "<b>%{y}</b> (%{customdata[1]})<br>"
+                    "Assiduidade Geral: %{x}%<br><br>"
+                    "<b>Histórico:</b><br>"
+                    "%{customdata[0]}<extra></extra>"
+                )
+
+                fig_bar.update_traces(
+                    texttemplate='%{text}%',
+                    textposition='outside',
+                    hovertemplate=hovertemplate_personalizado
+                )
+
+                fig_bar.update_layout(
+                    showlegend=False,
+                    xaxis=dict(range=[0, 115], title="Presença (%)"),
+                    yaxis_title="",
+                    height=max(300, len(df_bar) * 45),
+                    margin=dict(l=0, r=20, t=10, b=20)
+                )
+                st.plotly_chart(fig_bar, use_container_width=True)
+        else:
+            st.info("👆 Selecione ao menos um segmento para visualizar os gráficos.")
 
     except Exception as e:
         st.error(f"Erro ao processar frequência: {e}")
