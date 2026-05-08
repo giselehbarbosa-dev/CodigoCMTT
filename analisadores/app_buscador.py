@@ -169,8 +169,9 @@ with tab_busca:
             get_carimbo_tempo(CAMINHO_BASE_MANDATOS), get_carimbo_tempo(CAMINHO_INDEX_EXCEL))
 
         if corpus_completo:
+            # Removemos os exemplos do placeholder para não enviesar o usuário
             termo = st.text_input("Digite sua busca", label_visibility="collapsed",
-                                  placeholder="Ex: Tarifa Zero, Nome de Conselheiro...")
+                                  placeholder="O que você deseja buscar?")
             col_f_ano, col_f_ata = st.columns(2)
             with col_f_ano:
                 anos_unicos = sorted(list(set(str(doc.get("Data", "N/A")) for doc in corpus_completo)), reverse=True)
@@ -268,12 +269,31 @@ with tab_temas:
             c1, c2 = st.columns(2)
             with c1:
                 st.subheader("📋 Contagem de Reuniões por Tema")
-                contagem = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)].groupby('Tema')[
-                    'Arquivo'].nunique().reset_index(name='Qtd').sort_values('Qtd')
-                fig_bar = px.bar(contagem, x='Qtd', y='Tema', orientation='h', text='Qtd', template="plotly_white")
+                # 1. Mudamos o nome da coluna gerada de 'Qtd' para 'Quantidade'
+                contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(
+                    name='Quantidade').sort_values('Quantidade')
+
+                contagem['Cor'] = contagem['Tema'].apply(
+                    lambda t: mapa_cores.get(t, '#EAEAEA') if t in temas_sel else '#EAEAEA')
+
+                # 2. Atualizamos o X e o Text para puxarem a nova coluna 'Quantidade'
+                fig_bar = px.bar(contagem, x='Quantidade', y='Tema', orientation='h', text='Quantidade',
+                                 template="plotly_white", labels={'Quantidade': 'Reuniões', 'Tema': ''})
+
                 fig_bar.update_traces(
-                    marker_color=[mapa_cores.get(t, '#EAEAEA') if t in temas_sel else '#EAEAEA' for t in
-                                  contagem['Tema']])
+                    marker_color=contagem['Cor'],
+                    textposition='outside',
+                    textangle=0,
+                    cliponaxis=False
+                )
+
+                fig_bar.update_layout(
+                    showlegend=False,
+                    height=450,
+                    margin=dict(l=0, r=40, t=20, b=0),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
+                )
                 st.plotly_chart(fig_bar, use_container_width=True)
             with c2:
                 st.subheader("☁️ Nuvem de Palavras")
@@ -427,8 +447,14 @@ with tab_frequencia:
                                                  'Operadores': '#D4AF37'}, custom_data=['Hist', 'Seg_Amigo', 'Vida'])
             fig_bar.update_traces(texttemplate='%{text}%', textposition='outside',
                                   hovertemplate="<b>%{y}</b> (%{customdata[1]})<br>Assiduidade Histórica Global: %{x}%<br><b>Período:</b> %{customdata[2]}<br><br><b>Histórico (ver Catálogo de Nomenclaturas e Mandatos):</b><br>%{customdata[0]}<extra></extra>")
-            fig_bar.update_layout(showlegend=False, xaxis=dict(range=[0, 115], title="Presença (%)"), yaxis_title="",
-                                  height=max(300, len(df_bar) * 45), margin=dict(l=0, r=20, t=10, b=20))
+            fig_bar.update_layout(
+                hovermode='y',  # ESSA LINHA: Habilita o balão ao passar o mouse na direção da cadeira, mesmo sem barra
+                showlegend=False,
+                xaxis=dict(range=[0, 115], title="Presença (%)"),
+                yaxis_title="",
+                height=max(300, len(dff) * 45),
+                margin=dict(l=0, r=20, t=10, b=20)
+            )
             st.plotly_chart(fig_bar, use_container_width=True)
         else:
             st.info("👆 Selecione um segmento para visualizar.")
