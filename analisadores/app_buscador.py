@@ -269,8 +269,10 @@ with tab_temas:
             c1, c2 = st.columns(2)
             with c1:
                 st.subheader("📋 Contagem de Reuniões por Tema")
-                # 1. Mudamos o nome da coluna gerada de 'Qtd' para 'Quantidade'
-                contagem = df_deb_filtrado.groupby('Tema')['Arquivo'].nunique().reset_index(
+
+                # 1. Mantemos a SUA lógica original de filtragem (df_debatidos), só mudando 'Qtd' para 'Quantidade'
+                contagem = df_debatidos[df_debatidos['Ano'].astype(str).isin(anos_sel)].groupby('Tema')[
+                    'Arquivo'].nunique().reset_index(
                     name='Quantidade').sort_values('Quantidade')
 
                 contagem['Cor'] = contagem['Tema'].apply(
@@ -452,7 +454,7 @@ with tab_frequencia:
                 showlegend=False,
                 xaxis=dict(range=[0, 115], title="Presença (%)"),
                 yaxis_title="",
-                height=max(300, len(dff) * 45),
+                height=max(300, len(df_bar) * 45),
                 margin=dict(l=0, r=20, t=10, b=20)
             )
             st.plotly_chart(fig_bar, use_container_width=True)
