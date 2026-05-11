@@ -169,7 +169,7 @@ with tab_busca:
         st.info("### 🛑 Notas Metodológicas: Buscador\n"
                 "* As atas das 26ª e 79ª Reuniões Ordinárias não foram processadas devido à ausência de registro oficial na fonte primária.\n"
                 "* Os dados referentes à nova composição de 2026 não foram incluídos, devido à recente troca de mandato.")
-        if st.button("✅ Li e compreendi as restrições da busca", key="btn_busca"):
+        if st.button("✅ LI E COMPREENDI AS RESTRIÇÕES DE BUSCA", key="btn_busca"):
             st.session_state.leu_busca = True
             st.rerun()
     else:
@@ -253,7 +253,7 @@ with tab_temas:
                 "* **Pauta Dominante (> 25%):** Tema que estruturou a reunião.\n"
                 "* **Debate Consolidado (12% a 25%):** Gerou discussão expressiva.\n"
                 "* **Informes e Menções (5% a 11,9%):** Tema citado sem aprofundamento extenso.")
-        if st.button("✅ Li e compreendi a métrica de temas", key="btn_temas"):
+        if st.button("✅ LI E COMPREENDI A MÉTRICA DE TEMAS", key="btn_temas"):
             st.session_state.leu_temas = True
             st.rerun()
     else:
@@ -361,7 +361,7 @@ with tab_frequencia:
                    "* Para lidar com as mudanças de nomes de Órgãos ao longo dos anos, o projeto utiliza um Catálogo de Metadados que rastreia a evolução histórica das cadeiras, garantindo que a continuidade dos dados seja preservada mesmo após mudanças. Não há dados sensíveis disponibilizados no Catálogo, somente os nomes dos conselheiros eleitos que foram publicados no Diário Oficial, nas atas e na página do CMTT. Possíveis repetições de nomes por período de mandato (aba Histórico_Conselheiros) deve-se à ocupação definitiva, por um conselheiro suplente, da cadeira de titular ou à troca de nomenclatura do órgão.\n"
                    "* A extração dos nomes foi realizada por algoritmos de Processamento de Linguagem Natural (NLP). Para garantir a precisão, o código gera uma planilha de auditoria indicando exatamente o trecho da ata onde leu o nome, permitindo a conferência e correção humana. Testes de amostragem aleatória identificaram uma elevada fidelidade na atribuição automática de presença.\n"
                    "* A assiduidade de uma cadeira é computada se o representante Titular ou o Suplente estiverem presentes na reunião. Destaca-se que possíveis erros de digitação de nomes podem afetar a atribuição de presença, bem como possíveis lapsos na construção da base de dados de conselheiros.")
-        if st.button("✅ Li e compreendi a metodologia para atribuição de Frequência", key="btn_freq"):
+        if st.button("✅ LI E COMPREENDI A METODOLOGIA PARA ATRIBUIÇÃO DE FREQUÊNCIA", key="btn_freq"):
             st.session_state.leu_freq = True
             st.rerun()
     else:
