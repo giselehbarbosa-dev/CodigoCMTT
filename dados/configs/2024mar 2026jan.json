@@ -42,7 +42,7 @@
             ],
             "suplentes": [
                 {
-                    "nome": "Silvio Silva",
+                    "nome": "Silvio Pereira e Silva",
                     "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
@@ -500,6 +500,37 @@
         },
         {
             "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Secretaria Municipal de Mobilidade Urbana e Transporte – SMT / AT",
+            "aliases_orgao": [
+                "Secretaria Municipal de Mobilidade Urbana e Transporte – SMT / AT",
+                "Secretaria Municipal de Mobilidade e Trânsito – SMT"
+            ],
+            "cadeira_padronizada": "TRANSPORTE E MOBILIDADE 1",
+            "titulares": [
+                {
+                    "nome": "Celso Gonçalves Barbosa",
+                    "genero": "M",
+                    "cargo_extra": "Presidente",
+                    "funcao_original": "TITULAR"
+                },
+                {
+                    "nome": "Michele Fernandez Perea Cavinato",
+                    "genero": "F",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "João Bonnet Neto",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "ÓRGÃOS MUNICIPAIS",
             "nome_orgao_exibicao": "Conselho Municipal de Trânsito e Transporte (CMTT)",
             "aliases_orgao": [
                 "Conselho Municipal de Trânsito e Transporte (CMTT)"
@@ -581,6 +612,12 @@
                 {
                     "nome": "Dawton Roberto Batista Gaia",
                     "genero": "M",
+                    "cargo_extra": "Coordenação Executiva",
+                    "funcao_original": "TITULAR"
+                },
+                {
+                    "nome": "Michele Fernandez Perea Cavinato",
+                    "genero": "F",
                     "cargo_extra": "Coordenação Executiva",
                     "funcao_original": "TITULAR"
                 }
@@ -740,7 +777,7 @@
             "cadeira_padronizada": "REGIONAIS - OESTE 2",
             "titulares": [
                 {
-                    "nome": "Xenia R. V. Souza",
+                    "nome": "Xenia Regina Vaz De Souza",
                     "genero": "F",
                     "cargo_extra": null,
                     "funcao_original": "TITULAR"
@@ -1015,30 +1052,6 @@
                 {
                     "nome": "VAGO",
                     "genero": null,
-                    "cargo_extra": null,
-                    "funcao_original": "SUPLENTE"
-                }
-            ]
-        },
-        {
-            "segmento": "ÓRGÃOS MUNICIPAIS",
-            "nome_orgao_exibicao": "Secretaria Municipal de Mobilidade Urbana e Transporte – SMT / AT",
-            "aliases_orgao": [
-                "Secretaria Municipal de Mobilidade Urbana e Transporte – SMT / AT"
-            ],
-            "cadeira_padronizada": "TRANSPORTE E MOBILIDADE 1",
-            "titulares": [
-                {
-                    "nome": "Michele Perea Cavinato",
-                    "genero": "F",
-                    "cargo_extra": null,
-                    "funcao_original": "TITULAR"
-                }
-            ],
-            "suplentes": [
-                {
-                    "nome": "João Bonnet Neto",
-                    "genero": "M",
                     "cargo_extra": null,
                     "funcao_original": "SUPLENTE"
                 }
@@ -1470,30 +1483,6 @@
             ]
         },
         {
-            "segmento": "ÓRGÃOS MUNICIPAIS",
-            "nome_orgao_exibicao": "Companhia de Engenharia de Tráfego – CET - 3",
-            "aliases_orgao": [
-                "Companhia de Engenharia de Tráfego – CET - 3"
-            ],
-            "cadeira_padronizada": "CET 3",
-            "titulares": [
-                {
-                    "nome": "VAGO",
-                    "genero": null,
-                    "cargo_extra": null,
-                    "funcao_original": "TITULAR"
-                }
-            ],
-            "suplentes": [
-                {
-                    "nome": "VAGO",
-                    "genero": null,
-                    "cargo_extra": null,
-                    "funcao_original": "SUPLENTE"
-                }
-            ]
-        },
-        {
             "segmento": "OPERADORES DO SERVIÇO DE TRANSPORTE",
             "nome_orgao_exibicao": "Entidade que represente entregadores de cargas por bicicleta",
             "aliases_orgao": [
@@ -1542,12 +1531,12 @@
             ]
         },
         {
-            "segmento": "SOCIEDADE CIVIL - TEMÁTICOS",
-            "nome_orgao_exibicao": "Movimento Estudantil Secundarista",
+            "segmento": "ÓRGÃOS MUNICIPAIS",
+            "nome_orgao_exibicao": "Companhia de Engenharia de Tráfego – CET - 3",
             "aliases_orgao": [
-                "Movimento Estudantil Secundarista"
+                "Companhia de Engenharia de Tráfego – CET - 3"
             ],
-            "cadeira_padronizada": "TEMÁTICOS - SECUNDARISTAS",
+            "cadeira_padronizada": "CET 3",
             "titulares": [
                 {
                     "nome": "VAGO",
@@ -1572,6 +1561,30 @@
                 "Secretaria Executiva de Mobilidade e Trânsito - SEMTRA, da Secretaria Municipal de Mobilidade Urbana e Transporte"
             ],
             "cadeira_padronizada": "TRANSPORTE E MOBILIDADE 2",
+            "titulares": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                }
+            ],
+            "suplentes": [
+                {
+                    "nome": "VAGO",
+                    "genero": null,
+                    "cargo_extra": null,
+                    "funcao_original": "SUPLENTE"
+                }
+            ]
+        },
+        {
+            "segmento": "SOCIEDADE CIVIL - TEMÁTICOS",
+            "nome_orgao_exibicao": "Movimento Estudantil Secundarista",
+            "aliases_orgao": [
+                "Movimento Estudantil Secundarista"
+            ],
+            "cadeira_padronizada": "TEMÁTICOS - SECUNDARISTAS",
             "titulares": [
                 {
                     "nome": "VAGO",

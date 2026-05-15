@@ -58,6 +58,12 @@
             "cadeira_padronizada": "TRANSPORTE E MOBILIDADE 1",
             "titulares": [
                 {
+                    "nome": "Celso Gonçalves Barbosa",
+                    "genero": "M",
+                    "cargo_extra": null,
+                    "funcao_original": "TITULAR"
+                },
+                {
                     "nome": "Ricardo Teixeira",
                     "genero": "M",
                     "cargo_extra": "Presidente",
