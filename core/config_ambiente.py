@@ -68,7 +68,7 @@ CAMINHO_CSV_VISITANTES = os.path.join(CAMINHO_PROCESSADOS, NOME_CSV_VISITANTES)
 # ==============================================================================
 NOME_EXCEL_GRAFICOS = "Base_Para_Graficos_CMTT.xlsx"
 NOME_EXCEL_VISITANTES = "Relatorio_Visitantes_Lobby.xlsx"
-NOME_EXCEL_CADEIRAS = "Relatorio_Cadeiras_Absenteismo.xlsx"
+NOME_EXCEL_CADEIRAS = "Relatorio_Cadeiras_V8.xlsx"
 CAMINHO_EXCEL_GRAFICOS = os.path.join(CAMINHO_GRAFICOS, NOME_EXCEL_GRAFICOS)
 CAMINHO_EXCEL_VISITANTES = os.path.join(CAMINHO_RELATORIOS, NOME_EXCEL_VISITANTES)
 CAMINHO_EXCEL_CADEIRAS = os.path.join(CAMINHO_RELATORIOS, NOME_EXCEL_CADEIRAS)

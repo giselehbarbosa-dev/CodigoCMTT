@@ -80,8 +80,8 @@ def atualizar_bases_com_auditoria():
     caminho_pres_conferido = caminho_presenca.replace('.csv', '_conferido.csv')
     caminho_vis_conferido = caminho_visitantes.replace('.csv', '_conferido.csv')
 
-    df_pres.to_csv(caminho_pres_conferido, sep=';', index=False)
-    df_vis.to_csv(caminho_vis_conferido, sep=';', index=False)
+    df_pres.to_csv(caminho_pres_conferido, sep=';', index=False, encoding='utf-8-sig')
+    df_vis.to_csv(caminho_vis_conferido, sep=';', index=False, encoding='utf-8-sig')
 
     print("==========================================================")
     print("📊 RELATÓRIO DA AUDITORIA APLICADA:")
