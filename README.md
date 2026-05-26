@@ -145,7 +145,6 @@ python coletores/coletor_excel.py
 python construtores/construtor_conselheiros.py
 python construtores/construtor_index.py
 python construtores/construtor_cache.py
-python construtores/construtor_dicionario.py  # Gera o Catálogo de Metadados
 
 # 3. Mineração NLP e Cruzamento de Dados (Fase 1: Snapshot da IA - Camada Bronze)
 python motores/motor_extracao.py

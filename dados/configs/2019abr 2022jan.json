@@ -74,6 +74,12 @@
                     "genero": "M",
                     "cargo_extra": "Presidente",
                     "funcao_original": "TITULAR"
+                },
+                {
+                    "nome": "Ricardo Teixeira",
+                    "genero": "M",
+                    "cargo_extra": "Presidente",
+                    "funcao_original": "TITULAR"
                 }
             ],
             "suplentes": [
@@ -1374,23 +1380,6 @@
                     "funcao_original": "SUPLENTE"
                 }
             ]
-        },
-        {
-            "segmento": "",
-            "nome_orgao_exibicao": "Secretaria Municipal de Transportes – SMT",
-            "aliases_orgao": [
-                "Secretaria Municipal de Transportes – SMT"
-            ],
-            "cadeira_padronizada": "TRANSPORTE E MOBILIDADE 1",
-            "titulares": [
-                {
-                    "nome": "Ricardo Teixeira",
-                    "genero": "M",
-                    "cargo_extra": "Presidente",
-                    "funcao_original": "TITULAR"
-                }
-            ],
-            "suplentes": []
         },
         {
             "segmento": "ÓRGÃOS MUNICIPAIS",
